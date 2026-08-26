@@ -4,6 +4,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Kaimana | Build your coding edge",
   description: "Practice problems, compete in live contests, and grow with Kaimana.",
+  applicationName: "Kaimana",
+  keywords: ["coding practice", "programming contests", "algorithm problems"],
+  openGraph: {
+    title: "Kaimana | Build your coding edge",
+    description: "Practice problems, compete in live contests, and grow with Kaimana.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
