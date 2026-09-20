@@ -11,6 +11,7 @@ import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { LeaderboardBoard, PodiumCard, YourRankCard } from "./views";
 import styles from "./leaderboard.module.css";
+import { getSocket } from "@/lib/socket";
 
 const PAGE_SIZE = 25;
 
@@ -76,6 +77,29 @@ export default function LeaderboardPage() {
     const target = myRowRef.current ?? podiumRef.current;
     target?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [status, entries]);
+
+  // Connect to Socket.IO and listen for real-time leaderboard updates
+  useEffect(() => {
+    const socket = getSocket();
+
+    socket.emit("join:leaderboard");
+
+    socket.on("leaderboard:update", (data: { entries: LeaderboardEntry[]; total: number }) => {
+      // Only auto-update if viewing the first page (or refresh full state)
+      if (page === 1) {
+        setEntries(data.entries.slice(0, PAGE_SIZE));
+        setTotal(data.total);
+      }
+      if (user) {
+        getMyRank().then(setMyRank).catch(() => setMyRank(null));
+      }
+    });
+
+    return () => {
+      socket.emit("leave:leaderboard");
+      socket.off("leaderboard:update");
+    };
+  }, [page, user]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const myPage = myRank?.rank ? Math.ceil(myRank.rank / PAGE_SIZE) : null;
