@@ -1,0 +1,123 @@
+/* Section 5 — the four modes. Drawn motifs, no photography. */
+
+.section {
+  padding-block: 92px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.head {
+  max-width: 660px;
+  margin: 0 0 48px;
+}
+
+.kicker {
+  margin: 0 0 16px;
+  color: var(--accent);
+  font: 600 10.5px "JetBrains Mono", monospace;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.head h2 {
+  margin: 0;
+  color: var(--text);
+  font: 700 clamp(29px, 3.6vw, 44px) / 1.1 "JetBrains Mono", monospace;
+  letter-spacing: -2px;
+}
+
+.accent { color: var(--accent); }
+
+.lede {
+  margin: 18px 0 0;
+  max-width: 560px;
+  color: var(--text-dim);
+  font-size: 15.5px;
+  line-height: 1.8;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  overflow: hidden;
+  padding: 22px 22px 84px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  transition: border-color 0.16s, background 0.16s;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  background: var(--surface-hi);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+.card h3 {
+  margin: 4px 0 0;
+  color: var(--text);
+  font: 600 16px "JetBrains Mono", monospace;
+  letter-spacing: -0.5px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 2px;
+  color: var(--accent);
+  font: 600 11.5px "JetBrains Mono", monospace;
+}
+
+/* The motif sits in the card's lower gutter — decoration, so it fades back
+   and never competes with the words above it. */
+.art {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  width: 132px;
+  height: 66px;
+  color: var(--accent);
+  opacity: 0.18;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+.card:hover .art {
+  opacity: 0.34;
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .art { transition: none; }
+}
+
+@media (max-width: 620px) {
+  .section { padding-block: 64px; }
+  .card { padding-bottom: 76px; }
+}

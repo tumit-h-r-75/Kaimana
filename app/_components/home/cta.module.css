@@ -1,0 +1,93 @@
+/* Section 7 — the closing ask, over the mark at poster scale. */
+
+.section {
+  padding-block: 92px 104px;
+  background: var(--bg);
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  padding: 68px 56px;
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 140% at 88% 8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 62%),
+    var(--surface);
+}
+
+/* The brand diamond, blown up and pushed to the edge. Decoration, so it
+   sits under the copy and never takes contrast from it. */
+.mark {
+  position: absolute;
+  top: 50%;
+  right: -40px;
+  width: 340px;
+  height: 340px;
+  transform: translateY(-50%);
+  color: var(--accent);
+  opacity: 0.13;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  /* Wide enough for the first line to hold together. At 620px "Pressure is
+     the only thing" broke after "only" and left "thing" alone on a line of
+     its own, which reads as a mistake rather than a line break. */
+  max-width: 760px;
+}
+
+.kicker {
+  margin: 0 0 16px;
+  color: var(--accent);
+  font: 600 10.5px "JetBrains Mono", monospace;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.inner h2 {
+  margin: 0;
+  color: var(--text);
+  font: 700 clamp(29px, 3.7vw, 46px) / 1.08 "JetBrains Mono", monospace;
+  letter-spacing: -2.4px;
+}
+
+.accent {
+  display: inline-block;
+  background: linear-gradient(96deg, var(--accent), color-mix(in srgb, var(--accent) 66%, var(--text)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lede {
+  margin: 20px 0 30px;
+  max-width: 520px;
+  color: var(--text-dim);
+  font-size: 15.5px;
+  line-height: 1.8;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+}
+
+.fine {
+  margin: 22px 0 0;
+  color: var(--text-dim);
+  font: 11px "JetBrains Mono", monospace;
+  letter-spacing: 0.4px;
+}
+
+@media (max-width: 860px) {
+  .panel { padding: 52px 30px; }
+  .mark { right: -90px; opacity: 0.09; }
+}
+
+@media (max-width: 620px) {
+  .section { padding-block: 64px 76px; }
+  .panel { padding: 40px 22px; }
+}

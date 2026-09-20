@@ -1,32 +1,38 @@
 import { SiteHeader } from "./_components/home/SiteHeader";
 import { SiteFooter } from "./_components/home/SiteFooter";
-import { HomeHero } from "./_components/home/HomeHero";
-import { ProofBand } from "./_components/home/ProofBand";
-import { FeatureBento } from "./_components/home/FeatureBento";
-import { WorkspaceShowcase } from "./_components/home/WorkspaceShowcase";
-import { HowItWorks } from "./_components/home/HowItWorks";
-import { ModeFacets } from "./_components/home/ModeFacets";
-import { HomeFaq } from "./_components/home/HomeFaq";
-import { CallToAction } from "./_components/home/CallToAction";
+import { Hero } from "./_components/home/Hero";
+import { Loop } from "./_components/home/Loop";
+import { Coach } from "./_components/home/Coach";
+import { Arena } from "./_components/home/Arena";
+import { Facets } from "./_components/home/Facets";
+import { Faq } from "./_components/home/Faq";
+import { Cta } from "./_components/home/Cta";
 
 /**
- * The homepage, in eight sections: the promise, what you can practise, what
- * the platform does for you, the workspace it does it in, the loop you
- * repeat, the other facets, the questions people ask, and the ask.
+ * The homepage, in seven sections.
+ *
+ * The order follows the argument rather than a feature list: what this is,
+ * the loop it puts you in, the one thing nothing else on the page can stand
+ * in for, the reason to come back on a Saturday, the rooms beyond the
+ * problem list, the questions that stop people signing up, and the ask.
+ *
+ * Every visual is drawn from the design tokens. The previous version leaned
+ * on five stock photographs, which carried most of the page's weight, said
+ * nothing their headings did not, and pulled four unrelated colour schemes
+ * onto a page built around a single accent.
  */
 export default function HomePage() {
   return (
     <main>
       <SiteHeader />
 
-      {/* 1 */} <HomeHero />
-      {/* 2 */} <ProofBand />
-      {/* 3 */} <FeatureBento />
-      {/* 4 */} <WorkspaceShowcase />
-      {/* 5 */} <HowItWorks />
-      {/* 6 */} <ModeFacets />
-      {/* 7 */} <HomeFaq />
-      {/* 8 */} <CallToAction />
+      {/* 1 */} <Hero />
+      {/* 2 */} <Loop />
+      {/* 3 */} <Coach />
+      {/* 4 */} <Arena />
+      {/* 5 */} <Facets />
+      {/* 6 */} <Faq />
+      {/* 7 */} <Cta />
 
       <SiteFooter />
     </main>
