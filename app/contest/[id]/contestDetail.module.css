@@ -160,7 +160,7 @@
 
 .problemList .problemCard h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 16px 'JetBrains Mono', Inter, sans-serif;
   overflow-wrap: anywhere;
 }
@@ -293,7 +293,7 @@ a.problemCard .problemAction {
 }
 
 .score {
-  color: #fff;
+  color: var(--text);
   font-weight: 700;
 }
 

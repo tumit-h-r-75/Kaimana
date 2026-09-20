@@ -73,7 +73,7 @@
 .caseTitle {
   margin: 0;
   font: 700 13px 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .caseGrid {

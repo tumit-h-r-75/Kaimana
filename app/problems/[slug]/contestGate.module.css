@@ -24,7 +24,7 @@
   gap: 8px;
   margin: 0;
   font: 700 14px/1.4 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
@@ -99,12 +99,12 @@
 
 .upcoming {
   border-color: rgba(143, 195, 255, 0.35);
-  border-left-color: #8fc3ff;
+  border-left-color: var(--accent);
   background: rgba(28, 42, 74, 0.35);
 }
 
 .upcoming .dot {
-  color: #8fc3ff;
+  color: var(--accent);
 }
 
 .neutral {

@@ -54,7 +54,7 @@
 }
 
 .tone_info {
-  color: #8fc3ff;
+  color: var(--accent);
   border-color: rgba(143, 195, 255, 0.5);
   background: rgba(143, 195, 255, 0.07);
 }
@@ -98,7 +98,7 @@
   height: 22px;
   border-radius: 50%;
   border: 2.5px solid rgba(143, 195, 255, 0.25);
-  border-top-color: #8fc3ff;
+  border-top-color: var(--accent);
   animation: spin 0.7s linear infinite;
 }
 

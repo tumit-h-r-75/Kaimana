@@ -28,29 +28,27 @@ const TOPICS = [
   "Math",
 ];
 
+// No per-language colour. These used to carry each language's own brand
+// (Python yellow, C++ blue, JS yellow), which put three more hues on a page
+// that is meant to hold one. The badge text already says which language it
+// is, so the tint belongs in the stylesheet, once, for all three.
 const LANGUAGES = [
   {
     name: "Python",
     note: "Starter code included",
     badge: "Py",
-    tint: "rgba(255, 212, 59, .14)",
-    color: "var(--warn)",
     snippet: "def solve(nums: list[int]) -> int:",
   },
   {
     name: "C++",
     note: "Starter code included",
     badge: "C++",
-    tint: "rgba(101, 154, 210, .16)",
-    color: "#8ab4e8",
     snippet: "int solve(vector<int>& nums) {",
   },
   {
     name: "JavaScript",
     note: "Starter code included",
     badge: "JS",
-    tint: "rgba(247, 223, 30, .12)",
-    color: "var(--warn)",
     snippet: "function solve(nums) {",
   },
 ];
@@ -91,7 +89,7 @@ export function ProofBand() {
           {LANGUAGES.map((lang) => (
             <article key={lang.name} className={styles.langCard}>
               <div className={styles.langHead}>
-                <span className={styles.langBadge} style={{ background: lang.tint, color: lang.color }} aria-hidden="true">
+                <span className={styles.langBadge} aria-hidden="true">
                   {lang.badge}
                 </span>
                 <div>

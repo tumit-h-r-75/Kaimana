@@ -20,7 +20,7 @@
 .section legend {
   padding: 0 8px;
   font: 700 14px 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .sectionHint {
@@ -103,7 +103,7 @@
 .caseTitle {
   margin: 0;
   font: 700 13px 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .caseActions {
@@ -149,7 +149,7 @@
   cursor: pointer;
   padding: 14px 0;
   font: 700 14px 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .collapsible[open] summary {

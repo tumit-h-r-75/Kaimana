@@ -45,7 +45,7 @@
 .card h2 {
   margin: 0;
   font: 700 21px/1.25 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
@@ -94,7 +94,7 @@
 }
 
 .reviewNote b {
-  color: #fff;
+  color: var(--text);
 }
 
 .actions {

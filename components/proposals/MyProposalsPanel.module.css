@@ -8,7 +8,7 @@
 .title {
   margin: 8px 0 6px;
   font: 700 22px/1.25 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .lead {
@@ -121,7 +121,7 @@
 
 .itemTitle {
   font: 700 15px 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 
@@ -155,7 +155,7 @@
 }
 
 .note b {
-  color: #fff;
+  color: var(--text);
 }
 
 .accepted {

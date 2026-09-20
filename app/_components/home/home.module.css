@@ -55,7 +55,7 @@
 .head h2,
 .headCentered h2 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(30px, 3.8vw, 46px) / 1.08 "JetBrains Mono";
   letter-spacing: -2px;
 }
@@ -75,9 +75,15 @@
   margin-inline: auto;
 }
 
+/* The highlighted half of a section heading.
+   This was a three-stop gradient across the old violet/cyan/green accents;
+   collapsing to one accent left all three stops identical — a flat fill
+   still paying for background-clip. It keeps the gradient, but now the
+   travel is brightness within the one hue: accent lifting toward the text
+   colour, which gives the headline a sheen without a second colour. */
 .accent {
   display: inline-block;
-  background: linear-gradient(96deg, var(--accent) 0%, #7dd3fc 48%, var(--accent) 100%);
+  background: linear-gradient(96deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 72%, var(--text)) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -160,7 +166,7 @@
 
 .heroTitle {
   margin: 0 0 22px;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(38px, 4.6vw, 60px) / 1.06 "JetBrains Mono";
   letter-spacing: -3px;
 }
@@ -214,7 +220,7 @@
 .heroStats b {
   display: block;
   margin-bottom: 3px;
-  color: #fff;
+  color: var(--text);
   font: 700 30px "JetBrains Mono";
   letter-spacing: -1.2px;
 }
@@ -250,12 +256,22 @@
 
 .heroPhoto img {
   object-fit: cover;
+  /* The source is a warm, multicoloured stock photo — purples and yellows
+     that fight the single accent harder than anything else on the page.
+     Stripping the colour first means the veil tints one neutral image
+     rather than layering mint over hues that are already shouting. */
+  filter: grayscale(1) contrast(1.06) brightness(0.82);
 }
 
 .heroPhotoVeil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(148deg, color-mix(in srgb, var(--bg) 30%, transparent) 0%, color-mix(in srgb, var(--bg) 74%, transparent) 56%, color-mix(in srgb, var(--accent) 36%, transparent) 100%);
+  /* Duotone over that greyscale base: accent at the lit corner falling away
+     to the page background, so the photo reads as brand-coloured texture
+     behind the editor card instead of as a second palette beside it. */
+  background:
+    radial-gradient(120% 90% at 82% 8%, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 66%),
+    linear-gradient(148deg, color-mix(in srgb, var(--bg) 14%, transparent) 0%, color-mix(in srgb, var(--bg) 52%, transparent) 60%, color-mix(in srgb, var(--bg) 88%, transparent) 100%);
 }
 
 .heroEditor {
@@ -355,7 +371,7 @@
 }
 
 .heroChip b {
-  color: #fff;
+  color: var(--text);
   font: 700 13px "JetBrains Mono";
 }
 
@@ -385,7 +401,7 @@
 
 .proof {
   padding-block: 72px 84px;
-  background: #0b0f21;
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
 
@@ -474,6 +490,8 @@
   gap: 12px;
 }
 
+/* One treatment for all three languages: the badge text is what tells them
+   apart, so the colour does not have to. */
 .langBadge {
   display: grid;
   place-items: center;
@@ -482,11 +500,14 @@
   flex: none;
   border-radius: 12px;
   font: 700 14px "JetBrains Mono";
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .langHead h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 17px "JetBrains Mono";
   letter-spacing: -0.4px;
 }
@@ -593,7 +614,7 @@
 
 .tile h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 19px "JetBrains Mono";
   letter-spacing: -0.5px;
 }
@@ -740,9 +761,9 @@
   text-transform: uppercase;
 }
 
-.statusPending { background: #3a2f10; color: var(--orange); }
+.statusPending { background: var(--surface-hi); color: var(--orange); }
 .statusApproved { background: var(--accent-dim); color: var(--accent); }
-.statusLive { background: var(--surface-hi); color: #8fc3ff; }
+.statusLive { background: var(--surface-hi); color: var(--accent); }
 
 /* ------------------------------------------------- 4. workspace preview */
 
@@ -859,7 +880,7 @@
 
 .wsTitle {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 17px "JetBrains Mono";
   letter-spacing: -0.4px;
 }
@@ -925,7 +946,7 @@
   padding: 8px 14px;
   border-radius: 7px;
   background: var(--violet);
-  color: #fff;
+  color: var(--text);
   font: 700 11px Inter;
 }
 
@@ -998,7 +1019,7 @@
 
 .wsStats b {
   display: block;
-  color: #fff;
+  color: var(--text);
   font: 700 15px "JetBrains Mono";
 }
 
@@ -1036,7 +1057,7 @@
 
 .wsCaption h3 {
   margin: 0 0 5px;
-  color: #fff;
+  color: var(--text);
   font: 700 15px "JetBrains Mono";
   letter-spacing: -0.3px;
 }
@@ -1053,7 +1074,7 @@
 .steps {
   padding-block: 100px;
   border-bottom: 1px solid var(--line);
-  background: #0b0f21;
+  background: var(--surface);
 }
 
 .stepGrid {
@@ -1088,8 +1109,8 @@
   border: 1px solid var(--border);
   border-radius: 50%;
   background: var(--surface);
-  box-shadow: 0 0 0 9px #0b0f21;
-  color: #fff;
+  box-shadow: 0 0 0 9px var(--surface);
+  color: var(--text);
   font: 700 18px "JetBrains Mono";
   transition: background 0.3s, border-color 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1102,7 +1123,7 @@
 
 .step h3 {
   margin: 24px 0 9px;
-  color: #fff;
+  color: var(--text);
   font: 700 19px "JetBrains Mono";
   letter-spacing: -0.5px;
 }
@@ -1204,7 +1225,7 @@
 
 .modeBody h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 22px "JetBrains Mono";
   letter-spacing: -0.9px;
 }
@@ -1256,7 +1277,7 @@
 .faq {
   padding-block: 100px;
   border-bottom: 1px solid var(--line);
-  background: #0b0f21;
+  background: var(--surface);
 }
 
 .faqLayout {
@@ -1282,7 +1303,7 @@
 
 .faqCard h3 {
   margin: 0 0 8px;
-  color: #fff;
+  color: var(--text);
   font: 700 16px "JetBrains Mono";
   letter-spacing: -0.4px;
 }
@@ -1326,7 +1347,7 @@
 
 .faqItem summary::-webkit-details-marker { display: none; }
 
-.faqItem summary:hover { color: #fff; }
+.faqItem summary:hover { color: var(--text); }
 
 .faqSign {
   display: grid;
@@ -1373,7 +1394,7 @@
   padding: 78px 40px;
   border: 1px solid var(--border);
   border-radius: 26px;
-  background: radial-gradient(120% 150% at 50% -10%, #2a2360 0%, var(--surface-hi) 46%, var(--surface-hi) 100%);
+  background: radial-gradient(120% 150% at 50% -10%, var(--surface-hi) 0%, var(--surface-hi) 46%, var(--surface-hi) 100%);
   text-align: center;
 }
 
@@ -1421,7 +1442,7 @@
 
 .ctaPanel h2 {
   margin: 0 0 18px;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(32px, 4.4vw, 54px) / 1.06 "JetBrains Mono";
   letter-spacing: -2.4px;
 }
