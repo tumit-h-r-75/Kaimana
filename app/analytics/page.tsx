@@ -167,7 +167,7 @@ function AnalyticsContent() {
         <div>
           <p className="eyebrow">
             <b />
-            YOUR ARENA / ANALYTICS
+            YOUR EDGE / ANALYTICS
           </p>
           <h1>Your analytics</h1>
           <p className={styles.lede}>

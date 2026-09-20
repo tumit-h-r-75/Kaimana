@@ -192,7 +192,7 @@ function ProfileContent() {
     <main className="dashboard-shell">
       <div className="dashboard-head">
         <div>
-          <p className="eyebrow">YOUR ARENA / PROFILE</p>
+          <p className="eyebrow">YOUR EDGE / PROFILE</p>
           <h1>Profile & progress</h1>
           <p>Keep your identity, streak and learning goals in one place.</p>
         </div>

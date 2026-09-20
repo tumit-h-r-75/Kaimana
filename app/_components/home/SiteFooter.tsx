@@ -14,8 +14,8 @@ export function SiteFooter() {
         <div className="footer-brand">
           <BrandLogo size="lg" />
           <p>
-            A practice arena for people who like the hard problems — a real judge, an AI coach and a scoreboard, free
-            for everyone.
+            Pressure, applied daily, for people who like the hard problems — a real judge, an AI coach and a
+            scoreboard, free for everyone.
           </p>
           <Link className="button button-small" href="/problems">
             Start solving <span aria-hidden="true">→</span>

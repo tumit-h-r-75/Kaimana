@@ -37,7 +37,7 @@ export function HomeHero() {
             <h1 className={styles.heroTitle}>
               Code it. Run it.
               <br />
-              <span className={styles.accent}>Own the leaderboard.</span>
+              <span className={styles.accent}>Earn your edge.</span>
             </h1>
 
             <p className={styles.heroLede}>

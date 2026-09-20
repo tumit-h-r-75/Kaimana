@@ -36,7 +36,7 @@ export function BrandLogo({ size = "md", href = "/", className }: BrandLogoProps
     >
       <BrandMark />
       <span className="brand-word">
-        Algo<span>Arena</span>
+        Kai<span>mana</span>
       </span>
     </Link>
   );

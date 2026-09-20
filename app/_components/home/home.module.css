@@ -5,7 +5,7 @@
    every other route also renders.
 
    Section order: hero · proof band · feature bento · workspace ·
-   how it works · arena modes · FAQ · closing CTA.
+   how it works · mode facets · FAQ · closing CTA.
    ===================================================================== */
 
 /* ---------------------------------------------------------------- shared */
@@ -1123,7 +1123,7 @@
   font: 10.5px "DM Mono";
 }
 
-/* ----------------------------------------------------- 6. arena modes */
+/* ----------------------------------------------------- 6. mode facets */
 
 .modes {
   padding-block: 100px;

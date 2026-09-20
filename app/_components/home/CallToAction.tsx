@@ -38,7 +38,7 @@ export function CallToAction() {
               {isSignedIn ? (
                 <>
                   <Link className="button" href="/problems">
-                    Enter the arena <span aria-hidden="true">→</span>
+                    Back under pressure <span aria-hidden="true">→</span>
                   </Link>
                   <Link className="button-outline" href="/contest">
                     See live contests

@@ -158,7 +158,7 @@ export function FeatureBento() {
             <h3>Write problems, not just solutions</h3>
             <p>
               Propose a problem with your own statement and test cases. An admin reviews it, and once it&apos;s approved
-              the whole arena solves what you wrote.
+              everyone here solves what you wrote.
             </p>
             <div className={styles.tileArt}>
               <div className={styles.pillRow}>
