@@ -482,26 +482,73 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
    dashboard-shell used elsewhere, so the control room reads as its own
    tool rather than another public page. */
 
+/* ------------------------------------------------- admin chrome */
+
+/* The control room is its own surface: no marketing header, no footer. */
+.admin-root { display: flex; flex-direction: column; min-height: 100dvh; }
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 62px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.admin-topbar-scope {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-dim);
+  font: 500 11px 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.admin-topbar-scope b { color: var(--accent); font-weight: 600; }
+.admin-topbar-scope b::before { content: '/'; margin-right: 9px; color: var(--border); }
+
+.admin-topbar-user { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.admin-topbar-name { color: var(--text); font: 500 12.5px Inter, sans-serif; }
+.admin-topbar-link {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--text-dim);
+  font: 500 12px 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: color .14s;
+}
+.admin-topbar-link:hover { color: var(--accent); }
+
 .admin-shell {
-  width: min(1320px, calc(100% - 48px));
+  flex: 1 0 auto;
+  width: min(1440px, calc(100% - 48px));
   margin: 0 auto;
-  padding: 40px 0 110px;
+  padding: 30px 0 90px;
   display: grid;
-  grid-template-columns: 232px 1fr;
-  gap: 32px;
+  grid-template-columns: 236px 1fr;
+  gap: 30px;
   align-items: start;
 }
 
 .admin-sidebar {
   position: sticky;
-  top: 96px;
+  /* Clears the 62px topbar rather than the 78px marketing header it used
+     to sit under. */
+  top: 86px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 18px 14px;
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--surface-hi), var(--surface-hi));
-  border-radius: 12px;
+  padding: 16px 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 13px;
 }
 
 .admin-sidebar-kicker {
@@ -528,22 +575,10 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .admin-nav-item svg { flex-shrink: 0; opacity: .85; }
 .admin-nav-item:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--text); }
 .admin-nav-item.is-active { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--text); }
-.admin-nav-item.is-active svg { color: var(--cyan); opacity: 1; }
+.admin-nav-item.is-active svg { color: var(--accent); opacity: 1; }
 /* Each sidebar section gets its own icon accent (instead of every active
    item turning the same cyan) so the control room reads as distinct rooms
    at a glance, matching each section's stat-card color below. */
-.admin-nav-item.accent-orange svg { color: var(--orange); }
-.admin-nav-item.accent-cyan svg { color: var(--cyan); }
-.admin-nav-item.accent-violet svg { color: var(--violet); }
-.admin-nav-item.accent-green svg { color: var(--accent); }
-.admin-nav-item.is-active.accent-orange { background: color-mix(in srgb, var(--warn) 16%, transparent); }
-.admin-nav-item.is-active.accent-cyan { background: color-mix(in srgb, var(--accent) 16%, transparent); }
-.admin-nav-item.is-active.accent-violet { background: color-mix(in srgb, var(--accent) 18%, transparent); }
-.admin-nav-item.is-active.accent-green { background: color-mix(in srgb, var(--accent) 16%, transparent); }
-.admin-nav-item.is-active.accent-orange svg { color: var(--orange); opacity: 1; }
-.admin-nav-item.is-active.accent-cyan svg { color: var(--cyan); opacity: 1; }
-.admin-nav-item.is-active.accent-violet svg { color: var(--violet); opacity: 1; }
-.admin-nav-item.is-active.accent-green svg { color: var(--accent); opacity: 1; }
 
 .admin-sidebar-exit {
   border-top: 1px solid var(--line);
@@ -553,7 +588,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
   font-size: 12.5px;
   font-weight: 600;
 }
-.admin-sidebar-exit:hover { color: var(--cyan); }
+.admin-sidebar-exit:hover { color: var(--accent); }
 
 .admin-main-head {
   display: flex;

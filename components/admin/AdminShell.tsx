@@ -1,32 +1,36 @@
 "use client";
 
-// Shared layout for every /admin/* page: the marketing SiteHeader stays (so
-// sign-out and brand nav are always reachable), plus a persistent sidebar
-// for the control-room sections and a consistent page head (eyebrow, title,
-// description, optional actions). Replaces each page repeating its own
-// <main className="dashboard-shell"> + manual header markup.
+// Shared layout for every /admin/* page.
+//
+// The marketing SiteHeader used to sit on top of this, which meant the
+// control room carried a nav bar advertising Problems, Contests and Kids to
+// someone who came here to moderate them — and a "Start coding" button next
+// to a user table. A dashboard is its own surface: a thin bar with the mark
+// and the way out, a persistent section rail, and the page's own head. No
+// marketing chrome, and no footer.
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { SiteHeader } from "@/app/_components/home/SiteHeader";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { useAuth } from "@/providers/AuthProvider";
 import type { UserRole } from "@/types/api";
 import { IconGrid, IconCode, IconUsers, IconTrophy, IconAlert, IconInbox, IconRefresh, IconBulb } from "./icons";
 
-// Each section carries its own icon accent (see .admin-nav-item.accent-*
-// in globals.css) instead of every active item turning the same cyan —
-// same 4-color mapping reused by the overview stat cards and quick-link
-// cards so a section reads as the same color everywhere it appears.
+// Sections used to carry a colour each — orange, cyan, violet, green. The
+// rebrand collapsed cyan, violet and green into the one accent, so three of
+// the four had become the same swatch and the mapping was decoration
+// pretending to be information. The active state carries it now.
+//
 // `roles` lists who can use a section: guest contest hosts only ever see the
 // contest manager (the backend enforces the same split on every endpoint).
-const NAV_ITEMS: { href: string; label: string; icon: typeof IconGrid; exact: boolean; accent: string; roles: readonly UserRole[] }[] = [
-  { href: "/admin", label: "Overview", icon: IconGrid, exact: true, accent: "orange", roles: ["admin"] },
-  { href: "/admin/problems", label: "Problems", icon: IconCode, exact: false, accent: "cyan", roles: ["admin"] },
-  { href: "/admin/users", label: "Users", icon: IconUsers, exact: false, accent: "violet", roles: ["admin"] },
-  { href: "/admin/contests", label: "Contests", icon: IconTrophy, exact: false, accent: "green", roles: ["admin", "guest"] },
-  { href: "/admin/host-requests", label: "Host requests", icon: IconInbox, exact: false, accent: "orange", roles: ["admin"] },
-  { href: "/admin/proposals", label: "Proposals", icon: IconBulb, exact: false, accent: "cyan", roles: ["admin"] },
+const NAV_ITEMS: { href: string; label: string; icon: typeof IconGrid; exact: boolean; roles: readonly UserRole[] }[] = [
+  { href: "/admin", label: "Overview", icon: IconGrid, exact: true, roles: ["admin"] },
+  { href: "/admin/problems", label: "Problems", icon: IconCode, exact: false, roles: ["admin"] },
+  { href: "/admin/users", label: "Users", icon: IconUsers, exact: false, roles: ["admin"] },
+  { href: "/admin/contests", label: "Contests", icon: IconTrophy, exact: false, roles: ["admin", "guest"] },
+  { href: "/admin/host-requests", label: "Host requests", icon: IconInbox, exact: false, roles: ["admin"] },
+  { href: "/admin/proposals", label: "Proposals", icon: IconBulb, exact: false, roles: ["admin"] },
 ];
 
 interface AdminShellProps {
@@ -39,13 +43,30 @@ interface AdminShellProps {
 
 export function AdminShell({ eyebrow, title, description, actions, children }: AdminShellProps) {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const role: UserRole = user?.role ?? "user";
   const navItems = NAV_ITEMS.filter((item) => item.roles.includes(role));
+  const active = navItems.find((item) => (item.exact ? pathname === item.href : pathname?.startsWith(item.href)));
 
   return (
-    <>
-      <SiteHeader />
+    <div className="admin-root">
+      {/* Just the mark, where you are, and who you are. Anything else here
+          is a link away from the job the page exists for. */}
+      <header className="admin-topbar">
+        <BrandLogo href="/admin" />
+        <span className="admin-topbar-scope">
+          {role === "guest" ? "Host panel" : "Control room"}
+          {active && <b>{active.label}</b>}
+        </span>
+        <div className="admin-topbar-user">
+          {user?.name && <span className="admin-topbar-name">{user.name}</span>}
+          <Link href="/" className="admin-topbar-link">View site</Link>
+          <button type="button" className="admin-topbar-link" onClick={() => void logout()}>
+            Sign out
+          </button>
+        </div>
+      </header>
+
       <div className="admin-shell">
         <aside className="admin-sidebar">
           <p className="admin-sidebar-kicker">{role === "guest" ? "Host panel" : "Control room"}</p>
@@ -57,7 +78,7 @@ export function AdminShell({ eyebrow, title, description, actions, children }: A
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`admin-nav-item accent-${item.accent}${isActive ? " is-active" : ""}`}
+                  className={`admin-nav-item${isActive ? " is-active" : ""}`}
                 >
                   <Icon />
                   {item.label}
@@ -82,7 +103,7 @@ export function AdminShell({ eyebrow, title, description, actions, children }: A
           {children}
         </main>
       </div>
-    </>
+    </div>
   );
 }
 
