@@ -2,6 +2,7 @@
 
 import { useReveal } from "@/hooks/useReveal";
 import { IconGem } from "./icons";
+import { SpotlightCard } from "@/components/motion/SpotlightCard";
 import styles from "./coach.module.css";
 
 /**
@@ -36,7 +37,7 @@ export function Coach() {
 
         <div className={styles.grid}>
           {/* Hints — tiered, and priced, so asking is a decision. */}
-          <article ref={a.ref} className={`${styles.card} ${a.className}`}>
+          <SpotlightCard as="article" innerRef={a.ref} className={`${styles.card} ${a.className}`}>
             <header>
               <h3>Hints, one tier at a time</h3>
               <p>A nudge first. The approach next. You choose how much to spoil.</p>
@@ -55,10 +56,10 @@ export function Coach() {
                 <p className={styles.locked}>███████ ██ ████ █████ ███████</p>
               </div>
             </div>
-          </article>
+          </SpotlightCard>
 
           {/* Complexity — the number people guess and get wrong. */}
-          <article ref={b.ref} className={`${styles.card} ${b.className}`}>
+          <SpotlightCard as="article" innerRef={b.ref} className={`${styles.card} ${b.className}`}>
             <header>
               <h3>The Big-O you actually wrote</h3>
               <p>Not the one you meant to write. Measured against what you submitted.</p>
@@ -76,10 +77,10 @@ export function Coach() {
                 <span key={i} style={{ height: `${h}%` }} />
               ))}
             </div>
-          </article>
+          </SpotlightCard>
 
           {/* Refactor — the same solution, tightened. */}
-          <article ref={c.ref} className={`${styles.card} ${c.className}`}>
+          <SpotlightCard as="article" innerRef={c.ref} className={`${styles.card} ${c.className}`}>
             <header>
               <h3>A cleaner version of yours</h3>
               <p>Side by side with what you wrote, so the difference is the lesson.</p>
@@ -99,7 +100,7 @@ export function Coach() {
               Same complexity, one fewer variable to keep straight — and the index and the
               value now arrive together.
             </p>
-          </article>
+          </SpotlightCard>
         </div>
       </div>
     </section>
