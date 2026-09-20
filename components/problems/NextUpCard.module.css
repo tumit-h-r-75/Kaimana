@@ -1,0 +1,109 @@
+/* "What should I open?" cards, above the problem list. Tokens only. */
+
+.wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin: 0 0 30px;
+}
+
+.stats {
+  grid-column: 1 / -1;
+  margin: 0;
+  font: 500 11.5px "JetBrains Mono", monospace;
+  color: var(--text-dim);
+}
+
+.stats b {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.card {
+  display: grid;
+  gap: 7px;
+  align-content: start;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  transition: border-color 0.14s, background 0.14s;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--surface-hi);
+}
+
+/* The half-finished one leads: it is the cheaper win of the two. */
+.resume {
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 600 10px "JetBrains Mono", monospace;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.count {
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-style: normal;
+  letter-spacing: 0.4px;
+  color: var(--text-dim);
+}
+
+.title {
+  margin: 0;
+  font: 600 17px/1.25 "JetBrains Mono", monospace;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.reason {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.diff,
+.tag {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font: 500 10.5px "JetBrains Mono", monospace;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+/* Difficulty is the one place a second tone earns its keep: warn and error
+   already mean "harder" everywhere else in the product. */
+.easy { color: var(--accent); border-color: var(--accent-dim); }
+.medium { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+.hard { color: var(--error); border-color: color-mix(in srgb, var(--error) 40%, transparent); }
+
+.go {
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 15px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

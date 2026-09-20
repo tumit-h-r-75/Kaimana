@@ -1,5 +1,5 @@
 import { apiRequest } from "./client";
-import type { ProblemDetail, ProblemListResult } from "@/types/api";
+import type { Difficulty, ProblemDetail, ProblemListResult } from "@/types/api";
 
 export interface ListProblemsParams {
   difficulty?: string;
@@ -21,3 +21,31 @@ export const listProblems = (params: ListProblemsParams = {}) => {
 };
 
 export const getProblemBySlug = (slug: string) => apiRequest<ProblemDetail>(`/api/problems/${slug}`);
+
+/** A suggested problem, with the sentence that explains why it was picked. */
+export interface Suggestion {
+  id: string;
+  slug: string;
+  title: string;
+  difficulty: Difficulty;
+  tags: string[];
+  basePoints: number;
+  reason: string;
+}
+
+export interface Recommendations {
+  /** Started and never finished — the cheapest win available. */
+  resume: (Suggestion & { attempts: number; lastAttemptAt: string }) | null;
+  /** Unsolved, in the weakest topic, at a difficulty they are ready for. */
+  next: Suggestion | null;
+  focusTag: string | null;
+  stats: {
+    solved: number;
+    attempted: number;
+    solvedByDifficulty: Record<Difficulty, number>;
+    readyFor: Difficulty;
+  };
+}
+
+// Derived entirely from the caller's own history, so it needs a session.
+export const getRecommendations = () => apiRequest<Recommendations>("/api/problems/recommended");
