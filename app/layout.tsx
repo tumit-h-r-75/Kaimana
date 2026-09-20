@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   // metadataBase resolves the relative URLs Next generates for Open Graph
   // and canonical tags; without it they are emitted as bare paths, which
   // most link previewers cannot follow.
-  metadataBase: new URL(appConfig.appUrl || "https://kaimana-front-end.vercel.app"),
+  metadataBase: new URL(appConfig.appUrl || "https://kaimana.vercel.app"),
   // Every route was previously served with this one title, so open tabs were
   // indistinguishable. Each segment now sets its own and the template frames
   // it; `default` still covers the homepage and anything unnamed.

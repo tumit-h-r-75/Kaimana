@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const BACKEND_ORIGIN = (process.env.BACKEND_ORIGIN ?? "https://kaimana-back-end.vercel.app").replace(/\/$/, "");
+const BACKEND_ORIGIN = (process.env.BACKEND_ORIGIN ?? "https://kaimana-back.vercel.app").replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
   images: { remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }, { protocol: "https", hostname: "*.googleusercontent.com" }, { protocol: "https", hostname: "res.cloudinary.com" }] },
