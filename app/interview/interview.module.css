@@ -349,7 +349,7 @@
   display: block;
   height: 100%;
   border-radius: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent));
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
 }
 
 /* The score dial: a conic sweep for the filled arc with the surface
@@ -453,7 +453,7 @@
   border: 1px solid var(--border);
   border-radius: 18px 18px 0 0;
   border-bottom: 0;
-  background: linear-gradient(168deg, var(--surface-hi), var(--surface-hi));
+  background: linear-gradient(168deg, var(--surface-hi), var(--surface));
 }
 
 .roomTitleRow {
@@ -494,7 +494,7 @@
   display: block;
   height: 100%;
   border-radius: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent));
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
   transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -728,4 +728,55 @@
 @media (prefers-reduced-motion: reduce) {
   .sessionCard, .chip { transition: none; }
   .sessionCard:hover { transform: none; }
+}
+
+/* ------------------------------------------------ interviewer turn split */
+
+/* The judgement on the last answer, set apart from the question that
+   follows it. Rendering both as one paragraph meant a candidate had to read
+   a wall of text to find out whether they had been right. */
+.assessment {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-left: 2px solid var(--border);
+  border-radius: 0 8px 8px 0;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+}
+
+.assessment p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.verdict {
+  justify-self: start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font: 600 10px "JetBrains Mono", monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.verdictOk {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+.verdictMid {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 13%, transparent);
+}
+.verdictBad {
+  color: var(--error);
+  background: color-mix(in srgb, var(--error) 13%, transparent);
+}
+
+.question {
+  margin: 0;
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.7;
 }
