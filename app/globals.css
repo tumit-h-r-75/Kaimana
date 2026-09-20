@@ -959,3 +959,12 @@ html, body { overflow-x: hidden; }
 }
 
 @keyframes kai-fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* The byline: caption-sized, dim, and it only brightens if you look for it. */
+.footer-by { color: var(--text-dim); }
+.footer-by b {
+  color: var(--text);
+  font-weight: 600;
+  transition: color .16s;
+}
+.footer-by:hover b { color: var(--accent); }

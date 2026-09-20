@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/providers/AuthProvider";
+import { ConsoleSignature } from "@/components/layout/ConsoleSignature";
 import { appConfig } from "@/lib/config";
 
 const DESCRIPTION =
@@ -20,6 +21,9 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   applicationName: "Kaimana",
+  // Standard author metadata rather than a line of copy shouting about it.
+  authors: [{ name: "Tumit Hasan" }],
+  creator: "Tumit Hasan",
   // No `icons` key on purpose: an explicit one overrides Next's file
   // conventions, and app/ now holds icon.svg, favicon.ico, apple-icon.png
   // and opengraph-image.png, which Next links with the right sizes and
@@ -47,6 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <noscript>
           <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
         </noscript>
+        <ConsoleSignature />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
