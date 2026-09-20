@@ -18,4 +18,8 @@ export const appConfig = {
   apiUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_API_URL ?? ""),
   socketUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_SOCKET_URL ?? "https://kaimana-back-end.vercel.app"),
   appUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL ?? "https://kaimana-front-end.vercel.app"),
+  // Execution Visualizer. Must match FEATURE_EXECUTION_VISUALIZER on the API:
+  // this only decides whether the button is offered, and the server refuses
+  // the request on its own when the feature is off there.
+  executionVisualizer: process.env.NEXT_PUBLIC_FEATURE_VISUALIZER === "true",
 };

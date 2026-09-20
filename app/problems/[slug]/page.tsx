@@ -13,6 +13,8 @@ import type { ContestDetail, Language, ProblemDetail, Submission } from "@/types
 import MonacoEditor, { type EditorMarker } from "@/components/editor/MonacoEditor";
 import AIPanelTabs from "@/components/workspace/AIPanelTabs";
 import RunResultPanel, { type RunState } from "@/components/workspace/RunResultPanel";
+import ExecutionVisualizer from "@/components/workspace/ExecutionVisualizer";
+import { appConfig } from "@/lib/config";
 import { PageLoader } from "@/components/ui/Loader";
 import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
@@ -589,6 +591,15 @@ export default function ProblemDetailPage() {
             </div>
 
             <RunResultPanel key={runCount} state={runState} language={runSnapshot?.language ?? language} limits={limits} onJumpToLine={jumpToLine} />
+
+            {appConfig.executionVisualizer && (
+              <ExecutionVisualizer
+                language={language}
+                source={code}
+                disabled={contestBlocksActions}
+                onLineChange={jumpToLine}
+              />
+            )}
 
             {submitError && <p className="verdict-failed">{submitError}</p>}
             {gemsEarned !== null && gemsEarned > 0 && (
