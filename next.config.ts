@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
-const BACKEND_ORIGIN = (process.env.BACKEND_ORIGIN ?? "https://kaimana-back.vercel.app").replace(/\/$/, "");
+// `??` is not enough here. A dashboard variable that exists but holds an
+// empty string is not null or undefined, so it wins — and an empty origin
+// turns the rewrite below into "/api/:path*", which points at this app
+// again. Next finds no route, and every single API call 404s with nothing
+// in the logs to explain it. Treat blank as unset.
+const BACKEND_ORIGIN = (process.env.BACKEND_ORIGIN?.trim() || "https://kaimana-back.vercel.app").replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
   images: { remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }, { protocol: "https", hostname: "*.googleusercontent.com" }, { protocol: "https", hostname: "res.cloudinary.com" }] },

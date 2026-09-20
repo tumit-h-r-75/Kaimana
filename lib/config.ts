@@ -16,8 +16,13 @@ export const appConfig = {
   // to override this (e.g. for local development against a backend that
   // isn't proxied).
   apiUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_API_URL ?? ""),
-  socketUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_SOCKET_URL ?? "https://kaimana-back.vercel.app"),
-  appUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL ?? "https://kaimana.vercel.app"),
+  // Blank counts as unset for these two. A dashboard variable that exists
+  // but is empty satisfies `??`, and an empty socket URL sends production
+  // to the localhost fallback in lib/socket.ts — a connection that can only
+  // ever fail, on someone else's machine.
+  // apiUrl above is the exception: empty is its correct value.
+  socketUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_SOCKET_URL?.trim() || "https://kaimana-back.vercel.app"),
+  appUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL?.trim() || "https://kaimana.vercel.app"),
   // Execution Visualizer. Must match FEATURE_EXECUTION_VISUALIZER on the API:
   // this only decides whether the button is offered, and the server refuses
   // the request on its own when the feature is off there.
