@@ -46,7 +46,12 @@ export function SiteFooter() {
       </div>
       <div className="footer-bottom section-shell">
         <span>© {year} Kaimana</span>
-        <span>Built for curious minds.</span>
+        {/* Credit, said once and quietly. A byline belongs at the bottom of
+            the page, the size of a caption — anything louder is the author
+            competing with the product for attention. */}
+        <span className="footer-by">
+          Designed &amp; built by <b>Tumit Hasan</b>
+        </span>
       </div>
     </footer>
   );
