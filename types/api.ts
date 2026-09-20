@@ -57,6 +57,10 @@ export interface ProblemDetail {
    *  none), and the score penalty those hints cost, as a percentage. */
   myHintTier?: number;
   myHintPenaltyPercent?: number;
+  /** The worked solution, sent only once this user has an Accepted
+   *  submission on the problem — null until then, so the client never holds
+   *  an answer it is not supposed to show. */
+  referenceSolution?: { language: Language; code: string } | null;
 }
 
 export type Verdict =
