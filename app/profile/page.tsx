@@ -6,11 +6,13 @@ import { SiteHeader } from "../_components/home/SiteHeader";
 import { SiteFooter } from "../_components/home/SiteFooter";
 import { useAuth } from "@/providers/AuthProvider";
 import { getMyRank } from "@/lib/api/leaderboard";
+import { getRecommendations, type Recommendations } from "@/lib/api/problems";
 import { updateProfile, changePassword } from "@/lib/api/auth";
 import { getErrorMessage } from "@/lib/api/client";
 import type { MyRank } from "@/types/api";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { MyProposalsPanel } from "@/components/proposals/MyProposalsPanel";
+import styles from "./profile.module.css";
 
 const MAX_AVATAR_BYTES = 4 * 1024 * 1024;
 const ALLOWED_AVATAR_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
@@ -167,6 +169,10 @@ function ChangePasswordForm({ onDone }: { onDone: () => void }) {
   );
 }
 
+type Tab = "overview" | "account" | "security";
+
+const DIFFICULTIES = ["EASY", "MEDIUM", "HARD"] as const;
+
 function ProfileContent() {
   // Reuses the shared, Bearer-token-aware auth session instead of a
   // duplicate raw fetch — this is what the httpOnly-cookie-only version of
@@ -175,116 +181,229 @@ function ProfileContent() {
   // the cross-site cookie. See lib/api/client.ts and lib/auth-storage.ts.
   const { user } = useAuth();
   const [rank, setRank] = useState<MyRank | null>(null);
+  const [reco, setReco] = useState<Recommendations | null>(null);
+  const [tab, setTab] = useState<Tab>("overview");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [profileSaved, setProfileSaved] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
 
   useEffect(() => {
-    getMyRank()
-      .then(setRank)
-      .catch(() => setRank(null));
+    getMyRank().then(setRank).catch(() => setRank(null));
+    // The same source the problem library uses for "what next". The profile
+    // is the other place a learner asks that, so it answers with their own
+    // numbers instead of a panel of encouragement with nothing behind it.
+    getRecommendations().then(setReco).catch(() => setReco(null));
   }, []);
 
   if (!user) return null;
 
+  const solved = reco?.stats.solvedByDifficulty;
+  const totalSolved = rank?.problemsSolved ?? reco?.stats.solved ?? 0;
+  // Bars are scaled against the busiest level, not against the library, so
+  // an early account still shows shape instead of three empty tracks.
+  const peak = solved ? Math.max(...DIFFICULTIES.map((d) => solved[d]), 1) : 1;
+
   return (
-    <main className="dashboard-shell">
-      <div className="dashboard-head">
-        <div>
-          <p className="eyebrow">YOUR EDGE / PROFILE</p>
-          <h1>Profile & progress</h1>
-          <p>Keep your identity, streak and learning goals in one place.</p>
-        </div>
-        <Link className="button button-small" href="/problems">Continue solving <span>→</span></Link>
-      </div>
-      <section className="profile-card profile-hero">
-        {isEditingProfile ? (
-          <EditProfileForm
-            onDone={() => {
-              setIsEditingProfile(false);
-              setProfileSaved(true);
-            }}
-          />
-        ) : (
-          <>
-            {profileSaved && <p className="form-success" style={{ marginBottom: 12 }}>Profile updated.</p>}
-            <div className="avatar">
-              {user.profilePicUrl ? (
-                <Image src={user.profilePicUrl} alt={`${user.name} profile`} width={112} height={112} priority />
-              ) : (
-                user.name.slice(0, 1).toUpperCase()
-              )}
-            </div>
-            <div className="profile-identity">
-              <span className="panel-kicker">CODER PROFILE</span>
-              <h2>{user.name}</h2>
-              <p>{user.email}</p>
-              <span className="status-pill">● {user.status} · {user.role}</span>
-            </div>
-            <div className="profile-actions">
-              <button
-                type="button"
-                className="button button-small"
-                onClick={() => {
-                  setProfileSaved(false);
-                  setIsEditingProfile(true);
-                }}
-              >
-                Edit profile
-              </button>
-              <Link className="button button-small" href="/submissions">View submissions</Link>
-              <Link className="text-link" href="/analytics">Open analytics →</Link>
-            </div>
-          </>
-        )}
-      </section>
-      <section className="metric-grid">
-        <article><b>{rank?.problemsSolved ?? 0}</b><span>Problems solved</span><small>{rank?.rank ? `Ranked #${rank.rank}` : "Start your first challenge"}</small></article>
-        <article><b>{rank?.totalScore ?? 0}</b><span>Total score</span><small>Best accepted score per problem</small></article>
-        <article><b>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}</b><span>Member since</span><small>Welcome to Kaimana</small></article>
-      </section>
-      <section className="profile-columns">
-        <article className="profile-panel">
-          <span className="panel-kicker">NEXT MOVE</span>
-          <h2>Build your solving rhythm.</h2>
-          <p>Choose a problem, submit an approach and use every result as feedback.</p>
-          <Link className="text-link" href="/problems">Browse problem library →</Link>
-        </article>
-        <article className="profile-panel">
-          <span className="panel-kicker">ACCOUNT</span>
-          <div className="detail-row"><span>Account status</span><strong>{user.status}</strong></div>
-          <div className="detail-row"><span>Access level</span><strong>{user.role}</strong></div>
-          <div className="detail-row"><span>Profile email</span><strong>{user.email}</strong></div>
-          {isChangingPassword ? (
-            <ChangePasswordForm
-              onDone={() => {
-                setIsChangingPassword(false);
-                setPasswordSaved(true);
-              }}
-            />
+    <main className={`section-shell ${styles.page}`}>
+      <header className={styles.hero}>
+        <div className="avatar">
+          {user.profilePicUrl ? (
+            <Image src={user.profilePicUrl} alt={`${user.name} profile`} width={96} height={96} priority />
           ) : (
-            <div style={{ marginTop: 18 }}>
-              {passwordSaved && <p className="form-success" style={{ marginBottom: 10 }}>Password updated.</p>}
-              {user.hasPassword === false ? (
-                <p className="avatar-picker-hint">Signed in with Google — no password to change.</p>
+            user.name.slice(0, 1).toUpperCase()
+          )}
+        </div>
+
+        <div className={styles.identity}>
+          <p className="eyebrow">YOUR EDGE / PROFILE</p>
+          <h1>{user.name}</h1>
+          <p className={styles.email}>{user.email}</p>
+          <div className={styles.pills}>
+            <span className={`${styles.pill} ${styles.pillOn}`}>● {user.status}</span>
+            <span className={styles.pill}>{user.role}</span>
+            <span className={`${styles.pill} ${styles.pillGem}`}>◆ {user.gems ?? 0} gems</span>
+            {user.createdAt && (
+              <span className={styles.pill}>since {new Date(user.createdAt).toLocaleDateString()}</span>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.heroActions}>
+          <Link className="button button-small" href="/problems">
+            Continue solving <span aria-hidden="true">→</span>
+          </Link>
+          <Link className="button-outline button-small" href="/submissions">Submissions</Link>
+        </div>
+      </header>
+
+      <nav className={styles.tabs} role="tablist" aria-label="Profile sections">
+        {([["overview", "Overview"], ["account", "Account"], ["security", "Security"]] as const).map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            role="tab"
+            aria-selected={tab === key}
+            className={`${styles.tab} ${tab === key ? styles.tabOn : ""}`}
+            onClick={() => setTab(key)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      {tab === "overview" && (
+        <>
+          <section className={styles.stats}>
+            <article className={styles.stat}>
+              <b className={styles.statValue}>{totalSolved}</b>
+              <span className={styles.statLabel}>Problems solved</span>
+              <small className={styles.statNote}>{rank?.rank ? `Ranked #${rank.rank}` : "Not ranked yet"}</small>
+            </article>
+            <article className={styles.stat}>
+              <b className={styles.statValue}>{rank?.totalScore ?? 0}</b>
+              <span className={styles.statLabel}>Total score</span>
+              <small className={styles.statNote}>Best accepted score per problem</small>
+            </article>
+            <article className={styles.stat}>
+              <b className={styles.statValue}>{reco?.stats.attempted ?? 0}</b>
+              <span className={styles.statLabel}>Problems attempted</span>
+              <small className={styles.statNote}>Solved or still open</small>
+            </article>
+            <article className={styles.stat}>
+              <b className={styles.statValue}>{user.gems ?? 0}</b>
+              <span className={styles.statLabel}>Gems</span>
+              <small className={styles.statNote}>Earned solving, spent on hints</small>
+            </article>
+          </section>
+
+          <section className={styles.grid}>
+            <article className={styles.panel}>
+              <p className={styles.panelHead}>By difficulty</p>
+              {solved ? (
+                <div className={styles.bars}>
+                  {DIFFICULTIES.map((d) => (
+                    <div key={d} className={styles.barRow}>
+                      <span className={styles.barHead}>
+                        {d.toLowerCase()} <b>{solved[d]}</b>
+                      </span>
+                      <span className={styles.barTrack}>
+                        <i
+                          className={styles.barFill}
+                          style={{ width: `${Math.max((solved[d] / peak) * 100, solved[d] ? 6 : 0)}%` }}
+                        />
+                      </span>
+                    </div>
+                  ))}
+                </div>
               ) : (
+                <p className={styles.empty}>Solve something and the breakdown appears here.</p>
+              )}
+            </article>
+
+            <article className={styles.panel}>
+              <p className={styles.panelHead}>Where to push</p>
+              {reco?.next ? (
+                <div className={styles.focus}>
+                  {reco.focusTag && <span className={styles.focusTag}>◆ {reco.focusTag}</span>}
+                  <p className={styles.focusBody}>{reco.next.reason}</p>
+                  <Link className="text-link" href={`/problems/${reco.next.slug}`}>
+                    {reco.next.title} · {reco.next.difficulty.toLowerCase()} →
+                  </Link>
+                </div>
+              ) : (
+                <p className={styles.empty}>
+                  Nothing to suggest yet — solve a problem and this points at whatever you are thinnest at.
+                </p>
+              )}
+            </article>
+          </section>
+        </>
+      )}
+
+      {tab === "account" && (
+        <section className={styles.grid}>
+          <article className={styles.panel}>
+            <p className={styles.panelHead}>Details</p>
+            <div className={styles.rows}>
+              <div className={styles.row}><span>Name</span><strong>{user.name}</strong></div>
+              <div className={styles.row}><span>Email</span><strong>{user.email}</strong></div>
+              <div className={styles.row}><span>Status</span><strong>{user.status}</strong></div>
+              <div className={styles.row}><span>Access level</span><strong>{user.role}</strong></div>
+            </div>
+          </article>
+
+          <article className={styles.panel}>
+            <p className={styles.panelHead}>Edit profile</p>
+            {isEditingProfile ? (
+              <EditProfileForm
+                onDone={() => {
+                  setIsEditingProfile(false);
+                  setProfileSaved(true);
+                }}
+              />
+            ) : (
+              <>
+                {profileSaved && <p className="form-success" style={{ marginBottom: 12 }}>Profile updated.</p>}
+                <p className={styles.empty}>Change your display name or profile picture.</p>
                 <button
                   type="button"
-                  className="text-link"
+                  className="button button-small"
+                  style={{ marginTop: 14 }}
                   onClick={() => {
-                    setPasswordSaved(false);
-                    setIsChangingPassword(true);
+                    setProfileSaved(false);
+                    setIsEditingProfile(true);
                   }}
                 >
-                  Change password →
+                  Edit profile
                 </button>
-              )}
-            </div>
-          )}
-        </article>
-      </section>
-      <MyProposalsPanel isAdmin={user.role === "admin"} />
+              </>
+            )}
+          </article>
+        </section>
+      )}
+
+      {tab === "security" && (
+        <section className={styles.grid}>
+          <article className={styles.panel}>
+            <p className={styles.panelHead}>Password</p>
+            {isChangingPassword ? (
+              <ChangePasswordForm
+                onDone={() => {
+                  setIsChangingPassword(false);
+                  setPasswordSaved(true);
+                }}
+              />
+            ) : (
+              <>
+                {passwordSaved && <p className="form-success" style={{ marginBottom: 10 }}>Password updated.</p>}
+                {user.hasPassword === false ? (
+                  <p className={styles.empty}>Signed in with Google — there is no password on this account to change.</p>
+                ) : (
+                  <>
+                    <p className={styles.empty}>Changing it signs out every other session.</p>
+                    <button
+                      type="button"
+                      className="button button-small"
+                      style={{ marginTop: 14 }}
+                      onClick={() => {
+                        setPasswordSaved(false);
+                        setIsChangingPassword(true);
+                      }}
+                    >
+                      Change password
+                    </button>
+                  </>
+                )}
+              </>
+            )}
+          </article>
+        </section>
+      )}
+
+      <div style={{ marginTop: 22 }}>
+        <MyProposalsPanel isAdmin={user.role === "admin"} />
+      </div>
     </main>
   );
 }
