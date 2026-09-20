@@ -1,0 +1,182 @@
+/* Section 4 — contests. The visual is a scoreboard, because that is the
+   thing people actually turn up for. */
+
+.section {
+  padding-block: 92px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+  gap: 60px;
+  align-items: center;
+}
+
+.kicker {
+  margin: 0 0 16px;
+  color: var(--accent);
+  font: 600 10.5px "JetBrains Mono", monospace;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.inner h2 {
+  margin: 0;
+  color: var(--text);
+  font: 700 clamp(29px, 3.6vw, 44px) / 1.1 "JetBrains Mono", monospace;
+  letter-spacing: -2px;
+}
+
+.accent { color: var(--accent); }
+
+.lede {
+  margin: 18px 0 24px;
+  max-width: 500px;
+  color: var(--text-dim);
+  font-size: 15.5px;
+  line-height: 1.8;
+}
+
+.points {
+  display: grid;
+  gap: 11px;
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.points svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* -------------------------------------------------------------- scoreboard */
+
+.visual { position: relative; }
+
+.board {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 36px 80px -48px rgb(0 0 0 / 0.9);
+}
+
+.boardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-hi);
+}
+
+.live {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font: 600 11px "JetBrains Mono", monospace;
+  letter-spacing: 0.5px;
+}
+
+.live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s ease-out infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.clock {
+  color: var(--text-dim);
+  font: 11px "JetBrains Mono", monospace;
+}
+
+.rows { padding: 6px; }
+
+.row {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto auto 16px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 11px;
+  border-radius: 8px;
+  font: 12px "JetBrains Mono", monospace;
+  color: var(--text-dim);
+}
+
+/* The viewer's own row is the one that matters; everything else is context. */
+.me {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  padding: 9px 10px;
+}
+
+.me .name { color: var(--accent); font-weight: 600; }
+
+.rank { color: var(--text); font-weight: 600; }
+.name { color: var(--text); overflow-wrap: anywhere; }
+
+.cells { display: flex; gap: 4px; }
+
+.cells i {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  background: var(--border);
+}
+
+.cells i.solved { background: var(--accent); }
+
+.time { font-size: 11px; }
+
+.delta { color: var(--text-dim); font-size: 9px; }
+.upward { color: var(--accent); }
+
+.boardFoot {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font: 10.5px "JetBrains Mono", monospace;
+  letter-spacing: 0.4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live i { animation: none; }
+}
+
+@media (max-width: 1040px) {
+  .inner { grid-template-columns: 1fr; gap: 46px; }
+}
+
+@media (max-width: 620px) {
+  .section { padding-block: 64px; }
+  .row { grid-template-columns: 22px minmax(0, 1fr) auto; }
+  .time, .delta { display: none; }
+}
