@@ -12,7 +12,7 @@ import { PageLoader } from "@/components/ui/Loader";
  */
 export function SessionErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <main className="aa-page-loader" role="alert">
+    <main className="kai-page-loader" role="alert">
       <p>Couldn&apos;t verify your session.</p>
       <p className="form-error">{message}</p>
       <button type="button" className="button button-small" onClick={() => onRetry()}>

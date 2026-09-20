@@ -124,9 +124,9 @@ export function AdminStatSkeleton({ count = 4 }: { count?: number }) {
     <div className="admin-skeleton-stats" role="status" aria-label="Loading stats">
       {Array.from({ length: count }).map((_, index) => (
         <div className="admin-skeleton-stat" key={index}>
-          <span className="aa-skeleton" />
-          <span className="aa-skeleton" />
-          <span className="aa-skeleton" />
+          <span className="kai-skeleton" />
+          <span className="kai-skeleton" />
+          <span className="kai-skeleton" />
         </div>
       ))}
     </div>
@@ -138,10 +138,10 @@ export function AdminTableSkeleton({ rows = 5 }: { rows?: number }) {
     <div className="admin-skeleton-table" role="status" aria-label="Loading">
       {Array.from({ length: rows }).map((_, index) => (
         <div className="admin-skeleton-row" key={index}>
-          <span className="aa-skeleton" />
-          <span className="aa-skeleton" />
-          <span className="aa-skeleton" />
-          <span className="aa-skeleton" />
+          <span className="kai-skeleton" />
+          <span className="kai-skeleton" />
+          <span className="kai-skeleton" />
+          <span className="kai-skeleton" />
         </div>
       ))}
     </div>
