@@ -17,6 +17,51 @@ const DIFFICULTY_COLOR: Record<string, string> = {
   HARD: "var(--error)",
 };
 
+/**
+ * Splits an interviewer turn into the judgement and the question that
+ * follows it.
+ *
+ * The model is told to evaluate the last answer first and then ask exactly
+ * one thing, and it separates the two with a blank line. Rendering the
+ * whole reply as one paragraph buried the verdict in the middle of a wall
+ * of text — the candidate could not see at a glance whether they had got it
+ * right, which is the single most useful thing on the screen.
+ *
+ * Heuristic, so it fails safe: with no blank line the whole turn is shown
+ * as the question, which is exactly what an opening turn is.
+ */
+function InterviewerTurn({ content }: { content: string }) {
+  const text = content.trim();
+  const split = text.lastIndexOf("\n\n");
+  const assessment = split > 0 ? text.slice(0, split).trim() : null;
+  const question = split > 0 ? text.slice(split + 2).trim() : text;
+
+  // The prompt asks it to say plainly whether the answer was right, so the
+  // opening words are worth reading for a tone rather than left as prose.
+  const lower = assessment?.toLowerCase() ?? "";
+  const verdict = !assessment
+    ? null
+    : /\b(incorrect|not correct|wrong|off-topic|does not)\b/.test(lower)
+      ? { label: "Needs work", tone: styles.verdictBad }
+      : /\b(partially|partly|mostly|close|on the right track)\b/.test(lower)
+        ? { label: "Partly there", tone: styles.verdictMid }
+        : /\b(correct|right|good|well)\b/.test(lower)
+          ? { label: "Correct", tone: styles.verdictOk }
+          : null;
+
+  return (
+    <>
+      {assessment && (
+        <div className={styles.assessment}>
+          {verdict && <span className={`${styles.verdict} ${verdict.tone}`}>{verdict.label}</span>}
+          <p>{assessment}</p>
+        </div>
+      )}
+      <p className={styles.question}>{question}</p>
+    </>
+  );
+}
+
 function ScoreDial({ score }: { score: number }) {
   const ratio = Math.max(0, Math.min(1, score / 10));
   const hue = score >= 7 ? "var(--accent)" : score >= 4 ? "var(--warn)" : "var(--error)";
@@ -180,7 +225,7 @@ function InterviewRoomContent() {
                 </span>
                 <div className={`${styles.bubble} ${fromInterviewer ? styles.bubbleInterviewer : styles.bubbleCandidate}`}>
                   <span className={styles.bubbleLabel}>{fromInterviewer ? "Interviewer" : "You"}</span>
-                  {message.content}
+                  {fromInterviewer ? <InterviewerTurn content={message.content} /> : message.content}
                 </div>
               </div>
             );
