@@ -30,7 +30,7 @@
 
 .head h1 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(32px, 4.4vw, 50px) / 1.05 "JetBrains Mono", sans-serif;
   letter-spacing: -2.2px;
 }
@@ -69,7 +69,7 @@
 }
 
 .tileValue {
-  color: #fff;
+  color: var(--text);
   /* Proportional figures: tabular-nums makes a display-size number look
      loose. Tabular is reserved for the snapshot table's columns. */
   font: 700 34px "JetBrains Mono", sans-serif;
@@ -114,7 +114,7 @@
 
 .panelTitle {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 17px "JetBrains Mono", sans-serif;
   letter-spacing: -0.4px;
 }
@@ -203,7 +203,7 @@
 /* Direct label at the bar's tip, in text ink — never the series colour. */
 .barValue {
   margin-left: auto;
-  color: #fff;
+  color: var(--text);
   font: 700 12.5px "JetBrains Mono", monospace;
 }
 
@@ -236,7 +236,7 @@
   to { transform: none; }
 }
 
-.barRow:hover .barLabel { color: #fff; }
+.barRow:hover .barLabel { color: var(--text); }
 
 /* ------------------------------------------------- activity calendar */
 
@@ -373,7 +373,7 @@
 .tooltip b {
   display: block;
   margin-bottom: 3px;
-  color: #fff;
+  color: var(--text);
   font: 700 12px "JetBrains Mono", sans-serif;
 }
 
@@ -413,7 +413,7 @@
 .table tbody tr:hover td { background: var(--surface-hi); }
 
 .table td:first-child {
-  color: #fff;
+  color: var(--text);
   font: 700 12.5px "JetBrains Mono", monospace;
 }
 

@@ -50,7 +50,7 @@
   opacity: 1;
   border-color: var(--violet, var(--accent));
   background: color-mix(in srgb, var(--accent) 18%, transparent);
-  color: #fff;
+  color: var(--text);
   cursor: default;
 }
 

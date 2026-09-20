@@ -14,11 +14,11 @@
 }
 
 .medium {
-  background: #3a2f10;
+  background: var(--surface-hi);
   color: var(--warn);
 }
 
 .hard {
-  background: #3a1418;
+  background: var(--surface-hi);
   color: var(--error);
 }

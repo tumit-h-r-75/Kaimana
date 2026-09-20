@@ -28,7 +28,7 @@
 
 .perks h2 {
   font: 700 15px 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
   margin: 0 0 12px;
 }
 
@@ -79,7 +79,7 @@
 
 .card h2 {
   font: 700 21px/1.25 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
   margin: 0;
 }
 
@@ -134,12 +134,12 @@
 }
 
 .cardPending .statusTag {
-  background: #3a2f10;
+  background: var(--surface-hi);
   color: var(--warn);
 }
 
 .cardRejected .statusTag {
-  background: #3a1418;
+  background: var(--surface-hi);
   color: var(--error);
 }
 
@@ -163,7 +163,7 @@
 }
 
 .reviewNote b {
-  color: #fff;
+  color: var(--text);
 }
 
 .softNote {
@@ -211,7 +211,7 @@
 
 .summaryTitle {
   font: 700 16px 'JetBrains Mono', system-ui, sans-serif;
-  color: #fff;
+  color: var(--text);
 }
 
 .prewrap {

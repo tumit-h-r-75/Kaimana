@@ -7,7 +7,7 @@ import styles from "./analytics.module.css";
 /* Palette — see the header comment in analytics.module.css for why these
    exact values (all validated against the var(--surface-hi) panel in dark mode). */
 export const SERIES = "var(--accent)";
-export const STATUS = { good: "var(--accent)", warn: "var(--warn)", bad: "var(--error)", info: "#8fc3ff" };
+export const STATUS = { good: "var(--accent)", warn: "var(--warn)", bad: "var(--error)", info: "var(--accent)" };
 /** Magnitude ramp for the activity calendar: one hue, light → dark. */
 const ACTIVITY_RAMP = ["var(--accent)", "var(--accent)", "var(--accent)", "var(--accent)"];
 const ACTIVITY_EMPTY = "var(--surface-hi)";

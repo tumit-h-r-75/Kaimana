@@ -16,7 +16,7 @@
 
 .head h1 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(34px, 4.6vw, 54px) / 1.04 "JetBrains Mono";
   letter-spacing: -2.4px;
 }
@@ -131,7 +131,7 @@
 
 .podiumName {
   margin: 0 0 4px;
-  color: #fff;
+  color: var(--text);
   font: 700 17px "JetBrains Mono";
   letter-spacing: -0.4px;
   overflow: hidden;
@@ -144,7 +144,7 @@
 .podiumScore {
   display: block;
   margin: 12px 0 2px;
-  color: #fff;
+  color: var(--text);
   font: 700 30px "JetBrains Mono";
   letter-spacing: -1.2px;
 }
@@ -189,7 +189,7 @@
 
 .youName {
   margin: 4px 0 0;
-  color: #fff;
+  color: var(--text);
   font: 700 18px "JetBrains Mono";
   letter-spacing: -0.5px;
 }
@@ -203,7 +203,7 @@
 
 .youStats b {
   display: block;
-  color: #fff;
+  color: var(--text);
   font: 700 22px "JetBrains Mono";
   letter-spacing: -0.8px;
 }
@@ -299,7 +299,7 @@
   place-items: center;
   border: 0;
   background: linear-gradient(140deg, var(--accent), var(--accent));
-  color: #fff;
+  color: var(--text);
   font: 700 14px "JetBrains Mono";
 }
 
@@ -340,7 +340,7 @@
 }
 
 .scoreValue {
-  color: #fff;
+  color: var(--text);
   font: 700 15px "JetBrains Mono";
   letter-spacing: -0.4px;
 }

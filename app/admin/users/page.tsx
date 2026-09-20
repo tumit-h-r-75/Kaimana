@@ -53,7 +53,7 @@ const ROLE_BADGES: Record<UserRole, { label: string; className: string; style?: 
 const filterSelectStyle: CSSProperties = {
   border: "1px solid var(--border)",
   background: "var(--bg)",
-  color: "#fff",
+  color: "var(--text)",
   padding: "10px 13px",
   font: "13px Inter",
   borderRadius: 7,

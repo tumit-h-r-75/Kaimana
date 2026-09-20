@@ -16,7 +16,7 @@
 
 .head h1 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(32px, 4.4vw, 50px) / 1.05 "JetBrains Mono", sans-serif;
   letter-spacing: -2.2px;
 }
@@ -47,7 +47,7 @@
 
 .stat b {
   display: block;
-  color: #fff;
+  color: var(--text);
   font: 700 26px "JetBrains Mono", sans-serif;
   letter-spacing: -1px;
 }
@@ -70,7 +70,7 @@
   padding: 28px 30px 30px;
   border: 1px solid var(--border);
   border-radius: 20px;
-  background: radial-gradient(120% 150% at 0% 0%, #241f52 0%, var(--surface-hi) 52%, var(--surface-hi) 100%);
+  background: radial-gradient(120% 150% at 0% 0%, var(--surface-hi) 0%, var(--surface-hi) 52%, var(--surface-hi) 100%);
 }
 
 .setupGlow {
@@ -92,7 +92,7 @@
 
 .setupTitle {
   margin: 0 0 6px;
-  color: #fff;
+  color: var(--text);
   font: 700 21px "JetBrains Mono", sans-serif;
   letter-spacing: -0.8px;
 }
@@ -139,7 +139,7 @@
 
 .chip:hover {
   border-color: var(--border);
-  color: #fff;
+  color: var(--text);
 }
 
 .chipActive,
@@ -181,7 +181,7 @@
   line-height: 1.7;
 }
 
-.summaryText b { color: #fff; }
+.summaryText b { color: var(--text); }
 
 .summaryAction {
   margin-left: auto;
@@ -205,7 +205,7 @@
 
 .sectionTitle {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 21px "JetBrains Mono", sans-serif;
   letter-spacing: -0.8px;
 }
@@ -281,7 +281,7 @@
 }
 
 .sessionTopic {
-  color: #fff;
+  color: var(--text);
   font: 700 17px "JetBrains Mono", sans-serif;
   letter-spacing: -0.5px;
   text-transform: capitalize;
@@ -375,7 +375,7 @@
 .scoreDialValue {
   position: relative;
   z-index: 1;
-  color: #fff;
+  color: var(--text);
   font: 700 20px "JetBrains Mono", sans-serif;
   letter-spacing: -0.8px;
 }
@@ -416,7 +416,7 @@
 .empty b {
   display: block;
   margin-bottom: 6px;
-  color: #fff;
+  color: var(--text);
   font: 700 17px "JetBrains Mono", sans-serif;
 }
 
@@ -465,7 +465,7 @@
 
 .roomHead h1 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(22px, 3vw, 30px) / 1.15 "JetBrains Mono", sans-serif;
   letter-spacing: -1px;
   text-transform: capitalize;
@@ -645,7 +645,7 @@
   padding: 26px 28px;
   border: 1px solid var(--border);
   border-radius: 18px;
-  background: radial-gradient(120% 150% at 100% 0%, #241f52 0%, var(--surface-hi) 55%, var(--surface-hi) 100%);
+  background: radial-gradient(120% 150% at 100% 0%, var(--surface-hi) 0%, var(--surface-hi) 55%, var(--surface-hi) 100%);
 }
 
 .feedbackHead {
@@ -657,7 +657,7 @@
 
 .feedbackHead h2 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 19px "JetBrains Mono", sans-serif;
   letter-spacing: -0.6px;
 }

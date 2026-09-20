@@ -16,7 +16,7 @@
 
 .head h1 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(32px, 4.4vw, 50px) / 1.05 "JetBrains Mono", sans-serif;
   letter-spacing: -2.2px;
 }
@@ -65,7 +65,7 @@
   padding: 30px 32px;
   border: 1px solid var(--border);
   border-radius: 20px;
-  background: radial-gradient(120% 160% at 0% 0%, #241f52 0%, var(--surface-hi) 52%, var(--surface-hi) 100%);
+  background: radial-gradient(120% 160% at 0% 0%, var(--surface-hi) 0%, var(--surface-hi) 52%, var(--surface-hi) 100%);
 }
 
 .featureLive {
@@ -106,7 +106,7 @@
 
 .featureTitle {
   margin: 0 0 10px;
-  color: #fff;
+  color: var(--text);
   font: 700 clamp(22px, 2.6vw, 30px) / 1.15 "JetBrains Mono", sans-serif;
   letter-spacing: -1px;
 }
@@ -152,7 +152,7 @@
 
 .countUnit b {
   display: block;
-  color: #fff;
+  color: var(--text);
   font: 700 26px "JetBrains Mono", sans-serif;
   font-variant-numeric: tabular-nums;
   letter-spacing: -1px;
@@ -308,7 +308,7 @@
 
 .card h3 {
   margin: 0;
-  color: #fff;
+  color: var(--text);
   font: 700 18px "JetBrains Mono", sans-serif;
   letter-spacing: -0.6px;
 }
@@ -375,7 +375,7 @@
 .empty b {
   display: block;
   margin-bottom: 6px;
-  color: #fff;
+  color: var(--text);
   font: 700 17px "JetBrains Mono", sans-serif;
 }
 
@@ -415,7 +415,7 @@
   line-height: 1.6;
 }
 
-.registerText b { color: #fff; }
+.registerText b { color: var(--text); }
 .registerText svg { vertical-align: -2px; color: var(--warn); }
 
 .registerError {
