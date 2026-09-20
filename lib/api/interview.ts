@@ -6,9 +6,23 @@ import { apiRequest } from "./client";
 export type InterviewDifficulty = "EASY" | "MEDIUM" | "HARD";
 export type InterviewStatus = "in_progress" | "completed";
 
+export type InterviewVerdict = "correct" | "partial" | "incorrect";
+
+/** One dimension each, 0-10 — see the closing prompt in interview.service.ts. */
+export interface InterviewRubric {
+  correctness: number;
+  approach: number;
+  complexity: number;
+  communication: number;
+}
+
 export interface InterviewMessage {
   role: "interviewer" | "candidate";
+  /** The question, or the candidate's answer. Never the assessment. */
   content: string;
+  /** Present on interviewer turns that followed an answer. */
+  verdict?: InterviewVerdict;
+  assessment?: string;
   createdAt: string;
 }
 
@@ -26,6 +40,7 @@ export interface InterviewSession {
   messages: InterviewMessage[];
   feedback?: string;
   score?: number;
+  rubric?: InterviewRubric;
   createdAt: string;
   updatedAt: string;
 }
