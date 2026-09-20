@@ -19,9 +19,12 @@ export function BrandMark() {
     <span className="brand-mark" aria-hidden="true">
       <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M24 5.5 42.5 24 24 42.5 5.5 24Z" />
-        <path d="M12.75 16.75h22.5" strokeOpacity=".85" />
-        <path d="M12.75 16.75 24 42.5" strokeOpacity=".6" />
-        <path d="M35.25 16.75 24 42.5" strokeOpacity=".6" />
+        {/* The three cut lines brighten in sequence on hover — see
+            .brand-facet in globals.css. They carry their own opacity rather
+            than inheriting one, so the stagger has something to move. */}
+        <path className="brand-facet" d="M12.75 16.75h22.5" />
+        <path className="brand-facet brand-facet-b" d="M12.75 16.75 24 42.5" />
+        <path className="brand-facet brand-facet-c" d="M35.25 16.75 24 42.5" />
       </svg>
     </span>
   );
