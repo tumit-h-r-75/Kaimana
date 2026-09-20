@@ -16,8 +16,8 @@ export const appConfig = {
   // to override this (e.g. for local development against a backend that
   // isn't proxied).
   apiUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_API_URL ?? ""),
-  socketUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_SOCKET_URL ?? "https://kaimana-back-end.vercel.app"),
-  appUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL ?? "https://kaimana-front-end.vercel.app"),
+  socketUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_SOCKET_URL ?? "https://kaimana-back.vercel.app"),
+  appUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL ?? "https://kaimana.vercel.app"),
   // Execution Visualizer. Must match FEATURE_EXECUTION_VISUALIZER on the API:
   // this only decides whether the button is offered, and the server refuses
   // the request on its own when the feature is off there.
