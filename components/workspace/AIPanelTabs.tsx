@@ -5,15 +5,17 @@ import VerdictPanel from "@/components/verdict/VerdictPanel";
 import HintPanel from "@/components/hints/HintPanel";
 import ComplexityAuditorPanel from "@/components/complexity/ComplexityAuditorPanel";
 import RefactorPanel from "@/components/refactor/RefactorPanel";
-import type { Submission } from "@/types/api";
+import SolutionPanel from "@/components/solution/SolutionPanel";
+import type { ProblemDetail, Submission } from "@/types/api";
 
-type TabKey = "results" | "hint" | "bigO" | "refactor";
+type TabKey = "results" | "hint" | "bigO" | "refactor" | "solution";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "results", label: "Results" },
   { key: "hint", label: "Hint" },
   { key: "bigO", label: "Big-O" },
   { key: "refactor", label: "Refactor" },
+  { key: "solution", label: "Solution" },
 ];
 
 // The problem workspace's AI panel — a tabbed column (Results / Hint /
@@ -31,12 +33,16 @@ export default function AIPanelTabs({
   submission,
   initialHintTier = 0,
   initialHintPenaltyPercent = 0,
+  referenceSolution = null,
   onApplyRefactor,
 }: {
   problemId: string;
   code: string;
   isSignedIn: boolean;
   submission: Submission | null;
+  /** Only ever populated once the learner has solved this problem — the API
+   *  withholds it until then, so its presence is the unlock condition. */
+  referenceSolution?: ProblemDetail["referenceSolution"];
   /** Highest hint tier already unlocked on this problem, and the penalty
    *  accrued so far — from the problem payload, passed through to HintPanel. */
   initialHintTier?: number;
@@ -115,6 +121,22 @@ export default function AIPanelTabs({
             <div className="ai-tab-empty">
               <div className="ic">✷</div>
               Refactor suggestions unlock once you have an Accepted submission on this problem.
+            </div>
+          )}
+        </div>
+
+        <div role="tabpanel" hidden={activeTab !== "solution"}>
+          {referenceSolution ? (
+            <SolutionPanel
+              solution={referenceSolution}
+              myCode={submission?.verdict === "ACCEPTED" ? submission.code : undefined}
+            />
+          ) : (
+            <div className="ai-tab-empty">
+              <div className="ic">✷</div>
+              The reference solution unlocks once you have solved this yourself.
+              <br />
+              <span style={{ fontSize: 12 }}>Stuck? The Hint tab gets you moving without giving it away.</span>
             </div>
           )}
         </div>

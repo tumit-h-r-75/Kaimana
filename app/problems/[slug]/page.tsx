@@ -657,6 +657,7 @@ export default function ProblemDetailPage() {
             submission={submission}
             initialHintTier={problem.myHintTier ?? 0}
             initialHintPenaltyPercent={problem.myHintPenaltyPercent ?? 0}
+            referenceSolution={problem.referenceSolution ?? null}
             onApplyRefactor={(refactoredCode) => {
               // The refactored code is in the submission's language, which may
               // not be the editor's currently-selected tab (the user could
