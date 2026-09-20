@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { DecryptedText } from "@/components/motion/DecryptedText";
 import { IconCheck, IconGem } from "./icons";
 import styles from "./hero.module.css";
 
@@ -48,7 +49,12 @@ export function Hero() {
             <h1 className={styles.title}>
               Pressure makes
               <br />
-              <span className={styles.accent}>the edge.</span>
+              {/* Resolving out of scrambled characters is what a terminal
+                  does; it is the one animation on this page that says
+                  something about the product rather than decorating it. */}
+              <span className={styles.accent}>
+                <DecryptedText text="the edge." speed={55} delay={260} />
+              </span>
             </h1>
 
             <p className={styles.lede}>

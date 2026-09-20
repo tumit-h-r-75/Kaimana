@@ -1,0 +1,37 @@
+/* Spotlight card. The light is a pseudo-element so it cannot interfere with
+   anything the card contains, and it reads --x / --y written directly to the
+   element by the pointer handler. */
+
+.card {
+  --x: 50%;
+  --y: 50%;
+  --lit: 0;
+  position: relative;
+  isolation: isolate;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    260px circle at var(--x) var(--y),
+    color-mix(in srgb, var(--accent) 14%, transparent),
+    transparent 70%
+  );
+  opacity: var(--lit);
+  transition: opacity .28s ease;
+  pointer-events: none;
+}
+
+/* No pointer to follow — a touch screen would leave the glow stuck wherever
+   the last tap landed. */
+@media (hover: none) {
+  .card::before { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card::before { transition: none; }
+}
