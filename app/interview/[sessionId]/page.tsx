@@ -8,7 +8,7 @@ import { SiteFooter } from "../../_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { Loader, PageLoader } from "@/components/ui/Loader";
 import { getErrorMessage } from "@/lib/api/client";
-import { getInterviewSession, respondToInterview, type InterviewSession } from "@/lib/api/interview";
+import { getInterviewSession, respondToInterview, type InterviewMessage, type InterviewSession, type InterviewVerdict } from "@/lib/api/interview";
 import styles from "../interview.module.css";
 
 const DIFFICULTY_COLOR: Record<string, string> = {
@@ -17,37 +17,29 @@ const DIFFICULTY_COLOR: Record<string, string> = {
   HARD: "var(--error)",
 };
 
-/**
- * Splits an interviewer turn into the judgement and the question that
- * follows it.
- *
- * The model is told to evaluate the last answer first and then ask exactly
- * one thing, and it separates the two with a blank line. Rendering the
- * whole reply as one paragraph buried the verdict in the middle of a wall
- * of text — the candidate could not see at a glance whether they had got it
- * right, which is the single most useful thing on the screen.
- *
- * Heuristic, so it fails safe: with no blank line the whole turn is shown
- * as the question, which is exactly what an opening turn is.
- */
-function InterviewerTurn({ content }: { content: string }) {
-  const text = content.trim();
-  const split = text.lastIndexOf("\n\n");
-  const assessment = split > 0 ? text.slice(0, split).trim() : null;
-  const question = split > 0 ? text.slice(split + 2).trim() : text;
+const VERDICT_STYLE: Record<InterviewVerdict, { label: string; tone: string }> = {
+  correct: { label: "Correct", tone: styles.verdictOk },
+  partial: { label: "Partly there", tone: styles.verdictMid },
+  incorrect: { label: "Needs work", tone: styles.verdictBad },
+};
 
-  // The prompt asks it to say plainly whether the answer was right, so the
-  // opening words are worth reading for a tone rather than left as prose.
-  const lower = assessment?.toLowerCase() ?? "";
-  const verdict = !assessment
-    ? null
-    : /\b(incorrect|not correct|wrong|off-topic|does not)\b/.test(lower)
-      ? { label: "Needs work", tone: styles.verdictBad }
-      : /\b(partially|partly|mostly|close|on the right track)\b/.test(lower)
-        ? { label: "Partly there", tone: styles.verdictMid }
-        : /\b(correct|right|good|well)\b/.test(lower)
-          ? { label: "Correct", tone: styles.verdictOk }
-          : null;
+/**
+ * An interviewer turn: the judgement on the last answer, then the next
+ * question. The API sends them as separate fields, so the verdict can sit
+ * where the candidate will actually see it instead of buried mid-paragraph.
+ *
+ * Sessions recorded before that change have neither field, and their whole
+ * reply is one blob with a blank line between the two halves. Splitting on
+ * it keeps those transcripts readable; a turn with no blank line renders
+ * whole, which is exactly right for an opening question.
+ */
+function InterviewerTurn({ message }: { message: InterviewMessage }) {
+  const text = message.content.trim();
+  const legacySplit = message.assessment ? -1 : text.lastIndexOf("\n\n");
+
+  const assessment = message.assessment?.trim() || (legacySplit > 0 ? text.slice(0, legacySplit).trim() : null);
+  const question = legacySplit > 0 ? text.slice(legacySplit + 2).trim() : text;
+  const verdict = message.verdict ? VERDICT_STYLE[message.verdict] : null;
 
   return (
     <>
@@ -225,7 +217,7 @@ function InterviewRoomContent() {
                 </span>
                 <div className={`${styles.bubble} ${fromInterviewer ? styles.bubbleInterviewer : styles.bubbleCandidate}`}>
                   <span className={styles.bubbleLabel}>{fromInterviewer ? "Interviewer" : "You"}</span>
-                  {fromInterviewer ? <InterviewerTurn content={message.content} /> : message.content}
+                  {fromInterviewer ? <InterviewerTurn message={message} /> : message.content}
                 </div>
               </div>
             );
@@ -277,6 +269,33 @@ function InterviewRoomContent() {
             {typeof session.score === "number" && <ScoreDial score={session.score} />}
           </div>
           <p className={styles.feedbackText}>{session.feedback}</p>
+
+          {/* The four dimensions behind the single number. Absent on
+              sessions that closed before the rubric existed, and on any
+              close where the model did not return all four — a chart with
+              a missing bar reads as a zero. */}
+          {session.rubric && (
+            <div className={styles.rubric}>
+              {([
+                ["correctness", "Correctness", "Were the answers right"],
+                ["approach", "Approach", "How they reasoned toward them"],
+                ["complexity", "Complexity", "Time and space, discussed"],
+                ["communication", "Communication", "How clearly they explained"],
+              ] as const).map(([key, label, note]) => (
+                <div key={key} className={styles.rubricRow}>
+                  <span className={styles.rubricLabel}>
+                    {label}
+                    <small>{note}</small>
+                  </span>
+                  <span className={styles.rubricTrack}>
+                    <i style={{ width: `${session.rubric![key] * 10}%` }} />
+                  </span>
+                  <span className={styles.rubricValue}>{session.rubric![key]}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className={styles.feedbackActions}>
             <Link className="button button-small" href="/interview">
               Start another interview <span aria-hidden="true">→</span>
