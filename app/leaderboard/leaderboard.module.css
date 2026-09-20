@@ -17,14 +17,14 @@
 .head h1 {
   margin: 0;
   color: #fff;
-  font: 700 clamp(34px, 4.6vw, 54px) / 1.04 "Space Grotesk";
+  font: 700 clamp(34px, 4.6vw, 54px) / 1.04 "JetBrains Mono";
   letter-spacing: -2.4px;
 }
 
 .lede {
   max-width: 620px;
   margin: 16px 0 0;
-  color: #aeb4c9;
+  color: var(--text-dim);
   font-size: 14.5px;
   line-height: 1.8;
 }
@@ -54,9 +54,9 @@
   position: relative;
   overflow: hidden;
   padding: 26px 18px 22px;
-  border: 1px solid #262e4f;
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: linear-gradient(168deg, #161c37, #10152a);
+  background: linear-gradient(168deg, var(--surface-hi), var(--surface));
   text-align: center;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
 }
@@ -111,7 +111,7 @@
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  background: #1b2140;
+  background: var(--surface-hi);
 }
 
 .place1 .podiumAvatar { width: 88px; height: 88px; }
@@ -125,14 +125,14 @@
   pointer-events: none;
 }
 
-.place1 .podiumAvatarWrap::after { border-color: #ffc454; box-shadow: 0 0 22px -4px rgba(255, 196, 84, 0.7); }
-.place2 .podiumAvatarWrap::after { border-color: #c8d2eb; }
-.place3 .podiumAvatarWrap::after { border-color: #e28e4e; }
+.place1 .podiumAvatarWrap::after { border-color: var(--warn); box-shadow: 0 0 22px -4px rgba(255, 196, 84, 0.7); }
+.place2 .podiumAvatarWrap::after { border-color: var(--text-dim); }
+.place3 .podiumAvatarWrap::after { border-color: var(--warn); }
 
 .podiumName {
   margin: 0 0 4px;
   color: #fff;
-  font: 700 17px "Space Grotesk";
+  font: 700 17px "JetBrains Mono";
   letter-spacing: -0.4px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -145,15 +145,15 @@
   display: block;
   margin: 12px 0 2px;
   color: #fff;
-  font: 700 30px "Space Grotesk";
+  font: 700 30px "JetBrains Mono";
   letter-spacing: -1.2px;
 }
 
 .place1 .podiumScore { font-size: 38px; }
 
 .podiumMeta {
-  color: #8f96ad;
-  font: 11px "DM Mono";
+  color: var(--text-dim);
+  font: 11px "JetBrains Mono";
 }
 
 /* ---------------------------------------------------------- your rank */
@@ -165,9 +165,9 @@
   flex-wrap: wrap;
   margin: 24px 0 28px;
   padding: 20px 24px;
-  border: 1px solid rgba(128, 103, 255, 0.42);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
   border-radius: 16px;
-  background: linear-gradient(118deg, rgba(128, 103, 255, 0.16), rgba(85, 216, 210, 0.05));
+  background: linear-gradient(118deg, color-mix(in srgb, var(--accent) 16%, transparent), color-mix(in srgb, var(--accent) 5%, transparent));
 }
 
 .youAvatar {
@@ -176,13 +176,13 @@
   border-radius: 50%;
   object-fit: cover;
   flex: none;
-  background: #1b2140;
+  background: var(--surface-hi);
 }
 
 .youLabel {
   display: block;
-  color: #b9a8ff;
-  font: 10px "DM Mono";
+  color: var(--accent);
+  font: 10px "JetBrains Mono";
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
@@ -190,7 +190,7 @@
 .youName {
   margin: 4px 0 0;
   color: #fff;
-  font: 700 18px "Space Grotesk";
+  font: 700 18px "JetBrains Mono";
   letter-spacing: -0.5px;
 }
 
@@ -204,13 +204,13 @@
 .youStats b {
   display: block;
   color: #fff;
-  font: 700 22px "Space Grotesk";
+  font: 700 22px "JetBrains Mono";
   letter-spacing: -0.8px;
 }
 
 .youStats span {
-  color: #9aa1b8;
-  font: 10.5px "DM Mono";
+  color: var(--text-dim);
+  font: 10.5px "JetBrains Mono";
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -218,7 +218,7 @@
 .youGap {
   flex-basis: 100%;
   margin: 2px 0 0;
-  color: #b9c0d6;
+  color: var(--text-dim);
   font-size: 13px;
 }
 
@@ -228,9 +228,9 @@
 
 .board {
   overflow: hidden;
-  border: 1px solid #262e4f;
+  border: 1px solid var(--border);
   border-radius: 18px;
-  background: #10152a;
+  background: var(--surface);
 }
 
 .boardHead,
@@ -243,39 +243,39 @@
 
 .boardHead {
   padding: 13px 22px;
-  border-bottom: 1px solid #232a48;
-  background: #131934;
-  color: #8f96ad;
-  font: 10px "DM Mono";
+  border-bottom: 1px solid var(--surface-hi);
+  background: var(--surface-hi);
+  color: var(--text-dim);
+  font: 10px "JetBrains Mono";
   letter-spacing: 0.7px;
   text-transform: uppercase;
 }
 
 .row {
   padding: 12px 22px;
-  border-bottom: 1px solid #1c2340;
+  border-bottom: 1px solid var(--surface-hi);
   transition: background 0.18s;
 }
 
 .row:last-child { border-bottom: 0; }
-.row:hover { background: #151b33; }
+.row:hover { background: var(--surface-hi); }
 
 /* The signed-in solver's own row, wherever it lands on the page. */
 .rowMe {
-  background: rgba(128, 103, 255, 0.11);
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
   box-shadow: inset 3px 0 0 var(--violet);
 }
 
-.rowMe:hover { background: rgba(128, 103, 255, 0.16); }
+.rowMe:hover { background: color-mix(in srgb, var(--accent) 16%, transparent); }
 
 .rank {
-  color: #8f96ad;
-  font: 700 13.5px "DM Mono";
+  color: var(--text-dim);
+  font: 700 13.5px "JetBrains Mono";
 }
 
-.rankTop1 { color: #ffc454; }
-.rankTop2 { color: #c8d2eb; }
-.rankTop3 { color: #e28e4e; }
+.rankTop1 { color: var(--warn); }
+.rankTop2 { color: var(--text-dim); }
+.rankTop3 { color: var(--warn); }
 
 .solver {
   display: flex;
@@ -290,17 +290,17 @@
   flex: none;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #303854;
-  background: #1b2140;
+  border: 1px solid var(--border);
+  background: var(--surface-hi);
 }
 
 .avatarFallback {
   display: grid;
   place-items: center;
   border: 0;
-  background: linear-gradient(140deg, #8b6dff, #55d8d2);
+  background: linear-gradient(140deg, var(--accent), var(--accent));
   color: #fff;
-  font: 700 14px "Space Grotesk";
+  font: 700 14px "JetBrains Mono";
 }
 
 .podiumAvatar.avatarFallback { font-size: 28px; }
@@ -309,7 +309,7 @@
 
 .name {
   overflow: hidden;
-  color: #e7e9f5;
+  color: var(--text);
   font-size: 14px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -320,17 +320,17 @@
   margin-left: 9px;
   padding: 3px 9px;
   border-radius: 100px;
-  background: rgba(128, 103, 255, 0.24);
-  color: #c9bbff;
-  font: 9px "DM Mono";
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  color: var(--text);
+  font: 9px "JetBrains Mono";
   letter-spacing: 0.5px;
   text-transform: uppercase;
   vertical-align: middle;
 }
 
 .solved {
-  color: #c3c8dd;
-  font: 13px "DM Mono";
+  color: var(--text-dim);
+  font: 13px "JetBrains Mono";
 }
 
 .scoreCell {
@@ -341,7 +341,7 @@
 
 .scoreValue {
   color: #fff;
-  font: 700 15px "Space Grotesk";
+  font: 700 15px "JetBrains Mono";
   letter-spacing: -0.4px;
 }
 
@@ -352,14 +352,14 @@
   height: 5px;
   overflow: hidden;
   border-radius: 3px;
-  background: #1d2440;
+  background: var(--surface-hi);
 }
 
 .scoreBar i {
   display: block;
   height: 100%;
   border-radius: 3px;
-  background: linear-gradient(90deg, #8067ff, #55d8d2);
+  background: linear-gradient(90deg, var(--accent), var(--accent));
   transform-origin: left;
   animation: growX 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -371,7 +371,7 @@
 
 .state {
   padding: 42px 22px;
-  color: #9da5bf;
+  color: var(--text-dim);
   font-size: 14px;
   text-align: center;
 }
@@ -382,8 +382,8 @@
   justify-content: center;
   gap: 16px;
   margin-top: 22px;
-  color: #9da5bf;
-  font: 12px "DM Mono";
+  color: var(--text-dim);
+  font: 12px "JetBrains Mono";
 }
 
 /* ---------------------------------------------------------- responsive */

@@ -204,7 +204,7 @@ export function ProblemForm({ initial, submitLabel, isSubmitting, error, onSubmi
         Solution code
         <textarea
           rows={8}
-          style={{ fontFamily: "'DM Mono', ui-monospace, monospace", fontSize: 12 }}
+          style={{ fontFamily: "'JetBrains Mono', ui-monospace, monospace", fontSize: 12 }}
           value={values.referenceSolution.code}
           onChange={(event) => update("referenceSolution", { ...values.referenceSolution, code: event.target.value })}
         />
@@ -218,7 +218,7 @@ export function ProblemForm({ initial, submitLabel, isSubmitting, error, onSubmi
         </p>
       )}
       {values.testCases.map((testCase, index) => (
-        <div key={index} style={{ border: "1px solid #303854", padding: 16, display: "grid", gap: 10 }}>
+        <div key={index} style={{ border: "1px solid var(--border)", padding: 16, display: "grid", gap: 10 }}>
           <div className="admin-form-row">
             <label>
               Input

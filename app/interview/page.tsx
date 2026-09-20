@@ -27,9 +27,9 @@ const TOPICS = [
 /* Validated status steps — see the note at the top of interview.module.css.
    Every control that uses one also carries its text label. */
 const DIFFICULTIES: { value: InterviewDifficulty; label: string; color: string }[] = [
-  { value: "EASY", label: "Easy", color: "#65dfad" },
-  { value: "MEDIUM", label: "Medium", color: "#ffc861" },
-  { value: "HARD", label: "Hard", color: "#f2545b" },
+  { value: "EASY", label: "Easy", color: "var(--accent)" },
+  { value: "MEDIUM", label: "Medium", color: "var(--warn)" },
+  { value: "HARD", label: "Hard", color: "var(--error)" },
 ];
 
 // Kept in sync with the backend's MIN/MAX_TOTAL_QUESTIONS clamp in
@@ -48,11 +48,11 @@ function difficultyMeta(value: InterviewDifficulty) {
 
 function ScoreDial({ score }: { score: number }) {
   const ratio = Math.max(0, Math.min(1, score / 10));
-  const hue = score >= 7 ? "#65dfad" : score >= 4 ? "#ffc861" : "#f2545b";
+  const hue = score >= 7 ? "var(--accent)" : score >= 4 ? "var(--warn)" : "var(--error)";
   return (
     <span
       className={styles.scoreDial}
-      style={{ background: `conic-gradient(${hue} ${ratio * 360}deg, #232a48 0deg)` }}
+      style={{ background: `conic-gradient(${hue} ${ratio * 360}deg, var(--surface-hi) 0deg)` }}
       aria-hidden="true"
     >
       <span className={styles.scoreDialValue}>

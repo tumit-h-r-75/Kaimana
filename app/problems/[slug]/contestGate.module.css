@@ -7,10 +7,10 @@
   gap: 10px 18px;
   margin-top: 16px;
   padding: 12px 16px;
-  border: 1px solid #303854;
+  border: 1px solid var(--border);
   border-left-width: 3px;
   border-radius: 10px;
-  background: #12172b;
+  background: var(--surface);
 }
 
 .body {
@@ -23,14 +23,14 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  font: 700 14px/1.4 'Space Grotesk', system-ui, sans-serif;
+  font: 700 14px/1.4 'JetBrains Mono', system-ui, sans-serif;
   color: #fff;
   overflow-wrap: anywhere;
 }
 
 .detail {
   margin: 3px 0 0;
-  color: #aeb4c9;
+  color: var(--text-dim);
   font-size: 12.5px;
   line-height: 1.6;
 }
@@ -45,7 +45,7 @@
 .registerError {
   flex-basis: 100%;
   margin: 0;
-  color: #ff8080;
+  color: var(--error);
   font-size: 12.5px;
 }
 
@@ -78,23 +78,23 @@
 }
 
 .live {
-  border-color: rgba(101, 223, 173, 0.35);
-  border-left-color: #65dfad;
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  border-left-color: var(--accent);
   background: rgba(18, 53, 38, 0.35);
 }
 
 .live .dot {
-  color: #65dfad;
+  color: var(--accent);
 }
 
 .locked {
-  border-color: rgba(255, 178, 84, 0.4);
-  border-left-color: #ffb254;
-  background: rgba(58, 47, 16, 0.3);
+  border-color: color-mix(in srgb, var(--warn) 40%, transparent);
+  border-left-color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 30%, transparent);
 }
 
 .locked .dot {
-  color: #ffb254;
+  color: var(--warn);
 }
 
 .upcoming {
@@ -108,19 +108,19 @@
 }
 
 .neutral {
-  border-left-color: #8a8fa2;
+  border-left-color: var(--text-dim);
 }
 
 .neutral .dot {
-  color: #8a8fa2;
+  color: var(--text-dim);
 }
 
 .error {
-  border-color: rgba(255, 128, 128, 0.35);
-  border-left-color: #ff8080;
+  border-color: color-mix(in srgb, var(--error) 35%, transparent);
+  border-left-color: var(--error);
   background: rgba(58, 20, 24, 0.3);
 }
 
 .error .dot {
-  color: #ff8080;
+  color: var(--error);
 }

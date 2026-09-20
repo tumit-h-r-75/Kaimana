@@ -38,7 +38,7 @@ export default function RefactorDiffEditor({ language, original, modified, heigh
         theme="vs-dark"
         options={{
           fontSize: 12,
-          fontFamily: "'DM Mono', ui-monospace, monospace",
+          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
           minimap: { enabled: false },
           scrollBeyondLastLine: false,
           automaticLayout: true,

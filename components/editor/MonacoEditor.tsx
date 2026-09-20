@@ -99,7 +99,7 @@ export default function MonacoEditor({ language, value, onChange, height = "480p
         theme="vs-dark"
         options={{
           fontSize: 13,
-          fontFamily: "'DM Mono', ui-monospace, monospace",
+          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
           minimap: { enabled: false },
           scrollBeyondLastLine: false,
           automaticLayout: true,

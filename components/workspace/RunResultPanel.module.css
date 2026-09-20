@@ -2,8 +2,8 @@
    per sample test, and the selected sample's diagnosis + input/output. */
 
 .panel {
-  border-top: 1px solid #303854;
-  background: #12172b;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
   padding: 14px 16px;
   flex: none;
 }
@@ -17,40 +17,40 @@
 
 .head h4 {
   margin: 0;
-  font: 10.5px 'DM Mono', ui-monospace, monospace;
-  color: #9da5bf;
+  font: 10.5px 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
 
 .empty {
   margin: 0;
-  color: #9da5bf;
+  color: var(--text-dim);
   font-size: 12.5px;
   line-height: 1.7;
 }
 
 .empty b {
-  color: #e7e9f5;
+  color: var(--text);
 }
 
 /* Tones — shared by the banner, chips and the diagnosis card. */
 .tone_ok {
-  color: #65dfad;
-  border-color: rgba(101, 223, 173, 0.55);
-  background: rgba(101, 223, 173, 0.08);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
 .tone_bad {
-  color: #ff8080;
-  border-color: rgba(255, 128, 128, 0.55);
-  background: rgba(255, 128, 128, 0.08);
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 55%, transparent);
+  background: color-mix(in srgb, var(--error) 8%, transparent);
 }
 
 .tone_warn {
-  color: #ffb254;
-  border-color: rgba(255, 178, 84, 0.55);
-  background: rgba(255, 178, 84, 0.08);
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
+  background: color-mix(in srgb, var(--warn) 8%, transparent);
 }
 
 .tone_info {
@@ -70,14 +70,14 @@
 
 .banner b {
   display: block;
-  font: 700 15px 'Space Grotesk', Manrope, sans-serif;
+  font: 700 15px 'JetBrains Mono', Inter, sans-serif;
 }
 
 .banner small {
   display: block;
   margin-top: 3px;
-  font: 11px 'DM Mono', ui-monospace, monospace;
-  color: #9da5bf;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--text-dim);
   overflow-wrap: anywhere;
 }
 
@@ -89,7 +89,7 @@
   border: 1.5px solid currentColor;
   display: grid;
   place-items: center;
-  font: 700 14px 'DM Mono', ui-monospace, monospace;
+  font: 700 14px 'JetBrains Mono', ui-monospace, monospace;
 }
 
 .spinner {
@@ -110,7 +110,7 @@
 
 .passHint {
   margin: 10px 0 0;
-  color: #9da5bf;
+  color: var(--text-dim);
   font-size: 12.5px;
   line-height: 1.6;
 }
@@ -129,7 +129,7 @@
   padding: 5px 10px;
   border: 1px solid;
   border-radius: 999px;
-  font: 11px 'DM Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   cursor: pointer;
   opacity: 0.65;
   transition: opacity 0.15s;
@@ -145,7 +145,7 @@
 }
 
 .chipLabel {
-  color: #9da5bf;
+  color: var(--text-dim);
 }
 
 .details {
@@ -169,7 +169,7 @@
 }
 
 .diagnosticHead b {
-  font: 700 13.5px 'Space Grotesk', Manrope, sans-serif;
+  font: 700 13.5px 'JetBrains Mono', Inter, sans-serif;
 }
 
 .lineButton {
@@ -178,7 +178,7 @@
   color: inherit;
   border-radius: 6px;
   padding: 3px 9px;
-  font: 11px 'DM Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   cursor: pointer;
 }
 
@@ -190,17 +190,17 @@
   display: block;
   margin-top: 8px;
   padding: 8px 10px;
-  background: #0d1020;
+  background: var(--bg);
   border-radius: 6px;
-  color: #e7e9f5;
-  font: 12px/1.5 'DM Mono', ui-monospace, monospace;
+  color: var(--text);
+  font: 12px/1.5 'JetBrains Mono', ui-monospace, monospace;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
 .hint {
   margin: 8px 0 0;
-  color: #c3c8dd;
+  color: var(--text-dim);
   font-size: 12.5px;
   line-height: 1.6;
 }
@@ -218,8 +218,8 @@
 .ioLabel {
   display: block;
   margin-bottom: 4px;
-  font: 10px 'DM Mono', ui-monospace, monospace;
-  color: #55d8d2;
+  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -230,11 +230,11 @@
   max-height: 160px;
   overflow: auto;
   padding: 8px 10px;
-  background: #0d1020;
-  border: 1px solid #232a45;
+  background: var(--bg);
+  border: 1px solid var(--surface-hi);
   border-radius: 7px;
-  font: 12px/1.6 'DM Mono', ui-monospace, monospace;
-  color: #d4d9ec;
+  font: 12px/1.6 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--text);
   white-space: pre;
 }
 
@@ -245,24 +245,24 @@
 }
 
 .lineBad {
-  background: rgba(255, 128, 128, 0.18);
-  color: #ffb3b3;
+  background: color-mix(in srgb, var(--error) 18%, transparent);
+  color: var(--error);
 }
 
 .lineGood {
-  background: rgba(101, 223, 173, 0.15);
-  color: #a6f0cf;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
 }
 
 .muted {
-  color: #6d7698;
+  color: var(--text-dim);
   font-style: italic;
 }
 
 .raw summary {
   cursor: pointer;
-  font: 11px 'DM Mono', ui-monospace, monospace;
-  color: #9da5bf;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--text-dim);
 }
 
 .raw pre {
@@ -270,11 +270,11 @@
   max-height: 200px;
   overflow: auto;
   padding: 8px 10px;
-  background: #0d1020;
-  border: 1px solid #232a45;
+  background: var(--bg);
+  border: 1px solid var(--surface-hi);
   border-radius: 7px;
-  font: 11.5px/1.55 'DM Mono', ui-monospace, monospace;
-  color: #ffb3b3;
+  font: 11.5px/1.55 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--error);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }

@@ -57,7 +57,7 @@ function ScalingChart({
     <div className="complexity-chart">
       <p className="complexity-chart-title">{title}</p>
       <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height} role="img" aria-label={`${title} chart`}>
-        <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#232a45" strokeWidth={1} />
+        <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="var(--surface-hi)" strokeWidth={1} />
         <path d={linePath} fill="none" stroke={color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {sorted.map((p, i) => (
           <circle key={i} cx={xFor(p.size)} cy={yFor(p.value)} r={3.5} fill={color}>
@@ -133,13 +133,13 @@ export default function ComplexityAuditorPanel({ submissionId, initialReport }: 
             <ScalingChart
               title="Runtime vs input size"
               points={scaling.map((p) => ({ size: p.size, value: p.runtimeMs }))}
-              color="#55d8d2"
+              color="var(--accent)"
               format={(v) => `${v}ms`}
             />
             <ScalingChart
               title="Memory vs input size"
               points={scaling.map((p) => ({ size: p.size, value: p.memoryKb }))}
-              color="#8067ff"
+              color="var(--accent)"
               format={(v) => `${v}KB`}
             />
           </div>

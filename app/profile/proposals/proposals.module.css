@@ -12,7 +12,7 @@
 .lead {
   margin: 0;
   max-width: 700px;
-  color: #adb5ce;
+  color: var(--text-dim);
   line-height: 1.75;
 }
 
@@ -29,9 +29,9 @@
   justify-items: start;
   min-width: 0;
   padding: 24px;
-  border: 1px solid #303854;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #12172b;
+  background: var(--surface);
 }
 
 .card > * {
@@ -44,28 +44,28 @@
 
 .card h2 {
   margin: 0;
-  font: 700 21px/1.25 'Space Grotesk', system-ui, sans-serif;
+  font: 700 21px/1.25 'JetBrains Mono', system-ui, sans-serif;
   color: #fff;
   overflow-wrap: anywhere;
 }
 
 .card > p {
   margin: 0;
-  color: #aeb4c9;
+  color: var(--text-dim);
   font-size: 13.5px;
   line-height: 1.7;
 }
 
 .pending {
-  border-left: 3px solid var(--orange, #ffb254);
+  border-left: 3px solid var(--orange, var(--warn));
 }
 
 .accepted {
-  border-left: 3px solid #65dfad;
+  border-left: 3px solid var(--accent);
 }
 
 .rejected {
-  border-left: 3px solid #ff8080;
+  border-left: 3px solid var(--error);
 }
 
 .meta {
@@ -76,8 +76,8 @@
 }
 
 .muted {
-  color: #8a8fa2;
-  font: 11.5px 'DM Mono', ui-monospace, monospace;
+  color: var(--text-dim);
+  font: 11.5px 'JetBrains Mono', ui-monospace, monospace;
 }
 
 .reviewNote {
@@ -85,8 +85,8 @@
   margin: 0;
   padding: 12px 14px;
   border-radius: 8px;
-  background: #0d1020;
-  color: #c3c8dd;
+  background: var(--bg);
+  color: var(--text-dim);
   font-size: 13px;
   line-height: 1.65;
   white-space: pre-wrap;

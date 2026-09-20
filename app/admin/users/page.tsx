@@ -42,7 +42,7 @@ const ROLE_BADGES: Record<UserRole, { label: string; className: string; style?: 
   guest: {
     label: "Host",
     className: "badge",
-    style: { background: "rgba(85,216,210,.14)", color: "var(--cyan, #55d8d2)" },
+    style: { background: "color-mix(in srgb, var(--accent) 14%, transparent)", color: "var(--cyan, var(--accent))" },
     title: "Guest — an approved contest host who can manage their own contests",
   },
   admin: { label: "Admin", className: "badge badge-admin" },
@@ -51,19 +51,19 @@ const ROLE_BADGES: Record<UserRole, { label: string; className: string; style?: 
 // .admin-toolbar styles its input but has no select counterpart; these mirror
 // that input (toolbar filter) and .icon-button (per-row role selector).
 const filterSelectStyle: CSSProperties = {
-  border: "1px solid #3d4673",
-  background: "#0d1020",
+  border: "1px solid var(--border)",
+  background: "var(--bg)",
   color: "#fff",
   padding: "10px 13px",
-  font: "13px Manrope",
+  font: "13px Inter",
   borderRadius: 7,
 };
 const roleSelectStyle: CSSProperties = {
-  border: "1px solid #3d4673",
-  background: "#0d1020",
-  color: "#c3c8dd",
+  border: "1px solid var(--border)",
+  background: "var(--bg)",
+  color: "var(--text-dim)",
   padding: "5px 8px",
-  font: "11px Manrope",
+  font: "11px Inter",
   borderRadius: 4,
   cursor: "pointer",
 };

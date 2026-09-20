@@ -9,9 +9,9 @@
 .section {
   margin: 0;
   padding: 18px;
-  border: 1px solid #303854;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #0f1426;
+  background: var(--surface-hi);
   display: grid;
   gap: 14px;
   min-width: 0;
@@ -19,20 +19,20 @@
 
 .section legend {
   padding: 0 8px;
-  font: 700 14px 'Space Grotesk', system-ui, sans-serif;
+  font: 700 14px 'JetBrains Mono', system-ui, sans-serif;
   color: #fff;
 }
 
 .sectionHint {
   margin: 0;
-  color: #9da5bf;
+  color: var(--text-dim);
   font-size: 12.5px;
   line-height: 1.6;
 }
 
 .sectionError {
   margin: 0;
-  color: #ff8080;
+  color: var(--error);
   font-size: 12.5px;
   line-height: 1.6;
 }
@@ -41,15 +41,15 @@
 .fieldError {
   text-transform: none;
   letter-spacing: normal;
-  font: 12px/1.55 Manrope, system-ui, sans-serif;
+  font: 12px/1.55 Inter, system-ui, sans-serif;
 }
 
 .fieldHint {
-  color: #8a8fa2;
+  color: var(--text-dim);
 }
 
 .fieldError {
-  color: #ff8080;
+  color: var(--error);
 }
 
 .labelRow {
@@ -59,16 +59,16 @@
 }
 
 .counter {
-  color: #6d748d;
+  color: var(--text-dim);
 }
 
 .form input[aria-invalid="true"],
 .form textarea[aria-invalid="true"] {
-  border-color: #ff8080;
+  border-color: var(--error);
 }
 
 .form .mono {
-  font-family: 'DM Mono', ui-monospace, monospace;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 12.5px;
 }
 
@@ -82,14 +82,14 @@
   gap: 10px;
   min-width: 0;
   padding: 14px;
-  border: 1px solid #303854;
-  border-left: 3px solid #3d4673;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
   border-radius: 10px;
-  background: #12172b;
+  background: var(--surface);
 }
 
 .caseSample {
-  border-left-color: var(--cyan, #55d8d2);
+  border-left-color: var(--cyan, var(--accent));
 }
 
 .caseHead {
@@ -102,7 +102,7 @@
 
 .caseTitle {
   margin: 0;
-  font: 700 13px 'Space Grotesk', system-ui, sans-serif;
+  font: 700 13px 'JetBrains Mono', system-ui, sans-serif;
   color: #fff;
 }
 
@@ -120,8 +120,8 @@
   gap: 8px;
   text-transform: none;
   letter-spacing: normal;
-  font: 600 12.5px Manrope, system-ui, sans-serif;
-  color: #c3c8dd;
+  font: 600 12.5px Inter, system-ui, sans-serif;
+  color: var(--text-dim);
   cursor: pointer;
 }
 
@@ -139,22 +139,22 @@
 }
 
 .collapsible {
-  border: 1px solid #303854;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #0f1426;
+  background: var(--surface-hi);
   padding: 0 18px;
 }
 
 .collapsible summary {
   cursor: pointer;
   padding: 14px 0;
-  font: 700 14px 'Space Grotesk', system-ui, sans-serif;
+  font: 700 14px 'JetBrains Mono', system-ui, sans-serif;
   color: #fff;
 }
 
 .collapsible[open] summary {
   margin-bottom: 14px;
-  border-bottom: 1px solid #303854;
+  border-bottom: 1px solid var(--border);
 }
 
 .collapsibleBody {
