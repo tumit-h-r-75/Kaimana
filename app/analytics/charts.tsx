@@ -5,12 +5,12 @@ import type { ActivityEntry, AnalyticsHistoryEntry } from "@/lib/api/analytics";
 import styles from "./analytics.module.css";
 
 /* Palette — see the header comment in analytics.module.css for why these
-   exact values (all validated against the #171c34 panel in dark mode). */
-export const SERIES = "#8067ff";
-export const STATUS = { good: "#65dfad", warn: "#ffc861", bad: "#f2545b", info: "#8fc3ff" };
+   exact values (all validated against the var(--surface-hi) panel in dark mode). */
+export const SERIES = "var(--accent)";
+export const STATUS = { good: "var(--accent)", warn: "var(--warn)", bad: "var(--error)", info: "#8fc3ff" };
 /** Magnitude ramp for the activity calendar: one hue, light → dark. */
-const ACTIVITY_RAMP = ["#1d5b60", "#23787c", "#31a5a4", "#55d8d2"];
-const ACTIVITY_EMPTY = "#1a2038";
+const ACTIVITY_RAMP = ["var(--accent)", "var(--accent)", "var(--accent)", "var(--accent)"];
+const ACTIVITY_EMPTY = "var(--surface-hi)";
 
 const UTC_DAY = { timeZone: "UTC" } as const;
 

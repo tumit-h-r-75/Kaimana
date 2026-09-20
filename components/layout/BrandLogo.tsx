@@ -1,10 +1,15 @@
 import Link from "next/link";
 
 /**
- * The Kaimana logo: a gradient tile holding a `</>` glyph, followed by the
- * wordmark. The tile's gradient lives in CSS (.brand-mark in globals.css)
- * rather than an SVG <defs>, so the same component can render twice on a
- * page — header and footer — without duplicating gradient element ids.
+ * The Kaimana mark: a diamond cut from four straight facets — a rotated
+ * square, the table line across the crown, and two facet edges running down
+ * to the culet. Strokes, never fill, and stroke="currentColor" throughout, so
+ * the mark takes the accent from whatever it sits inside instead of pinning a
+ * colour of its own.
+ *
+ * The table line stops exactly on the outer edges: at y=16.75 the 45° sides
+ * sit at x=12.75 and x=35.25, so it meets them rather than crossing or
+ * falling short.
  *
  * `size="lg"` is the footer's larger treatment; the default is the header's.
  */
@@ -12,10 +17,11 @@ import Link from "next/link";
 export function BrandMark() {
   return (
     <span className="brand-mark" aria-hidden="true">
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17.6 15.4 9.6 24l8 8.6" />
-        <path d="M30.4 15.4 38.4 24l-8 8.6" strokeOpacity=".9" />
-        <path d="M26.8 13.2 21.2 34.8" strokeOpacity=".78" />
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M24 5.5 42.5 24 24 42.5 5.5 24Z" />
+        <path d="M12.75 16.75h22.5" strokeOpacity=".85" />
+        <path d="M12.75 16.75 24 42.5" strokeOpacity=".6" />
+        <path d="M35.25 16.75 24 42.5" strokeOpacity=".6" />
       </svg>
     </span>
   );

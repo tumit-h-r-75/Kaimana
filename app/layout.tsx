@@ -20,7 +20,10 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   applicationName: "Kaimana",
-  icons: { icon: "/icon.svg" },
+  // No `icons` key on purpose: an explicit one overrides Next's file
+  // conventions, and app/ now holds icon.svg, favicon.ico, apple-icon.png
+  // and opengraph-image.png, which Next links with the right sizes and
+  // cache-busting hashes on its own.
   keywords: ["coding practice", "programming contests", "algorithm problems", "DSA practice", "mock interview"],
   openGraph: {
     title: "Kaimana | Build your coding edge",

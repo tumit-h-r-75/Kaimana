@@ -2,10 +2,10 @@ import styles from "./Mascot.module.css";
 
 export type MascotMood = "happy" | "cheer" | "think" | "oops";
 
-const INK = "#1b2240";
-const GLOW = "#6ff7e8";
-const ORANGE = "#ff8c42";
-const STEEL = "#5b6b8c";
+const INK = "var(--surface-hi)";
+const GLOW = "var(--accent)";
+const ORANGE = "var(--warn)";
+const STEEL = "var(--text-dim)";
 
 interface MascotProps {
   mood?: MascotMood;
@@ -78,10 +78,10 @@ export function Mascot({ mood = "happy", size = 160, animated = true, title, cla
       aria-hidden={title ? undefined : true}
       focusable="false"
     >
-      <ellipse cx="100" cy="211" rx="54" ry="8" fill="rgba(27,34,64,0.18)" className={styles.shadow} />
+      <ellipse cx="100" cy="211" rx="54" ry="8" fill="color-mix(in srgb, var(--surface-hi) 18%, transparent)" className={styles.shadow} />
       <g className={styles.body}>
         <line x1="100" y1="40" x2="100" y2="22" stroke={INK} strokeWidth="5" strokeLinecap="round" />
-        <circle cx="100" cy="16" r="10" fill="#ffc83d" stroke={INK} strokeWidth="4" className={styles.bulb} />
+        <circle cx="100" cy="16" r="10" fill="var(--warn)" stroke={INK} strokeWidth="4" className={styles.bulb} />
 
         {armsUp ? (
           <g className={styles.arms}>
@@ -106,15 +106,15 @@ export function Mascot({ mood = "happy", size = 160, animated = true, title, cla
         <rect x="68" y="184" width="24" height="20" rx="8" fill={STEEL} stroke={INK} strokeWidth="4" />
         <rect x="108" y="184" width="24" height="20" rx="8" fill={STEEL} stroke={INK} strokeWidth="4" />
         <rect x="58" y="132" width="84" height="60" rx="24" fill={ORANGE} stroke={INK} strokeWidth="5" />
-        <path d="M105 143 L89 166 H101 L95 182 L113 157 H101 Z" fill="#ffc83d" stroke={INK} strokeWidth="3" strokeLinejoin="round" />
+        <path d="M105 143 L89 166 H101 L95 182 L113 157 H101 Z" fill="var(--warn)" stroke={INK} strokeWidth="3" strokeLinejoin="round" />
         <rect x="88" y="124" width="24" height="12" rx="4" fill={STEEL} stroke={INK} strokeWidth="4" />
 
         <rect x="26" y="68" width="18" height="38" rx="9" fill={ORANGE} stroke={INK} strokeWidth="4" />
         <rect x="156" y="68" width="18" height="38" rx="9" fill={ORANGE} stroke={INK} strokeWidth="4" />
-        <rect x="38" y="38" width="124" height="92" rx="36" fill="#f4f7ff" stroke={INK} strokeWidth="5" />
+        <rect x="38" y="38" width="124" height="92" rx="36" fill="var(--text)" stroke={INK} strokeWidth="5" />
         <rect x="53" y="53" width="94" height="62" rx="26" fill={INK} />
-        <ellipse cx="64" cy="102" rx="7" ry="4" fill="#ff7aa8" opacity="0.9" />
-        <ellipse cx="136" cy="102" rx="7" ry="4" fill="#ff7aa8" opacity="0.9" />
+        <ellipse cx="64" cy="102" rx="7" ry="4" fill="var(--error)" opacity="0.9" />
+        <ellipse cx="136" cy="102" rx="7" ry="4" fill="var(--error)" opacity="0.9" />
         <Face mood={mood} />
         {mood === "oops" && <path d="M170 30 Q180 46 170 54 Q160 46 170 30 Z" fill="#8fd3ff" stroke={INK} strokeWidth="3" />}
       </g>

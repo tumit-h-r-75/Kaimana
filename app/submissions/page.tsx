@@ -80,7 +80,7 @@ function SubmissionsContent() {
       </p>
       <h1>Your submission history</h1>
       {status === "ready" && total > 0 && (
-        <p style={{ margin: "8px 0 0", color: "#9da5bf" }}>
+        <p style={{ margin: "8px 0 0", color: "var(--text-dim)" }}>
           {total} {total === 1 ? "submission" : "submissions"}
         </p>
       )}

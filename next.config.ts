@@ -26,7 +26,10 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      { source: "/favicon.ico", destination: "/icon.svg" },
+      // /favicon.ico used to be rewritten to the SVG because no .ico existed.
+      // app/favicon.ico is a real file now, and Next serves it from there —
+      // leaving the rewrite in would shadow it with a path that no longer
+      // resolves, so the tab icon would simply disappear.
       // Proxies browser API calls to the backend's own Vercel deployment
       // server-side, so the browser only ever talks to this app's origin.
       // See lib/config.ts for why: it keeps the session cookie first-party

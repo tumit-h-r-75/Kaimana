@@ -53,20 +53,20 @@
 }
 
 .good {
-  border-color: #22c55e;
-  background: #eafbef;
+  border-color: var(--accent);
+  background: var(--text);
 }
 
 .bad {
-  border-color: #ff8a9b;
-  background: #fff1f3;
+  border-color: var(--error);
+  background: var(--text);
 }
 
 .stepBadge {
   flex: none;
   padding: 3px 12px;
   border-radius: 999px;
-  background: #1b2240;
+  background: var(--surface-hi);
   color: #fff;
   font: 600 15px/1.5 var(--kq-display);
 }
@@ -90,9 +90,9 @@
 .hintList li {
   position: relative;
   padding: 10px 14px 10px 44px;
-  border: 2px solid #f5d565;
+  border: 2px solid var(--warn);
   border-radius: 16px;
-  background: #fffbe6;
+  background: var(--text);
   font-weight: 700;
   counter-increment: hint;
 }
@@ -107,7 +107,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #ffc83d;
+  background: var(--warn);
   font: 700 14px var(--kq-display);
 }
 

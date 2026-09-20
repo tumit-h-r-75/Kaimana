@@ -33,13 +33,13 @@
   margin-bottom: 20px;
   padding: 12px;
   border-radius: 18px;
-  background: var(--world-soft, #eef4ff);
+  background: var(--world-soft, var(--text));
 }
 
 .label {
   display: block;
   margin-bottom: 4px;
-  color: var(--world-deep, #1b2240);
+  color: var(--world-deep, var(--surface-hi));
   font: 600 14px/1.3 var(--kq-display);
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -56,10 +56,10 @@
   max-height: 260px;
   overflow: auto;
   padding: 10px 12px;
-  border: 2px solid rgba(27, 34, 64, 0.14);
+  border: 2px solid color-mix(in srgb, var(--surface-hi) 14%, transparent);
   border-radius: 12px;
   background: #fff;
-  color: #1b2240;
+  color: var(--surface-hi);
   font: 16px/1.55 var(--kq-mono);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -72,17 +72,17 @@
 }
 
 .lineGood {
-  background: #d3f5dd;
-  box-shadow: inset 4px 0 #22c55e;
+  background: var(--text);
+  box-shadow: inset 4px 0 var(--accent);
 }
 
 .lineBad {
-  background: #ffdce3;
-  box-shadow: inset 4px 0 #e0425f;
+  background: var(--text);
+  box-shadow: inset 4px 0 var(--error);
 }
 
 .muted {
-  color: #626b8c;
+  color: var(--text-dim);
   font-style: italic;
 }
 
@@ -110,9 +110,9 @@
 
 .hintList li {
   padding: 10px 14px;
-  border: 2px solid #f5d565;
+  border: 2px solid var(--warn);
   border-radius: 16px;
-  background: #fffbe6;
+  background: var(--text);
   font-weight: 700;
 }
 
@@ -122,9 +122,9 @@
   gap: 10px;
   width: 100%;
   padding: 12px;
-  border: 2px dashed #8b5cf6;
+  border: 2px dashed var(--accent);
   border-radius: 16px;
-  background: #f3efff;
+  background: var(--text);
 }
 
 .answer p {
@@ -197,23 +197,23 @@
 }
 
 .good {
-  border-color: #22c55e;
-  background: #eafbef;
+  border-color: var(--accent);
+  background: var(--text);
 }
 
 .bad {
-  border-color: #ff8a9b;
-  background: #fff1f3;
+  border-color: var(--error);
+  background: var(--text);
 }
 
 .warn {
-  border-color: #f0b43c;
-  background: #fff6dc;
+  border-color: var(--warn);
+  background: var(--text);
 }
 
 .info {
   border-color: #7cc4ff;
-  background: #eaf6ff;
+  background: var(--text);
 }
 
 .compare {
@@ -238,8 +238,8 @@
   overflow: auto;
   padding: 10px 12px;
   border-radius: 12px;
-  background: #1b2240;
-  color: #ffd0d8;
+  background: var(--surface-hi);
+  color: var(--text);
   font: 14px/1.5 var(--kq-mono);
   white-space: pre-wrap;
   overflow-wrap: anywhere;

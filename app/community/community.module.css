@@ -18,14 +18,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border: 1px solid #303854;
-  background: #171c34;
+  border: 1px solid var(--border);
+  background: var(--surface-hi);
   padding: 20px;
   transition: border-color 0.15s, transform 0.15s;
 }
 
 .card:hover {
-  border-color: #8067ff;
+  border-color: var(--accent);
   transform: translateY(-2px);
 }
 
@@ -38,8 +38,8 @@
 
 .cardTitle {
   margin: 0;
-  font: 700 18px "Space Grotesk", sans-serif;
-  color: #f6f7ff;
+  font: 700 18px "JetBrains Mono", sans-serif;
+  color: var(--text);
 }
 
 .authorRow {
@@ -53,7 +53,7 @@
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #3d4673;
+  border: 1px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -61,9 +61,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #8067ff;
+  background: var(--accent);
   color: #fff;
-  font: 700 12px "Space Grotesk", sans-serif;
+  font: 700 12px "JetBrains Mono", sans-serif;
 }
 
 .avatarLg {
@@ -73,7 +73,7 @@
 }
 
 .authorName {
-  color: #d4d9ec;
+  color: var(--text);
   font-size: 13px;
   font-weight: 600;
 }
@@ -82,8 +82,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  color: #9da5bf;
-  font: 11px "DM Mono", monospace;
+  color: var(--text-dim);
+  font: 11px "JetBrains Mono", monospace;
 }
 
 .cardMeta span {
@@ -93,16 +93,16 @@
 }
 
 .emptyState {
-  border: 1px solid #303854;
-  background: #12172b;
-  color: #9da5bf;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
   padding: 34px 24px;
   text-align: center;
   margin-top: 28px;
 }
 
 .emptyState a {
-  color: #c9bbff;
+  color: var(--text);
   font-weight: 700;
 }
 
@@ -112,8 +112,8 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  border: 1px solid #303854;
-  background: #171c34;
+  border: 1px solid var(--border);
+  background: var(--surface-hi);
   padding: 22px 24px;
   margin-top: 24px;
 }
@@ -128,12 +128,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
-  color: #9da5bf;
-  font: 12px "DM Mono", monospace;
+  color: var(--text-dim);
+  font: 12px "JetBrains Mono", monospace;
 }
 
 .detailMeta b {
-  color: #65dfad;
+  color: var(--accent);
 }
 
 .commentSection {
@@ -141,7 +141,7 @@
 }
 
 .commentSection h3 {
-  font: 700 22px "Space Grotesk", sans-serif;
+  font: 700 22px "JetBrains Mono", sans-serif;
   margin: 0 0 18px;
 }
 
@@ -152,8 +152,8 @@
 }
 
 .commentItem {
-  border: 1px solid #303854;
-  background: #12172b;
+  border: 1px solid var(--border);
+  background: var(--surface);
   padding: 16px 18px;
   display: flex;
   gap: 12px;
@@ -172,18 +172,18 @@
 }
 
 .commentAuthor {
-  color: #f4f5fb;
+  color: var(--text);
   font-weight: 700;
   font-size: 13px;
 }
 
 .commentTime {
-  color: #6d7698;
-  font: 10px "DM Mono", monospace;
+  color: var(--text-dim);
+  font: 10px "JetBrains Mono", monospace;
 }
 
 .commentContent {
-  color: #c3c8dd;
+  color: var(--text-dim);
   font-size: 13px;
   line-height: 1.6;
   margin: 0;
@@ -192,14 +192,14 @@
 }
 
 .commentEmpty {
-  color: #9da5bf;
+  color: var(--text-dim);
   padding: 8px 0;
 }
 
 .commentForm {
   margin-top: 20px;
-  border: 1px solid #303854;
-  background: #171c34;
+  border: 1px solid var(--border);
+  background: var(--surface-hi);
   padding: 18px;
 }
 
@@ -207,11 +207,11 @@
   display: block;
   width: 100%;
   min-height: 90px;
-  background: #0d1020;
-  color: #d4d9ec;
-  border: 1px solid #303854;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
   padding: 12px 14px;
-  font: 13px/1.6 "DM Mono", monospace;
+  font: 13px/1.6 "JetBrains Mono", monospace;
   resize: vertical;
   box-sizing: border-box;
 }
@@ -225,21 +225,21 @@
 }
 
 .commentFormError {
-  color: #ff8080;
+  color: var(--error);
   font-size: 12px;
   margin: 0;
 }
 
 .signInPrompt {
   margin-top: 20px;
-  border: 1px dashed #3d4673;
-  background: #12172b;
-  color: #9da5bf;
+  border: 1px dashed var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
   padding: 18px;
   text-align: center;
 }
 
 .signInPrompt a {
-  color: #c9bbff;
+  color: var(--text);
   font-weight: 700;
 }

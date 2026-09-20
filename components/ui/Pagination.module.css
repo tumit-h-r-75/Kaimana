@@ -9,8 +9,8 @@
 
 .summary {
   margin: 0;
-  font: 11.5px 'DM Mono', ui-monospace, monospace;
-  color: #9da5bf;
+  font: 11.5px 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--text-dim);
 }
 
 .controls {
@@ -25,18 +25,18 @@
   min-width: 34px;
   height: 34px;
   padding: 0 10px;
-  border: 1px solid #3d4673;
+  border: 1px solid var(--border);
   border-radius: 7px;
-  background: #12172b;
-  color: #e7e9f5;
-  font: 12px 'DM Mono', ui-monospace, monospace;
+  background: var(--surface);
+  color: var(--text);
+  font: 12px 'JetBrains Mono', ui-monospace, monospace;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
 
 .step:hover:not(:disabled),
 .page:hover:not(:disabled) {
-  border-color: var(--cyan, #55d8d2);
+  border-color: var(--cyan, var(--accent));
 }
 
 .step:disabled,
@@ -48,14 +48,14 @@
 .current,
 .current:disabled {
   opacity: 1;
-  border-color: var(--violet, #8067ff);
-  background: rgba(128, 103, 255, 0.18);
+  border-color: var(--violet, var(--accent));
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: #fff;
   cursor: default;
 }
 
 .gap {
   padding: 0 2px;
-  color: #6d7698;
-  font: 12px 'DM Mono', ui-monospace, monospace;
+  color: var(--text-dim);
+  font: 12px 'JetBrains Mono', ui-monospace, monospace;
 }

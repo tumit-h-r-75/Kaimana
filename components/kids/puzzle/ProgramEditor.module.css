@@ -116,9 +116,9 @@
   top: -10px;
   right: 8px;
   padding: 1px 8px;
-  border: 2px solid #1b2240;
+  border: 2px solid var(--surface-hi);
   border-radius: 999px;
-  background: #c9184a;
+  background: var(--error);
   color: #fff;
   font: 700 12px/1.4 var(--kq-display);
   font-style: normal;
@@ -136,7 +136,7 @@
 .count {
   padding: 2px 12px;
   border-radius: 999px;
-  background: #1b2240;
+  background: var(--surface-hi);
   color: #fff;
   font: 600 15px/1.6 var(--kq-display);
 }
@@ -153,9 +153,9 @@
 
 .root {
   padding: 10px;
-  border: 2.5px dashed rgba(27, 34, 64, 0.22);
+  border: 2.5px dashed color-mix(in srgb, var(--surface-hi) 22%, transparent);
   border-radius: 18px;
-  background: #f7f9ff;
+  background: var(--text);
 }
 
 .emptyProgram {
@@ -199,13 +199,13 @@
 }
 
 .active {
-  box-shadow: 0 0 0 4px #ffc83d, 0 0 0 7px #1b2240;
+  box-shadow: 0 0 0 4px var(--warn), 0 0 0 7px var(--surface-hi);
   transform: scale(1.015);
 }
 
 .failed {
-  background: #ffe1e6;
-  box-shadow: 0 0 0 4px #ff6b81;
+  background: var(--text);
+  box-shadow: 0 0 0 4px var(--error);
 }
 
 .stepper {
@@ -248,13 +248,13 @@
 .sensed {
   padding: 2px 10px;
   border-radius: 999px;
-  background: #1b2240;
+  background: var(--surface-hi);
   color: #fff;
   font: 600 14px/1.5 var(--kq-display);
 }
 
 .sensedYes {
-  background: #15803d;
+  background: var(--accent);
 }
 
 .tools {
@@ -268,16 +268,16 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border: 2px solid rgba(27, 34, 64, 0.2);
+  border: 2px solid color-mix(in srgb, var(--surface-hi) 20%, transparent);
   border-radius: 12px;
   background: #fff;
-  color: #1b2240;
+  color: var(--surface-hi);
   font: 700 18px/1 var(--kq-body);
   cursor: pointer;
 }
 
 .tool:hover:not(:disabled) {
-  border-color: #1b2240;
+  border-color: var(--surface-hi);
 }
 
 .tool:disabled {
@@ -286,15 +286,15 @@
 }
 
 .toolDelete:hover:not(:disabled) {
-  border-color: #b4233f;
-  background: #ffe4e8;
-  color: #b4233f;
+  border-color: var(--error);
+  background: var(--text);
+  color: var(--error);
 }
 
 .branch {
   margin: 0 8px 8px 14px;
   padding: 8px;
-  border: 2px dashed rgba(27, 34, 64, 0.22);
+  border: 2px dashed color-mix(in srgb, var(--surface-hi) 22%, transparent);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.7);
 }
@@ -317,10 +317,10 @@
   width: 100%;
   min-height: 44px;
   margin-top: 8px;
-  border: 2px dashed rgba(27, 34, 64, 0.3);
+  border: 2px dashed color-mix(in srgb, var(--surface-hi) 30%, transparent);
   border-radius: 12px;
   background: transparent;
-  color: #28325a;
+  color: var(--border);
   font: 600 15px var(--kq-display);
   cursor: pointer;
 }
@@ -333,7 +333,7 @@
 .slot[aria-pressed="true"] {
   border-style: solid;
   border-color: #1d4ed8;
-  background: #e8f0ff;
+  background: var(--text);
   color: #1d3ea8;
 }
 

@@ -12,18 +12,18 @@ import { getInterviewSession, respondToInterview, type InterviewSession } from "
 import styles from "../interview.module.css";
 
 const DIFFICULTY_COLOR: Record<string, string> = {
-  EASY: "#65dfad",
-  MEDIUM: "#ffc861",
-  HARD: "#f2545b",
+  EASY: "var(--accent)",
+  MEDIUM: "var(--warn)",
+  HARD: "var(--error)",
 };
 
 function ScoreDial({ score }: { score: number }) {
   const ratio = Math.max(0, Math.min(1, score / 10));
-  const hue = score >= 7 ? "#65dfad" : score >= 4 ? "#ffc861" : "#f2545b";
+  const hue = score >= 7 ? "var(--accent)" : score >= 4 ? "var(--warn)" : "var(--error)";
   return (
     <span
       className={`${styles.scoreDial} ${styles.feedbackScore}`}
-      style={{ background: `conic-gradient(${hue} ${ratio * 360}deg, #232a48 0deg)` }}
+      style={{ background: `conic-gradient(${hue} ${ratio * 360}deg, var(--surface-hi) 0deg)` }}
       aria-label={`Score ${score} out of 10`}
     >
       <span className={styles.scoreDialValue}>
@@ -147,7 +147,7 @@ function InterviewRoomContent() {
           <span className={styles.difficultyTag}>
             <span
               className={styles.chipDot}
-              style={{ background: DIFFICULTY_COLOR[session.difficulty] ?? "#8f96ad" }}
+              style={{ background: DIFFICULTY_COLOR[session.difficulty] ?? "var(--text-dim)" }}
               aria-hidden="true"
             />
             {session.difficulty.charAt(0) + session.difficulty.slice(1).toLowerCase()}

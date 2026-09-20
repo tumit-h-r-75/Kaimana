@@ -9,9 +9,9 @@
   min-height: 240px;
   max-height: 560px;
   overflow: hidden;
-  border: 3px solid #1b2240;
+  border: 3px solid var(--surface-hi);
   border-radius: 18px;
-  background: #1b2240;
+  background: var(--surface-hi);
   box-shadow: 0 6px 0 #0e1330;
 }
 
@@ -29,8 +29,8 @@
   min-width: 46px;
   padding: var(--code-pad-y) 10px var(--code-pad-y) 6px;
   overflow: hidden;
-  background: #141a33;
-  color: #8390bf;
+  background: var(--surface-hi);
+  color: var(--text-dim);
   font: var(--code-font) / var(--code-line) var(--kq-mono);
   text-align: right;
   user-select: none;
@@ -43,7 +43,7 @@
 .gutterError {
   color: #fff;
   font-weight: 700;
-  background: #d6334f;
+  background: var(--error);
   border-radius: 6px;
   padding-right: 4px;
 }
@@ -65,7 +65,7 @@
   width: max-content;
   min-width: 100%;
   padding: var(--code-pad-y) var(--code-pad-x);
-  color: #f1f4ff;
+  color: var(--text);
   font: var(--code-font) / var(--code-line) var(--kq-mono);
   tab-size: 4;
 }
@@ -80,7 +80,7 @@
   margin-inline: calc(var(--code-pad-x) * -1);
   padding-inline: var(--code-pad-x);
   background: rgba(255, 107, 129, 0.24);
-  box-shadow: inset 4px 0 #ff6b81;
+  box-shadow: inset 4px 0 var(--error);
 }
 
 .input {
@@ -96,7 +96,7 @@
   overflow: auto;
   background: transparent;
   color: transparent;
-  caret-color: #ffd479;
+  caret-color: var(--warn);
   font: var(--code-font) / var(--code-line) var(--kq-mono);
   letter-spacing: 0;
   tab-size: 4;
@@ -115,20 +115,20 @@
 }
 
 .tok_plain {
-  color: #f1f4ff;
+  color: var(--text);
 }
 
 .tok_keyword {
-  color: #ff9ecd;
+  color: var(--error);
   font-weight: 700;
 }
 
 .tok_builtin {
-  color: #7fe3ff;
+  color: var(--accent);
 }
 
 .tok_string {
-  color: #ffd479;
+  color: var(--warn);
 }
 
 .tok_number {
@@ -136,12 +136,12 @@
 }
 
 .tok_comment {
-  color: #a3aed6;
+  color: var(--text-dim);
   font-style: italic;
 }
 
 .tok_operator {
-  color: #ffb38a;
+  color: var(--warn);
 }
 
 .codeBlock {
@@ -149,8 +149,8 @@
   padding: 12px 14px;
   overflow-x: auto;
   border-radius: 14px;
-  background: #1b2240;
-  color: #f1f4ff;
+  background: var(--surface-hi);
+  color: var(--text);
   font: 16px/1.6 var(--kq-mono);
 }
 

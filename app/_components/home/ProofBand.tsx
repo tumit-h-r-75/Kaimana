@@ -34,7 +34,7 @@ const LANGUAGES = [
     note: "Starter code included",
     badge: "Py",
     tint: "rgba(255, 212, 59, .14)",
-    color: "#ffd43b",
+    color: "var(--warn)",
     snippet: "def solve(nums: list[int]) -> int:",
   },
   {
@@ -50,7 +50,7 @@ const LANGUAGES = [
     note: "Starter code included",
     badge: "JS",
     tint: "rgba(247, 223, 30, .12)",
-    color: "#f2dd6e",
+    color: "var(--warn)",
     snippet: "function solve(nums) {",
   },
 ];
