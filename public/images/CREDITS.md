@@ -9,10 +9,10 @@ use without attribution. They are credited here anyway, and stored in the repo
 | --------------------- | ------------------------------ | ----------------------------------------------------------- |
 | `hero-code.jpg`       | Hero section                   | https://unsplash.com/photos/1555949963-aa79dcee981c          |
 | `workspace-dark.jpg`  | Workspace spotlight            | https://unsplash.com/photos/1517180102446-f3ece451e9d8       |
-| `mode-contest.jpg`    | Arena modes — Contests         | https://unsplash.com/photos/1560253023-3ec5d502959f          |
-| `mode-interview.jpg`  | Arena modes — Mock interviews  | https://unsplash.com/photos/1553877522-43269d4ea984          |
-| `mode-community.jpg`  | Arena modes — Community        | https://unsplash.com/photos/1531482615713-2afd69097998       |
-| `mode-kids.jpg`       | Arena modes — Kids zone        | https://unsplash.com/photos/1587654780291-39c9404d746b       |
+| `mode-contest.jpg`    | Mode facets — Contests         | https://unsplash.com/photos/1560253023-3ec5d502959f          |
+| `mode-interview.jpg`  | Mode facets — Mock interviews  | https://unsplash.com/photos/1553877522-43269d4ea984          |
+| `mode-community.jpg`  | Mode facets — Community        | https://unsplash.com/photos/1531482615713-2afd69097998       |
+| `mode-kids.jpg`       | Mode facets — Kids zone        | https://unsplash.com/photos/1587654780291-39c9404d746b       |
 
 Each file is pre-cropped to the aspect ratio the layout needs, so `next/image`
 only has to resize — never re-crop — them.

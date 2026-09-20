@@ -62,7 +62,7 @@ function AdminDashboardContent() {
     <AdminShell
       eyebrow="CONTROL ROOM"
       title="Admin dashboard"
-      description="Monitor the arena and keep the learner experience healthy."
+      description="Monitor the platform and keep the learner experience healthy."
       actions={
         <Link className="button button-small" href="/admin/problems/new">
           New problem <span>→</span>

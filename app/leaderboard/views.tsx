@@ -145,7 +145,7 @@ export function YourRankCard({
         <p className={styles.youGap}>Solve a problem to claim a place on the board.</p>
       ) : myRank.rank === 1 ? (
         <p className={styles.youGap}>
-          You are <b>top of the arena</b>. Keep solving to hold it.
+          You are <b>top of the board</b>. Keep solving to hold it.
         </p>
       ) : gap !== null ? (
         <p className={styles.youGap}>

@@ -93,18 +93,18 @@ function ModeCard({ mode, delay }: { mode: (typeof MODES)[number]; delay: 0 | 1 
   );
 }
 
-export function ArenaModes() {
+export function ModeFacets() {
   const head = useReveal<HTMLDivElement>();
 
   return (
-    <section className={styles.modes} id="arena">
+    <section className={styles.modes} id="facets">
       <div className="section-shell">
         <div ref={head.ref} className={`${styles.head} ${head.className}`}>
           <p className={styles.kicker}>
             <span className={styles.kickerDot} /> More than a problem list
           </p>
           <h2>
-            Four more rooms in <span className={styles.accent}>the arena.</span>
+            Four more <span className={styles.accent}>facets to cut.</span>
           </h2>
           <p>
             Practice is the floor, not the ceiling. Compete against a clock, rehearse the interview, read everyone
