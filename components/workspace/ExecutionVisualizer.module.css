@@ -1,0 +1,303 @@
+/* Execution Visualizer. Every colour here is a token — the accent carries
+   "current" and "filled", and nothing else competes with it. */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.introRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font: 600 14px/1.3 "JetBrains Mono", monospace;
+  letter-spacing: -0.2px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lineTag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.intro,
+.note,
+.empty {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.error {
+  margin: 0;
+  font: 500 12.5px/1.6 "JetBrains Mono", monospace;
+  color: var(--error);
+}
+
+.loading {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* ---------------------------------------------------------- controls */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controls button {
+  min-width: 38px;
+  height: 32px;
+  padding: 0 10px;
+  background: var(--surface-hi);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.controls button:hover:not(:disabled) {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+.controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.slider {
+  flex: 1;
+  min-width: 100px;
+  accent-color: var(--accent);
+}
+
+.counter {
+  font: 500 11.5px "JetBrains Mono", monospace;
+  color: var(--text-dim);
+  min-width: 68px;
+  text-align: right;
+}
+
+/* ------------------------------------------------------- call stack */
+
+.stack {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.stackItem {
+  font: 500 11.5px "JetBrains Mono", monospace;
+  color: var(--text-dim);
+}
+
+.stackHere {
+  color: var(--accent);
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* --------------------------------------------------------- variables */
+
+.vars {
+  display: grid;
+  gap: 12px;
+}
+
+.varRow {
+  display: grid;
+  grid-template-columns: minmax(64px, auto) 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.varName {
+  font: 600 12px "JetBrains Mono", monospace;
+  color: var(--accent);
+  padding-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.varBody {
+  min-width: 0;
+}
+
+.scalar,
+.repr {
+  display: inline-block;
+  padding: 3px 8px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: 500 12px "JetBrains Mono", monospace;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.repr {
+  color: var(--text-dim);
+}
+
+.chips,
+.dict {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.dict {
+  flex-direction: column;
+}
+
+.dictRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 12px "JetBrains Mono", monospace;
+  color: var(--text-dim);
+}
+
+.dictRow b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.more {
+  align-self: center;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* -------------------------------------------------------------- bars */
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.barCell {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  min-width: 30px;
+  /* Keeps the bar row a fixed height so the chart does not jump as values
+     change from frame to frame. */
+  grid-template-rows: 14px 72px 12px 12px;
+}
+
+.bar {
+  width: 100%;
+  align-self: end;
+  background: var(--accent-dim);
+  border-radius: 3px 3px 0 0;
+  transition: height 0.12s ease;
+}
+
+.barMarked {
+  background: var(--accent);
+}
+
+.barValue {
+  font: 500 10.5px "JetBrains Mono", monospace;
+  color: var(--text);
+}
+
+.barIndex {
+  font: 10px "JetBrains Mono", monospace;
+  color: var(--text-dim);
+}
+
+.pointer {
+  font: 600 10px "JetBrains Mono", monospace;
+  color: var(--accent);
+}
+
+/* -------------------------------------------------------------- grid */
+
+.grid {
+  display: grid;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.cell {
+  min-width: 26px;
+  padding: 4px 2px;
+  text-align: center;
+  font: 500 10.5px "JetBrains Mono", monospace;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  transition: background 0.12s ease;
+}
+
+/* ------------------------------------------------------------ stdout */
+
+.stdout {
+  display: grid;
+  gap: 5px;
+}
+
+.stdoutLabel {
+  font: 600 10.5px "JetBrains Mono", monospace;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.stdout pre {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  font: 12px/1.6 "JetBrains Mono", monospace;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .cell,
+  .controls button {
+    transition: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .varRow {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}

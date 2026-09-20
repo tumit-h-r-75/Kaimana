@@ -69,3 +69,42 @@ export interface RunResult {
 // Ad-hoc "Run" — executes against the problem's sample tests (no persisted
 // Submission record). Backed by POST /api/submissions/execute.
 export const runCode = (payload: RunPayload) => apiRequest<RunResult>("/api/submissions/execute", { method: "POST", body: payload });
+
+/**
+ * One value captured at one line. The tag says what shape it had in Python,
+ * which is what lets the timeline pick a rendering instead of printing repr:
+ * `s`calar, `l`ist, s`e`t, `d`ict, or a `r`epr fallback for everything else.
+ * `n` is the true length, which can exceed the sampled items.
+ */
+export type TraceValue =
+  | { t: "s"; v: string | number | boolean | null }
+  | { t: "l" | "e"; v: TraceValue[]; n: number }
+  | { t: "d"; v: [string, TraceValue][]; n: number }
+  | { t: "r"; v: string };
+
+export interface TraceFrame {
+  /** 1-based line in the learner's own source. */
+  l: number;
+  /** Call depth; 1 is module level, deeper means inside a call. */
+  d: number;
+  fn: string;
+  v: Record<string, TraceValue>;
+}
+
+export interface TraceResult {
+  frames: TraceFrame[];
+  /** 1 = every line was kept, 2 = every other, and so on. */
+  stride: number;
+  truncated: boolean;
+  /** Set when values were summarised to fit the response. */
+  summarised?: boolean;
+  /** The exception that ended the run, if it ended that way. */
+  error: string | null;
+  /** What the program itself printed, separate from the trace. */
+  stdout: string;
+}
+
+// Execution Visualizer — re-runs the code under a tracing harness. A separate,
+// much slower execution than Run, so it is only ever called on demand.
+export const visualiseExecution = (payload: { language: Language; source: string }) =>
+  apiRequest<TraceResult>("/api/submissions/visualise", { method: "POST", body: payload });
