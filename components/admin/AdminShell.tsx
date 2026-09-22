@@ -282,16 +282,34 @@ export function AdminShell({ eyebrow, title, description, actions, notice, child
       </aside>
 
       <main className={styles.main}>
-        {notice && <div className={styles.notice}>{notice}</div>}
-        <div className={styles.head}>
-          <div>
-            <p className={styles.eyebrow}>{eyebrow}</p>
-            <h1>{title}</h1>
-            {description && <p className={styles.desc}>{description}</p>}
+        <div className={styles.body}>
+          {notice && <div className={styles.notice}>{notice}</div>}
+          <div className={styles.head}>
+            <div>
+              <p className={styles.eyebrow}>{eyebrow}</p>
+              <h1>{title}</h1>
+              {description && <p className={styles.desc}>{description}</p>}
+            </div>
+            {actions && <div className={styles.actions}>{actions}</div>}
           </div>
-          {actions && <div className={styles.actions}>{actions}</div>}
+          {children}
         </div>
-        {children}
+
+        {/* A floor for the page. Without one, a short page ended in open
+            space and the layout seemed to float up off the screen. */}
+        <footer className={styles.footer}>
+          <span>
+            © {new Date().getFullYear()} Kaimana · {isAdmin ? "Control room" : "Host panel"}
+          </span>
+          <nav className={styles.footerLinks} aria-label="Footer">
+            <Link href="/">Live site</Link>
+            <Link href="/leaderboard">Leaderboard</Link>
+            <Link href="/profile">Your profile</Link>
+          </nav>
+          <span className={styles.footerBy}>
+            Designed &amp; built by <b>Tumit Hasan</b>
+          </span>
+        </footer>
       </main>
     </div>
   );
