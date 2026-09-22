@@ -17,7 +17,7 @@
 .kicker {
   margin: 0 0 16px;
   color: var(--accent);
-  font: 600 10.5px "JetBrains Mono", monospace;
+  font: 600 11.5px "JetBrains Mono", monospace;
   letter-spacing: 1.6px;
   text-transform: uppercase;
 }
@@ -156,14 +156,14 @@
 
 .time { font-size: 11px; }
 
-.delta { color: var(--text-dim); font-size: 9px; }
+.delta { color: var(--text-dim); font-size: 10.5px; }
 .upward { color: var(--accent); }
 
 .boardFoot {
   padding: 10px 16px;
   border-top: 1px solid var(--border);
   color: var(--text-dim);
-  font: 10.5px "JetBrains Mono", monospace;
+  font: 11.5px "JetBrains Mono", monospace;
   letter-spacing: 0.4px;
 }
 

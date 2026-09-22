@@ -17,7 +17,7 @@
 
 .head h4 {
   margin: 0;
-  font: 10.5px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11.5px 'JetBrains Mono', ui-monospace, monospace;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -218,7 +218,7 @@
 .ioLabel {
   display: block;
   margin-bottom: 4px;
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.5px;

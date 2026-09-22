@@ -59,7 +59,7 @@
 .fact dt {
   margin-bottom: 6px;
   color: var(--text-dim);
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
@@ -267,7 +267,7 @@ a.problemCard .problemAction {
   padding: 0 10px 10px;
   border-bottom: 1px solid var(--border);
   color: var(--text-dim);
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   letter-spacing: 0.6px;
   text-align: left;
   text-transform: uppercase;
@@ -336,7 +336,7 @@ a.problemCard .problemAction {
   border-radius: 20px;
   background: color-mix(in srgb, var(--accent) 20%, transparent);
   color: var(--text);
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
 }
 
 @media (max-width: 900px) {

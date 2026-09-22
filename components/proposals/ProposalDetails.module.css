@@ -6,7 +6,7 @@
 
 .details h3 {
   margin: 0 0 8px;
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-dim);
@@ -25,7 +25,7 @@
 
 .facts dt {
   margin-bottom: 4px;
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-dim);
@@ -85,7 +85,7 @@
 .label {
   display: block;
   margin-bottom: 4px;
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-dim);

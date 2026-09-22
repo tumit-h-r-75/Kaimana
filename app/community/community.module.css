@@ -180,7 +180,7 @@
 
 .commentTime {
   color: var(--text-dim);
-  font: 10px "JetBrains Mono", monospace;
+  font: 11px "JetBrains Mono", monospace;
 }
 
 .commentContent {

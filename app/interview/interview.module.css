@@ -56,7 +56,7 @@
   display: block;
   margin-top: 3px;
   color: var(--text-dim);
-  font: 10.5px "JetBrains Mono", monospace;
+  font: 11.5px "JetBrains Mono", monospace;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -112,7 +112,7 @@
   display: block;
   margin-bottom: 10px;
   color: var(--text-dim);
-  font: 10.5px "JetBrains Mono", monospace;
+  font: 11.5px "JetBrains Mono", monospace;
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
@@ -246,7 +246,7 @@
   padding: 1px 7px;
   border-radius: 100px;
   background: rgba(255, 255, 255, 0.08);
-  font: 10px "JetBrains Mono", monospace;
+  font: 11px "JetBrains Mono", monospace;
 }
 
 .sessionList {
@@ -293,7 +293,7 @@
   gap: 6px;
   padding: 4px 10px;
   border-radius: 100px;
-  font: 10px "JetBrains Mono", monospace;
+  font: 11px "JetBrains Mono", monospace;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -582,7 +582,7 @@
   display: block;
   margin-bottom: 5px;
   color: var(--text-dim);
-  font: 9.5px "JetBrains Mono", monospace;
+  font: 10.5px "JetBrains Mono", monospace;
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
@@ -756,7 +756,7 @@
   justify-self: start;
   padding: 3px 10px;
   border-radius: 999px;
-  font: 600 10px "JetBrains Mono", monospace;
+  font: 600 11px "JetBrains Mono", monospace;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
