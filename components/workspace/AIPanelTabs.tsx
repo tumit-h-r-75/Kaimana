@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VerdictPanel from "@/components/verdict/VerdictPanel";
 import HintPanel from "@/components/hints/HintPanel";
 import ComplexityAuditorPanel from "@/components/complexity/ComplexityAuditorPanel";
@@ -50,6 +50,11 @@ export default function AIPanelTabs({
   onApplyRefactor: (code: string) => void;
 }) {
   const [activeTab, setActiveTab] = useState<TabKey>("results");
+
+  // A fresh submission's verdict is the thing to see, whatever tab was open.
+  useEffect(() => {
+    if (submission) setActiveTab("results");
+  }, [submission]);
 
   const resultsDotClass = submission ? (submission.verdict === "ACCEPTED" ? "ai-tab-dot-ok" : "ai-tab-dot-bad") : "";
 

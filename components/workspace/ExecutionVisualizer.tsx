@@ -119,7 +119,9 @@ export default function ExecutionVisualizer({
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
 
-  const frames = trace?.frames ?? [];
+  // Memoised so an empty trace doesn't hand the hooks below a fresh [] on
+  // every render.
+  const frames = useMemo(() => trace?.frames ?? [], [trace]);
   const frame = frames[index];
   const lastIndex = frames.length - 1;
 

@@ -20,6 +20,9 @@ import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import gateStyles from "./contestGate.module.css";
+import styles from "./workspace.module.css";
+import { compactCount, topicName } from "@/lib/problemFormat";
+import { LANGUAGE_NAME, type LanguageKey } from "@/components/ui/LanguageMark";
 
 const languages: Language[] = ["python", "cpp", "javascript", "typescript"];
 const FILE_EXT: Record<Language, string> = { python: "py", cpp: "cpp", javascript: "js", typescript: "ts" };
@@ -29,6 +32,8 @@ const DEFAULT_LIMITS: RunLimits = { timeLimitMs: 2000, memoryLimitMb: 256 };
 // How often the contest's status is re-derived from the clock.
 const CONTEST_TICK_MS = 15_000;
 const CONTEST_GATE_BANNER_ID = "contest-gate-banner";
+
+type LeftTab = "description" | "submissions" | "coach" | "discuss";
 
 type ContestLoad = { status: "idle" | "loading" | "ready" | "missing" | "error"; message?: string };
 
@@ -238,6 +243,12 @@ export default function ProblemDetailPage() {
   const [registerError, setRegisterError] = useState<string | null>(null);
   const contestRequestRef = useRef(0);
 
+  // The left column's tab, the run panel's mode, and the stdin for a custom run.
+  const [leftTab, setLeftTab] = useState<LeftTab>("description");
+  const [runTab, setRunTab] = useState<"tests" | "custom">("tests");
+  const [customInput, setCustomInput] = useState("");
+  const editorRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     let cancelled = false;
     activeProblemIdRef.current = null;
@@ -249,6 +260,9 @@ export default function ProblemDetailPage() {
     setHistory([]);
     setRunState({ status: "idle" });
     setRunSnapshot(null);
+    setLeftTab("description");
+    setRunTab("tests");
+    setCustomInput("");
     getProblemBySlug(slug)
       .then((data) => {
         if (cancelled) return;
@@ -405,6 +419,36 @@ export default function ProblemDetailPage() {
     }
   };
 
+  // Runs the code on the learner's own stdin. Without a problemId the runner
+  // has nothing to compare against, so each case comes back NO_EXPECTED with
+  // whatever the program printed.
+  const runCustom = async () => {
+    if (!problem || isRunning || contestBlocksActions) return;
+    if (!code.trim()) {
+      setRunSnapshot(null);
+      setRunState({ status: "error", message: "The editor is empty — write some code first." });
+      return;
+    }
+    const problemId = problem.id;
+    const snapshot = { language, code };
+    setIsRunning(true);
+    setRunState({ status: "running", sampleCount: 1 });
+    try {
+      const result = await runCode({ language, source: code, stdin: customInput });
+      if (activeProblemIdRef.current !== problemId) return;
+      if (!Array.isArray(result?.cases)) throw new Error("The code runner sent an unexpected response. Please try again in a moment.");
+      setRunSnapshot(snapshot);
+      setRunState({ status: "done", result });
+    } catch (error) {
+      if (activeProblemIdRef.current !== problemId) return;
+      setRunSnapshot(null);
+      setRunState({ status: "error", message: getErrorMessage(error, "Couldn't reach the code runner. Please try again.") });
+    } finally {
+      setIsRunning(false);
+      setRunCount((count) => count + 1);
+    }
+  };
+
   const submit = async () => {
     if (!problem || contestBlocksActions) return;
     if (!user) {
@@ -450,7 +494,7 @@ export default function ProblemDetailPage() {
     return (
       <ProtectedRoute>
         <SiteHeader />
-        <main className="section-shell problem-workspace">
+        <main className={`section-shell ${styles.page}`}>
           <p className="problem-list-status">{loadErrorMessage}</p>
           <Link className="text-link" href="/problems">
             ← Back to problems
@@ -461,214 +505,425 @@ export default function ProblemDetailPage() {
     );
   }
 
+  const stats = problem.stats;
+  const solved = problem.myBestVerdict === "ACCEPTED";
+  const attempted = !solved && problem.mySubmissionsCount > 0;
+  const related = problem.related ?? [];
+  const actionState = isSubmitting
+    ? "Submitting…"
+    : isRunning
+      ? "Running…"
+      : contestGate.kind === "loading"
+        ? "Checking contest…"
+        : contestBlocksActions
+          ? "Locked"
+          : "Ready";
+
+  const LEFT_TABS: { key: LeftTab; label: string; count?: number }[] = [
+    { key: "description", label: "Description" },
+    { key: "submissions", label: "Submissions", count: history.length || undefined },
+    { key: "coach", label: "AI coach" },
+    { key: "discuss", label: "Discuss" },
+  ];
+
+  const onTabKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    const index = LEFT_TABS.findIndex((t) => t.key === leftTab);
+    const next = LEFT_TABS[(index + (event.key === "ArrowRight" ? 1 : -1) + LEFT_TABS.length) % LEFT_TABS.length];
+    setLeftTab(next.key);
+    document.getElementById(`tab-${next.key}`)?.focus();
+  };
+
+  // Constraints are usually one per line; shown as a list when they are.
+  const constraintLines = (problem.constraints ?? "")
+    .split("\n")
+    .map((line) => line.replace(/^\s*[-*•]\s*/, "").trim())
+    .filter(Boolean);
+
   return (
     <ProtectedRoute>
       <SiteHeader />
-      <main className="section-shell problem-workspace">
-        <div className="problem-workspace-head">
-          <div>
-            <p className="eyebrow">
-              <b />
-              {problem.difficulty} · {problem.basePoints} PTS
-            </p>
-            <h1>{problem.title}</h1>
-            <div className="problem-meta">
-              <span>Time limit: {problem.timeLimitMs}ms</span>
-              <span>Memory: {problem.memoryLimitMb}MB</span>
-              {problem.myBestVerdict && <span>Your best: {problem.myBestVerdict}</span>}
-            </div>
-          </div>
-          <Link className="text-link" href="/problems">
-            ← All problems
+      <main className={styles.page}>
+        <div className="section-shell">
+          <Link className={styles.back} href="/problems">
+            <span aria-hidden="true">←</span> Back to problems
           </Link>
-        </div>
 
-        {contestGate.kind !== "none" && (
-          <ContestGateBanner
-            gate={contestGate}
-            practiceHref={`/problems/${problem.slug}`}
-            isRegistering={isRegistering}
-            registerError={registerError}
-            onRegister={registerFromBanner}
-            onRetry={() => {
-              if (contestId) void loadContest(contestId);
-            }}
-          />
-        )}
-
-        <div className="problem-workspace-grid">
-          <section className="problem-statement">
-            <div className="pane-head">
-              <span>Problem</span>
-              <span className={`pill pill-${problem.difficulty.toLowerCase()}`}>
-                {problem.difficulty} · {problem.basePoints} pts
-              </span>
-            </div>
-            <div className="problem-statement-body">
-              <h2>Statement</h2>
-              <p style={{ whiteSpace: "pre-wrap" }}>{problem.statement}</p>
-              {problem.inputFormat && (
-                <>
-                  <h2>Input format</h2>
-                  <p style={{ whiteSpace: "pre-wrap" }}>{problem.inputFormat}</p>
-                </>
-              )}
-              {problem.outputFormat && (
-                <>
-                  <h2>Output format</h2>
-                  <p style={{ whiteSpace: "pre-wrap" }}>{problem.outputFormat}</p>
-                </>
-              )}
-              {problem.constraints && (
-                <>
-                  <h2>Constraints</h2>
-                  <p style={{ whiteSpace: "pre-wrap" }}>{problem.constraints}</p>
-                </>
-              )}
-              <h2>Sample tests</h2>
-              {problem.sampleTests.map((sample, index) => (
-                <div key={index}>
-                  <div className="iobox">
-                    <span className="lab">Input {index + 1}</span>
-                    {sample.input}
-                  </div>
-                  <div className="iobox">
-                    <span className="lab">Output {index + 1}</span>
-                    {sample.expectedOutput}
-                  </div>
-                  {sample.explanation && <p>{sample.explanation}</p>}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="editor-column">
-            <div className="pane-head">
-              <span>solution.{FILE_EXT[language]}</span>
-              <span className="pane-head-state">
-                {isSubmitting
-                  ? "submitting…"
-                  : isRunning
-                    ? "running…"
-                    : contestGate.kind === "loading"
-                      ? "checking contest…"
-                      : contestBlocksActions
-                        ? "locked"
-                        : "ready"}
-              </span>
-            </div>
-
-            <MonacoEditor language={language} value={code} onChange={setCode} markers={editorMarkers} revealRequest={revealRequest} />
-
-            <div className="edbar">
-              <select value={language} onChange={(event) => setLanguage(event.target.value as Language)} aria-label="Language">
-                {languages.map((lang) => (
-                  <option key={lang} value={lang}>
-                    {lang === "cpp" ? "C++" : lang === "typescript" ? "TypeScript" : lang[0].toUpperCase() + lang.slice(1)}
-                  </option>
+          {/* ------------------------------------------------------ head */}
+          <header className={styles.head}>
+            <div className={styles.headMain}>
+              <div className={styles.titleRow}>
+                <span className={`${styles.level} ${styles[`level_${problem.difficulty}`]}`}>{problem.difficulty.toLowerCase()}</span>
+                <h1>{problem.title}</h1>
+                {solved && <span className={styles.solvedBadge}>✓ Solved</span>}
+                {attempted && <span className={styles.attemptedBadge}>Attempted</span>}
+              </div>
+              <div className={styles.metaRow}>
+                {problem.tags.map((tag) => (
+                  <Link key={tag} className={styles.tag} href={`/problems?topic=${encodeURIComponent(tag)}`}>
+                    {topicName(tag)}
+                  </Link>
                 ))}
-              </select>
-              <div className="button-row">
-                <button
-                  type="button"
-                  className="button-outline button-small"
-                  onClick={runSample}
-                  disabled={isRunning || contestBlocksActions}
-                  aria-describedby={contestBlocksActions ? CONTEST_GATE_BANNER_ID : undefined}
-                >
-                  {isRunning ? "Running…" : "Run"}
-                </button>
-                <button
-                  type="button"
-                  className="button button-small"
-                  onClick={submit}
-                  disabled={isSubmitting || contestBlocksActions}
-                  aria-describedby={contestBlocksActions ? CONTEST_GATE_BANNER_ID : undefined}
-                >
-                  {isSubmitting ? "Submitting…" : "Submit"} <span aria-hidden="true">→</span>
-                </button>
+                <span className={styles.metaStat} title="Share of submissions accepted">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="8.5" />
+                    <path d="m8.5 12.3 2.4 2.4L15.8 10" />
+                  </svg>
+                  {stats?.acceptanceRate === null || stats?.acceptanceRate === undefined ? "New" : `${stats.acceptanceRate}% accepted`}
+                </span>
+                <span className={styles.metaStat} title="Points for an Accepted solution">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" />
+                  </svg>
+                  {problem.basePoints} pts
+                </span>
               </div>
             </div>
+            <div className={styles.headActions}>
+              <button
+                type="button"
+                className="button"
+                onClick={() => {
+                  editorRef.current?.scrollIntoView({ block: "start" });
+                  editorRef.current?.querySelector<HTMLElement>("textarea, [contenteditable='true']")?.focus();
+                }}
+              >
+                {solved ? "Solve again" : attempted ? "Keep solving" : "Solve now"}
+              </button>
+            </div>
+          </header>
 
-            <RunResultPanel key={runCount} state={runState} language={runSnapshot?.language ?? language} limits={limits} onJumpToLine={jumpToLine} />
+          {contestGate.kind !== "none" && (
+            <ContestGateBanner
+              gate={contestGate}
+              practiceHref={`/problems/${problem.slug}`}
+              isRegistering={isRegistering}
+              registerError={registerError}
+              onRegister={registerFromBanner}
+              onRetry={() => {
+                if (contestId) void loadContest(contestId);
+              }}
+            />
+          )}
 
-            {appConfig.executionVisualizer && (
-              <ExecutionVisualizer
-                language={language}
-                source={code}
-                disabled={contestBlocksActions}
-                onLineChange={jumpToLine}
-              />
-            )}
+          <ul className={styles.facts} aria-label="Limits and numbers">
+            <li>
+              <span>Time limit</span>
+              <b>{problem.timeLimitMs >= 1000 ? `${(problem.timeLimitMs / 1000).toFixed(1).replace(/\.0$/, "")} s` : `${problem.timeLimitMs} ms`}</b>
+            </li>
+            <li>
+              <span>Memory limit</span>
+              <b>{problem.memoryLimitMb} MB</b>
+            </li>
+            <li>
+              <span>Accepted</span>
+              <b>{compactCount(stats?.accepted ?? 0)}</b>
+            </li>
+            <li>
+              <span>Submissions</span>
+              <b>{compactCount(stats?.submissions ?? 0)}</b>
+            </li>
+            <li>
+              <span>Your attempts</span>
+              <b>{problem.mySubmissionsCount}</b>
+            </li>
+          </ul>
 
-            {submitError && <p className="verdict-failed">{submitError}</p>}
-            {gemsEarned !== null && gemsEarned > 0 && (
-              <p className="gems-earned-note">✦ First solve — +{gemsEarned} gems added to your balance!</p>
-            )}
+          {/* ------------------------------------------------- workspace */}
+          <div className={styles.workspace}>
+            <section className={styles.left} aria-label="Problem">
+              <div className={styles.tabs} role="tablist" aria-label="Problem sections" onKeyDown={onTabKey}>
+                {LEFT_TABS.map((tab) => (
+                  <button
+                    key={tab.key}
+                    id={`tab-${tab.key}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={leftTab === tab.key}
+                    aria-controls={`panel-${tab.key}`}
+                    tabIndex={leftTab === tab.key ? 0 : -1}
+                    className={`${styles.tab}${leftTab === tab.key ? ` ${styles.tabOn}` : ""}`}
+                    onClick={() => setLeftTab(tab.key)}
+                  >
+                    {tab.label}
+                    {tab.count ? <b>{tab.count}</b> : null}
+                    {tab.key === "coach" && submission && (
+                      <i className={submission.verdict === "ACCEPTED" ? styles.dotOk : styles.dotBad} aria-hidden="true" />
+                    )}
+                  </button>
+                ))}
+              </div>
 
-            {history.length > 0 && (
-              <div className="workspace-history">
-                <h4>Recent submissions</h4>
-                <div className="submission-history">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Verdict</th>
-                        <th>Tests</th>
-                        <th>Score</th>
-                        <th>Language</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+              {/* Every panel stays mounted and is only hidden, so switching
+                  never throws away the coach's hints, reports or reviews. */}
+              <div id="panel-description" role="tabpanel" aria-labelledby="tab-description" hidden={leftTab !== "description"} className={styles.panel}>
+                <h2 className={styles.panelTitle}>Problem statement</h2>
+                <p className={styles.prose}>{problem.statement}</p>
+
+                {problem.inputFormat && (
+                  <>
+                    <h3 className={styles.subTitle}>Input format</h3>
+                    <p className={styles.prose}>{problem.inputFormat}</p>
+                  </>
+                )}
+                {problem.outputFormat && (
+                  <>
+                    <h3 className={styles.subTitle}>Output format</h3>
+                    <p className={styles.prose}>{problem.outputFormat}</p>
+                  </>
+                )}
+
+                {problem.sampleTests.map((sample, index) => (
+                  <div key={index} className={styles.example}>
+                    <h3 className={styles.subTitle}>Example {index + 1}</h3>
+                    <div className={styles.exampleBox}>
+                      <p>
+                        <span>Input</span>
+                        <code>{sample.input}</code>
+                      </p>
+                      <p>
+                        <span>Output</span>
+                        <code>{sample.expectedOutput}</code>
+                      </p>
+                      {sample.explanation && (
+                        <p>
+                          <span>Explanation</span>
+                          <em>{sample.explanation}</em>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {constraintLines.length > 0 && (
+                  <>
+                    <h3 className={styles.subTitle}>Constraints</h3>
+                    <ul className={styles.constraints}>
+                      {constraintLines.map((line, index) => (
+                        <li key={index}>
+                          <code>{line}</code>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+
+              <div id="panel-submissions" role="tabpanel" aria-labelledby="tab-submissions" hidden={leftTab !== "submissions"} className={styles.panel}>
+                <h2 className={styles.panelTitle}>Your submissions</h2>
+                {!user ? (
+                  <p className={styles.muted}>Sign in to keep a history of your attempts.</p>
+                ) : history.length === 0 ? (
+                  <p className={styles.muted}>Nothing yet — submit a solution and every attempt is listed here, newest first.</p>
+                ) : (
+                  <>
+                    <ul className={styles.history}>
                       {history.map((item) => {
                         const tone =
                           item.verdict === "ACCEPTED"
-                            ? "ok"
+                            ? styles.toneOk
                             : item.verdict === "TIME_LIMIT_EXCEEDED" || item.verdict === "MEMORY_LIMIT_EXCEEDED"
-                              ? "warn"
-                              : "bad";
-
+                              ? styles.toneWarn
+                              : styles.toneBad;
                         return (
-                          <tr key={item.id}>
-                            <td>
-                              <span className={`verdict-box verdict-box-${tone}`} style={{ display: "inline-block", padding: "2px 8px", fontSize: "11px" }}>
-                                {item.verdict.replace(/_/g, " ")}
+                          <li key={item.id}>
+                            <Link href={`/submissions/${item.id}`} className={styles.historyRow}>
+                              <span className={`${styles.verdictPill} ${tone}`}>{item.verdict.replace(/_/g, " ").toLowerCase()}</span>
+                              <span className={styles.historyMeta}>
+                                {item.passedTests}/{item.totalTests} tests · {item.score} pts · {LANGUAGE_NAME[item.language as LanguageKey] ?? item.language}
                               </span>
-                            </td>
-                            <td>
-                              {item.passedTests}/{item.totalTests}
-                            </td>
-                            <td>{item.score}</td>
-                            <td>{item.language}</td>
-                          </tr>
+                              <time className={styles.historyTime} dateTime={item.createdAt}>
+                                {new Date(item.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
+                              </time>
+                            </Link>
+                          </li>
                         );
                       })}
-                    </tbody>
-                  </table>
-                </div>
+                    </ul>
+                    <Link className={styles.textLink} href="/submissions">
+                      All your submissions <span aria-hidden="true">→</span>
+                    </Link>
+                  </>
+                )}
               </div>
-            )}
-          </section>
 
-          <AIPanelTabs
-            problemId={problem.id}
-            code={code}
-            isSignedIn={Boolean(user)}
-            submission={submission}
-            initialHintTier={problem.myHintTier ?? 0}
-            initialHintPenaltyPercent={problem.myHintPenaltyPercent ?? 0}
-            referenceSolution={problem.referenceSolution ?? null}
-            onApplyRefactor={(refactoredCode) => {
-              // The refactored code is in the submission's language, which may
-              // not be the editor's currently-selected tab (the user could
-              // have switched languages after submitting) — so switch to that
-              // language too, not just overwrite whatever tab happens to be
-              // open.
-              if (!submission) return;
-              setLanguage(submission.language);
-              setCodeByLanguage((prev) => ({ ...prev, [submission.language]: refactoredCode }));
-            }}
-          />
+              <div id="panel-coach" role="tabpanel" aria-labelledby="tab-coach" hidden={leftTab !== "coach"} className={`${styles.panel} ${styles.coachPanel}`}>
+                <AIPanelTabs
+                  problemId={problem.id}
+                  code={code}
+                  isSignedIn={Boolean(user)}
+                  submission={submission}
+                  initialHintTier={problem.myHintTier ?? 0}
+                  initialHintPenaltyPercent={problem.myHintPenaltyPercent ?? 0}
+                  referenceSolution={problem.referenceSolution ?? null}
+                  onApplyRefactor={(refactoredCode) => {
+                    // The refactored code is in the submission's language, which may
+                    // not be the editor's currently-selected tab (the user could
+                    // have switched languages after submitting) — so switch to that
+                    // language too, not just overwrite whatever tab happens to be
+                    // open.
+                    if (!submission) return;
+                    setLanguage(submission.language);
+                    setCodeByLanguage((prev) => ({ ...prev, [submission.language]: refactoredCode }));
+                  }}
+                />
+              </div>
+
+              <div id="panel-discuss" role="tabpanel" aria-labelledby="tab-discuss" hidden={leftTab !== "discuss"} className={styles.panel}>
+                <h2 className={styles.panelTitle}>Discuss</h2>
+                <p className={styles.muted}>
+                  Every accepted solution to {problem.title} is in the community feed, where you can read other people&apos;s approaches and
+                  comment on them.
+                </p>
+                {!solved && (
+                  <p className={styles.spoiler}>
+                    They are complete solutions — worth saving until you have an Accepted of your own.
+                  </p>
+                )}
+                <Link className="button-outline button-small" href={`/community?q=${encodeURIComponent(problem.title)}`}>
+                  Open the solutions <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </section>
+
+            <section className={styles.right} ref={editorRef} aria-label="Your solution">
+              <div className={styles.editorCard}>
+                <div className={styles.editorBar}>
+                  <label className={styles.langSelect}>
+                    <span className="sr-only">Language</span>
+                    <select value={language} onChange={(event) => setLanguage(event.target.value as Language)}>
+                      {languages.map((lang) => (
+                        <option key={lang} value={lang}>
+                          {LANGUAGE_NAME[lang as LanguageKey]}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <span className={styles.fileName}>
+                    solution.{FILE_EXT[language]} <i>· {actionState}</i>
+                  </span>
+                  <div className={styles.editorActions}>
+                    <button
+                      type="button"
+                      className={styles.runButton}
+                      onClick={runTab === "custom" ? runCustom : runSample}
+                      disabled={isRunning || contestBlocksActions}
+                      aria-describedby={contestBlocksActions ? CONTEST_GATE_BANNER_ID : undefined}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M7 5v14l11-7z" />
+                      </svg>
+                      {isRunning ? "Running…" : "Run"}
+                    </button>
+                    <button
+                      type="button"
+                      className="button button-small"
+                      onClick={submit}
+                      disabled={isSubmitting || contestBlocksActions}
+                      aria-describedby={contestBlocksActions ? CONTEST_GATE_BANNER_ID : undefined}
+                    >
+                      {isSubmitting ? "Submitting…" : "Submit"}
+                    </button>
+                  </div>
+                </div>
+                <MonacoEditor language={language} value={code} onChange={setCode} markers={editorMarkers} revealRequest={revealRequest} height="460px" />
+              </div>
+
+              {submitError && (
+                <p className={styles.submitError} role="alert">
+                  {submitError}
+                </p>
+              )}
+
+              {/* The verdict, where the Submit button is — the full review is
+                  one click away in the coach. */}
+              {submission && (
+                <div className={`${styles.verdictStrip} ${submission.verdict === "ACCEPTED" ? styles.toneOk : styles.toneBad}`} role="status">
+                  <b>{submission.verdict.replace(/_/g, " ").toLowerCase()}</b>
+                  <span>
+                    {submission.passedTests}/{submission.totalTests} tests
+                    {submission.verdict === "ACCEPTED" ? ` · ${submission.runtimeMs} ms · ${submission.score} pts` : ""}
+                  </span>
+                  <button type="button" onClick={() => setLeftTab("coach")}>
+                    See the review <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              )}
+              {gemsEarned !== null && gemsEarned > 0 && (
+                <p className="gems-earned-note">✦ First solve — +{gemsEarned} gems added to your balance!</p>
+              )}
+
+              <div className={styles.runCard}>
+                <div className={styles.runTabs} role="tablist" aria-label="Run">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={runTab === "tests"}
+                    className={runTab === "tests" ? styles.runTabOn : undefined}
+                    onClick={() => setRunTab("tests")}
+                  >
+                    Test results
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={runTab === "custom"}
+                    className={runTab === "custom" ? styles.runTabOn : undefined}
+                    onClick={() => setRunTab("custom")}
+                  >
+                    Custom input
+                  </button>
+                </div>
+                {runTab === "custom" && (
+                  <div className={styles.custom}>
+                    <label htmlFor="custom-input">Your input — the program reads it from stdin</label>
+                    <textarea
+                      id="custom-input"
+                      value={customInput}
+                      onChange={(event) => setCustomInput(event.target.value)}
+                      rows={4}
+                      spellCheck={false}
+                      placeholder={problem.sampleTests[0]?.input ?? ""}
+                    />
+                    <p>Run uses this input and shows what your program prints; there is no expected output to compare against.</p>
+                  </div>
+                )}
+                <RunResultPanel key={runCount} state={runState} language={runSnapshot?.language ?? language} limits={limits} onJumpToLine={jumpToLine} />
+              </div>
+
+              {appConfig.executionVisualizer && (
+                <ExecutionVisualizer language={language} source={code} disabled={contestBlocksActions} onLineChange={jumpToLine} />
+              )}
+            </section>
+          </div>
+
+          {/* --------------------------------------------------- related */}
+          {related.length > 0 && (
+            <section className={styles.related} aria-labelledby="related-title">
+              <div className={styles.relatedHead}>
+                <h2 id="related-title">Related problems</h2>
+                <Link className={styles.textLink} href={problem.tags[0] ? `/problems?topic=${encodeURIComponent(problem.tags[0])}` : "/problems"}>
+                  View all <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <div className={styles.relatedGrid}>
+                {related.map((item) => (
+                  <Link key={item.slug} href={`/problems/${item.slug}`} className={styles.relatedCard}>
+                    <b>{item.title}</b>
+                    <span className={styles.relatedMeta}>
+                      <i className={`${styles.level} ${styles[`level_${item.difficulty}`]}`}>{item.difficulty.toLowerCase()}</i>
+                      {item.tags[0] && <span>{topicName(item.tags[0])}</span>}
+                    </span>
+                    <span className={styles.relatedStats}>
+                      <span>{item.acceptanceRate === null ? "New" : `${item.acceptanceRate}%`}</span>
+                      <span>{compactCount(item.submissionCount)} submissions</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </main>
       <SiteFooter />
