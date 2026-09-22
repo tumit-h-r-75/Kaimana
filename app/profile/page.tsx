@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SiteHeader } from "../_components/home/SiteHeader";
@@ -7,11 +7,34 @@ import { SiteFooter } from "../_components/home/SiteFooter";
 import { useAuth } from "@/providers/AuthProvider";
 import { getMyRank } from "@/lib/api/leaderboard";
 import { getRecommendations, type Recommendations } from "@/lib/api/problems";
+import { getMyAnalytics, getMyAnalyticsHistory, type AnalyticsHistoryEntry, type AnalyticsResult } from "@/lib/api/analytics";
+import { PROPOSAL_COST_GEMS } from "@/lib/api/proposals";
 import { updateProfile, changePassword } from "@/lib/api/auth";
 import { getErrorMessage } from "@/lib/api/client";
 import type { MyRank } from "@/types/api";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { MyProposalsPanel } from "@/components/proposals/MyProposalsPanel";
+import {
+  IconArrowRight,
+  IconBolt,
+  IconBulb,
+  IconCalendar,
+  IconCheck,
+  IconCode,
+  IconCompass,
+  IconDoc,
+  IconFlame,
+  IconGem,
+  IconHome,
+  IconKey,
+  IconMail,
+  IconShield,
+  IconShieldCheck,
+  IconStar,
+  IconTarget,
+  IconTrophy,
+  IconUser,
+} from "./icons";
 import styles from "./profile.module.css";
 
 const MAX_AVATAR_BYTES = 4 * 1024 * 1024;
@@ -171,151 +194,376 @@ function ChangePasswordForm({ onDone }: { onDone: () => void }) {
 
 type Tab = "overview" | "account" | "security";
 
-const DIFFICULTIES = ["EASY", "MEDIUM", "HARD"] as const;
+const DIFFICULTIES = [
+  { key: "EASY", label: "Easy", tone: styles.toneEasy },
+  { key: "MEDIUM", label: "Medium", tone: styles.toneMedium },
+  { key: "HARD", label: "Hard", tone: styles.toneHard },
+] as const;
+
+const TABS: { key: Tab; label: string; icon: typeof IconHome }[] = [
+  { key: "overview", label: "Overview", icon: IconHome },
+  { key: "account", label: "Account", icon: IconUser },
+  { key: "security", label: "Security", icon: IconShield },
+];
+
+/* -------------------------------------------------------------- mini charts
+   Small pictures of real numbers, drawn only when there is something to
+   draw. None of them is decoration: a line with no data behind it would be
+   a claim the page cannot back up. */
+
+function Sparkline({ values, label }: { values: number[]; label: string }) {
+  if (values.length < 2 || values.every((v) => v === values[0])) return null;
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const span = max - min || 1;
+  const points = values.map((v, i) => `${(i / (values.length - 1)) * 100},${36 - ((v - min) / span) * 30}`);
+  return (
+    <svg className={styles.spark} viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label={label}>
+      <title>{label}</title>
+      <polyline points={points.join(" ")} vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
+}
+
+function MiniBars({ values, label }: { values: [number, number, number]; label: string }) {
+  const max = Math.max(...values);
+  if (max === 0) return null;
+  return (
+    <span className={styles.miniBars} role="img" aria-label={label} title={label}>
+      {values.map((v, i) => (
+        <i key={i} className={DIFFICULTIES[i].tone} style={{ height: `${Math.max(12, (v / max) * 100)}%` }} />
+      ))}
+    </span>
+  );
+}
+
+function Ring({ fraction, label }: { fraction: number; label: string }) {
+  const r = 15;
+  const c = 2 * Math.PI * r;
+  return (
+    <svg className={styles.ring} viewBox="0 0 40 40" role="img" aria-label={label}>
+      <title>{label}</title>
+      <circle cx="20" cy="20" r={r} />
+      <circle cx="20" cy="20" r={r} strokeDasharray={`${c * Math.min(1, fraction)} ${c}`} />
+    </svg>
+  );
+}
+
+/* --------------------------------------------------------------- milestones */
+
+interface Milestone {
+  key: string;
+  label: string;
+  icon: typeof IconCode;
+}
+
+// Earned from the account's own numbers — nothing here can be unlocked by
+// anything but solving.
+function milestonesFor(solved: number, hard: number, rank: number | null, streak: number): Milestone[] {
+  const list: Milestone[] = [];
+  if (solved >= 1) list.push({ key: "first", label: "First accepted solution", icon: IconCode });
+  if (solved >= 10) list.push({ key: "ten", label: "10 problems solved", icon: IconStar });
+  if (rank !== null && rank <= 10) list.push({ key: "top10", label: `Top 10 on the leaderboard (#${rank})`, icon: IconTrophy });
+  if (hard >= 1) list.push({ key: "hard", label: "Solved a hard problem", icon: IconFlame });
+  if (solved >= 25) list.push({ key: "twentyfive", label: "25 problems solved", icon: IconStar });
+  if (streak >= 3) list.push({ key: "streak", label: `${streak}-day solving streak`, icon: IconBolt });
+  return list;
+}
+
+function StatCard({
+  icon,
+  tone,
+  value,
+  label,
+  note,
+  viz,
+  featured,
+}: {
+  icon: ReactNode;
+  tone: string;
+  value: number | string;
+  label: string;
+  note: string;
+  viz?: ReactNode;
+  featured?: boolean;
+}) {
+  return (
+    <article className={`${styles.stat}${featured ? ` ${styles.statFeatured}` : ""}`}>
+      <span className={`${styles.statIcon} ${tone}`}>{icon}</span>
+      <div className={styles.statText}>
+        <b>{value}</b>
+        <span>{label}</span>
+        <small>{note}</small>
+      </div>
+      {viz && <div className={styles.statViz}>{viz}</div>}
+    </article>
+  );
+}
 
 function ProfileContent() {
   // Reuses the shared, Bearer-token-aware auth session instead of a
-  // duplicate raw fetch — this is what the httpOnly-cookie-only version of
-  // this page was missing, and why it could show "Authentication is
-  // required" even right after a successful login on browsers that block
-  // the cross-site cookie. See lib/api/client.ts and lib/auth-storage.ts.
+  // duplicate raw fetch — see lib/api/client.ts and lib/auth-storage.ts.
   const { user } = useAuth();
   const [rank, setRank] = useState<MyRank | null>(null);
   const [reco, setReco] = useState<Recommendations | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsResult | null>(null);
+  const [history, setHistory] = useState<AnalyticsHistoryEntry[]>([]);
   const [tab, setTab] = useState<Tab>("overview");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [profileSaved, setProfileSaved] = useState(false);
   const [passwordSaved, setPasswordSaved] = useState(false);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useEffect(() => {
+    // Each source on its own: one failing leaves the rest of the page up.
     getMyRank().then(setRank).catch(() => setRank(null));
-    // The same source the problem library uses for "what next". The profile
-    // is the other place a learner asks that, so it answers with their own
-    // numbers instead of a panel of encouragement with nothing behind it.
     getRecommendations().then(setReco).catch(() => setReco(null));
+    getMyAnalytics().then(setAnalytics).catch(() => setAnalytics(null));
+    getMyAnalyticsHistory(30).then(setHistory).catch(() => setHistory([]));
   }, []);
 
   if (!user) return null;
 
-  const solved = reco?.stats.solvedByDifficulty;
+  const solved = reco?.stats.solvedByDifficulty ?? { EASY: 0, MEDIUM: 0, HARD: 0 };
   const totalSolved = rank?.problemsSolved ?? reco?.stats.solved ?? 0;
-  // Bars are scaled against the busiest level, not against the library, so
-  // an early account still shows shape instead of three empty tracks.
-  const peak = solved ? Math.max(...DIFFICULTIES.map((d) => solved[d]), 1) : 1;
+  const byDifficultyTotal = solved.EASY + solved.MEDIUM + solved.HARD;
+  const gems = user.gems ?? 0;
+  const milestones = milestonesFor(totalSolved, solved.HARD, rank?.rank ?? null, analytics?.currentStreakDays ?? 0);
+  const shownMilestones = milestones.slice(0, 3);
+  const extraMilestones = milestones.slice(3);
+  const since = user.createdAt
+    ? new Date(user.createdAt).toLocaleDateString(undefined, { day: "2-digit", month: "2-digit", year: "numeric" })
+    : null;
+
+  const onTabKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    const index = TABS.findIndex((t) => t.key === tab);
+    const next = TABS[(index + (event.key === "ArrowRight" ? 1 : -1) + TABS.length) % TABS.length];
+    setTab(next.key);
+    tabRefs.current[next.key]?.focus();
+  };
 
   return (
     <main className={`section-shell ${styles.page}`}>
+      {/* ------------------------------------------------------------ hero */}
       <header className={styles.hero}>
-        <div className="avatar">
+        <svg className={styles.heroArt} viewBox="0 0 600 240" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M250 240 C 330 150, 420 60, 600 20 L600 240 Z" />
+          <path d="M330 240 C 400 170, 480 110, 600 90" />
+        </svg>
+
+        <div className={styles.avatar}>
           {user.profilePicUrl ? (
-            <Image src={user.profilePicUrl} alt={`${user.name} profile`} width={96} height={96} priority />
+            <Image src={user.profilePicUrl} alt={`${user.name} profile`} width={112} height={112} priority />
           ) : (
-            user.name.slice(0, 1).toUpperCase()
+            <span>{user.name.slice(0, 1).toUpperCase()}</span>
           )}
         </div>
 
         <div className={styles.identity}>
-          <p className="eyebrow">YOUR EDGE / PROFILE</p>
-          <h1>{user.name}</h1>
-          <p className={styles.email}>{user.email}</p>
+          <h1>
+            {user.name}
+            {user.role === "admin" && (
+              <span className={styles.staff} title="Kaimana admin" aria-label="Kaimana admin">
+                <IconShieldCheck />
+              </span>
+            )}
+          </h1>
+          <p className={styles.email}>
+            <IconMail /> {user.email}
+          </p>
           <div className={styles.pills}>
-            <span className={`${styles.pill} ${styles.pillOn}`}>● {user.status}</span>
-            <span className={styles.pill}>{user.role}</span>
-            <span className={`${styles.pill} ${styles.pillGem}`}>◆ {user.gems ?? 0} gems</span>
-            {user.createdAt && (
-              <span className={styles.pill}>since {new Date(user.createdAt).toLocaleDateString()}</span>
+            <span className={`${styles.pill} ${user.status === "active" ? styles.pillOn : styles.pillOff}`}>
+              <i aria-hidden="true" /> {user.status}
+            </span>
+            <span className={styles.pill}>
+              <IconUser /> {user.role === "guest" ? "host" : user.role}
+            </span>
+            <span className={`${styles.pill} ${styles.pillGem}`}>
+              <IconGem /> {gems} gems
+            </span>
+            {since && (
+              <span className={styles.pill}>
+                <IconCalendar /> since {since}
+              </span>
             )}
           </div>
+          {milestones.length > 0 && (
+            <ul className={styles.milestones} aria-label="Milestones">
+              {shownMilestones.map((m) => {
+                const Icon = m.icon;
+                return (
+                  <li key={m.key} title={m.label}>
+                    <Icon />
+                    <span className="sr-only">{m.label}</span>
+                  </li>
+                );
+              })}
+              {extraMilestones.length > 0 && (
+                <li className={styles.milestoneMore} title={extraMilestones.map((m) => m.label).join(", ")}>
+                  +{extraMilestones.length}
+                  <span className="sr-only">: {extraMilestones.map((m) => m.label).join(", ")}</span>
+                </li>
+              )}
+            </ul>
+          )}
         </div>
 
-        <div className={styles.heroActions}>
-          <Link className="button button-small" href="/problems">
-            Continue solving <span aria-hidden="true">→</span>
-          </Link>
-          <Link className="button-outline button-small" href="/submissions">Submissions</Link>
+        <div className={styles.heroSide}>
+          <p className={styles.motto}>
+            <i aria-hidden="true" /> Keep solving. Keep growing.
+          </p>
+          <div className={styles.heroActions}>
+            <Link className="button" href={reco?.resume ? `/problems/${reco.resume.slug}` : "/problems"}>
+              {reco?.resume ? "Continue solving" : totalSolved > 0 ? "Keep solving" : "Start solving"} <span aria-hidden="true">→</span>
+            </Link>
+            <Link className={styles.ghostButton} href="/submissions">
+              <IconDoc /> Submissions
+            </Link>
+          </div>
         </div>
       </header>
 
-      <nav className={styles.tabs} role="tablist" aria-label="Profile sections">
-        {([["overview", "Overview"], ["account", "Account"], ["security", "Security"]] as const).map(([key, label]) => (
+      {/* ------------------------------------------------------------ tabs */}
+      <div className={styles.tabs} role="tablist" aria-label="Profile sections" onKeyDown={onTabKey}>
+        {TABS.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
+            ref={(node) => {
+              tabRefs.current[key] = node;
+            }}
             type="button"
             role="tab"
             aria-selected={tab === key}
-            className={`${styles.tab} ${tab === key ? styles.tabOn : ""}`}
+            tabIndex={tab === key ? 0 : -1}
+            className={`${styles.tab}${tab === key ? ` ${styles.tabOn}` : ""}`}
             onClick={() => setTab(key)}
           >
-            {label}
+            <Icon /> {label}
           </button>
         ))}
-      </nav>
+      </div>
 
       {tab === "overview" && (
         <>
-          <section className={styles.stats}>
-            <article className={styles.stat}>
-              <b className={styles.statValue}>{totalSolved}</b>
-              <span className={styles.statLabel}>Problems solved</span>
-              <small className={styles.statNote}>{rank?.rank ? `Ranked #${rank.rank}` : "Not ranked yet"}</small>
-            </article>
-            <article className={styles.stat}>
-              <b className={styles.statValue}>{rank?.totalScore ?? 0}</b>
-              <span className={styles.statLabel}>Total score</span>
-              <small className={styles.statNote}>Best accepted score per problem</small>
-            </article>
-            <article className={styles.stat}>
-              <b className={styles.statValue}>{reco?.stats.attempted ?? 0}</b>
-              <span className={styles.statLabel}>Problems attempted</span>
-              <small className={styles.statNote}>Solved or still open</small>
-            </article>
-            <article className={styles.stat}>
-              <b className={styles.statValue}>{user.gems ?? 0}</b>
-              <span className={styles.statLabel}>Gems</span>
-              <small className={styles.statNote}>Earned solving, spent on hints</small>
-            </article>
+          <section className={styles.stats} aria-label="Your numbers">
+            <StatCard
+              featured
+              icon={<IconCheck />}
+              tone={styles.toneEasy}
+              value={totalSolved}
+              label="Problems solved"
+              note={rank?.rank ? `Ranked #${rank.rank} of ${rank.totalRanked}` : "Not ranked yet"}
+              viz={<Sparkline values={history.map((h) => h.problemsSolved)} label="Problems solved over the last 30 days" />}
+            />
+            <StatCard
+              icon={<IconTrophy />}
+              tone={styles.toneGem}
+              value={rank?.totalScore ?? 0}
+              label="Total score"
+              note="Best accepted score per problem"
+              viz={<MiniBars values={[solved.EASY, solved.MEDIUM, solved.HARD]} label={`Solved: ${solved.EASY} easy, ${solved.MEDIUM} medium, ${solved.HARD} hard`} />}
+            />
+            <StatCard
+              icon={<IconTarget />}
+              tone={styles.toneInfo}
+              value={reco?.stats.attempted ?? 0}
+              label="Problems attempted"
+              note="Solved or still open"
+              viz={<Sparkline values={(analytics?.activity ?? []).map((a) => a.count)} label="Submissions per day, recent activity" />}
+            />
+            <StatCard
+              icon={<IconGem />}
+              tone={styles.toneGem}
+              value={gems}
+              label="Gems"
+              note="Earned solving, spent on hints"
+              viz={
+                <Ring
+                  fraction={gems / PROPOSAL_COST_GEMS}
+                  label={gems >= PROPOSAL_COST_GEMS ? "Enough gems to propose a problem" : `${gems} of the ${PROPOSAL_COST_GEMS} gems a proposal costs`}
+                />
+              }
+            />
           </section>
 
           <section className={styles.grid}>
             <article className={styles.panel}>
-              <p className={styles.panelHead}>By difficulty</p>
-              {solved ? (
+              <p className={styles.kicker}>
+                <i aria-hidden="true" /> Difficulty breakdown
+              </p>
+              {byDifficultyTotal > 0 ? (
                 <div className={styles.bars}>
-                  {DIFFICULTIES.map((d) => (
-                    <div key={d} className={styles.barRow}>
-                      <span className={styles.barHead}>
-                        {d.toLowerCase()} <b>{solved[d]}</b>
-                      </span>
-                      <span className={styles.barTrack}>
-                        <i
-                          className={styles.barFill}
-                          style={{ width: `${Math.max((solved[d] / peak) * 100, solved[d] ? 6 : 0)}%` }}
-                        />
-                      </span>
-                    </div>
-                  ))}
+                  {DIFFICULTIES.map((d) => {
+                    const count = solved[d.key];
+                    const share = Math.round((count / byDifficultyTotal) * 100);
+                    return (
+                      <div key={d.key} className={styles.barRow}>
+                        <span className={`${styles.barDot} ${d.tone}`} aria-hidden="true" />
+                        <div className={styles.barBody}>
+                          <span className={styles.barHead}>
+                            {d.label}
+                            <span>
+                              <b>{count}</b>
+                              <small>{share}%</small>
+                            </span>
+                          </span>
+                          <span className={styles.barTrack}>
+                            <i className={d.tone} style={{ width: `${count ? Math.max(share, 3) : 0}%` }} />
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className={styles.empty}>Solve something and the breakdown appears here.</p>
               )}
             </article>
 
-            <article className={styles.panel}>
-              <p className={styles.panelHead}>Where to push</p>
+            <article className={`${styles.panel} ${styles.pushPanel}`}>
+              <svg className={styles.cubes} viewBox="0 0 160 140" aria-hidden="true">
+                <path d="M80 18 116 38v40L80 98 44 78V38z" />
+                <path d="M44 38 80 58l36-20M80 58v40" />
+                <path d="M116 78 140 92v28l-24 14-24-14" />
+                <path d="M92 92 116 106l24-14M116 106v28" />
+              </svg>
+
+              <div className={styles.pushHead}>
+                <span className={styles.pushIcon}>
+                  <IconCompass />
+                </span>
+                <p className={styles.kicker}>Where to push</p>
+              </div>
+
               {reco?.next ? (
                 <div className={styles.focus}>
-                  {reco.focusTag && <span className={styles.focusTag}>◆ {reco.focusTag}</span>}
+                  {reco.focusTag && <span className={styles.focusTag}>{reco.focusTag}</span>}
                   <p className={styles.focusBody}>{reco.next.reason}</p>
-                  <Link className="text-link" href={`/problems/${reco.next.slug}`}>
-                    {reco.next.title} · {reco.next.difficulty.toLowerCase()} →
-                  </Link>
+                  <p className={styles.focusTitle}>
+                    {reco.next.title} <small>· {reco.next.difficulty.toLowerCase()}</small>
+                  </p>
                 </div>
               ) : (
-                <p className={styles.empty}>
-                  Nothing to suggest yet — solve a problem and this points at whatever you are thinnest at.
+                <p className={styles.focusEmpty}>
+                  <IconBulb /> Nothing to suggest yet — solve a problem and this points at whatever you are thinnest at.
                 </p>
               )}
+              {reco?.resume && (
+                <p className={styles.resume}>
+                  Left unfinished: <Link href={`/problems/${reco.resume.slug}`}>{reco.resume.title}</Link>
+                </p>
+              )}
+
+              <Link
+                className={styles.pushGo}
+                href={reco?.next ? `/problems/${reco.next.slug}` : "/problems"}
+                aria-label={reco?.next ? `Open ${reco.next.title}` : "Browse problems"}
+              >
+                <IconArrowRight />
+              </Link>
             </article>
           </section>
         </>
@@ -324,17 +572,22 @@ function ProfileContent() {
       {tab === "account" && (
         <section className={styles.grid}>
           <article className={styles.panel}>
-            <p className={styles.panelHead}>Details</p>
-            <div className={styles.rows}>
-              <div className={styles.row}><span>Name</span><strong>{user.name}</strong></div>
-              <div className={styles.row}><span>Email</span><strong>{user.email}</strong></div>
-              <div className={styles.row}><span>Status</span><strong>{user.status}</strong></div>
-              <div className={styles.row}><span>Access level</span><strong>{user.role}</strong></div>
-            </div>
+            <p className={styles.kicker}>
+              <i aria-hidden="true" /> Details
+            </p>
+            <dl className={styles.rows}>
+              <div className={styles.row}><dt>Name</dt><dd>{user.name}</dd></div>
+              <div className={styles.row}><dt>Email</dt><dd>{user.email}</dd></div>
+              <div className={styles.row}><dt>Status</dt><dd>{user.status}</dd></div>
+              <div className={styles.row}><dt>Access level</dt><dd>{user.role === "guest" ? "contest host" : user.role}</dd></div>
+              {since && <div className={styles.row}><dt>Member since</dt><dd>{since}</dd></div>}
+            </dl>
           </article>
 
           <article className={styles.panel}>
-            <p className={styles.panelHead}>Edit profile</p>
+            <p className={styles.kicker}>
+              <i aria-hidden="true" /> Edit profile
+            </p>
             {isEditingProfile ? (
               <EditProfileForm
                 onDone={() => {
@@ -349,13 +602,13 @@ function ProfileContent() {
                 <button
                   type="button"
                   className="button button-small"
-                  style={{ marginTop: 14 }}
+                  style={{ marginTop: 16 }}
                   onClick={() => {
                     setProfileSaved(false);
                     setIsEditingProfile(true);
                   }}
                 >
-                  Edit profile
+                  <IconUser /> Edit profile
                 </button>
               </>
             )}
@@ -366,7 +619,9 @@ function ProfileContent() {
       {tab === "security" && (
         <section className={styles.grid}>
           <article className={styles.panel}>
-            <p className={styles.panelHead}>Password</p>
+            <p className={styles.kicker}>
+              <i aria-hidden="true" /> Password
+            </p>
             {isChangingPassword ? (
               <ChangePasswordForm
                 onDone={() => {
@@ -385,13 +640,13 @@ function ProfileContent() {
                     <button
                       type="button"
                       className="button button-small"
-                      style={{ marginTop: 14 }}
+                      style={{ marginTop: 16 }}
                       onClick={() => {
                         setPasswordSaved(false);
                         setIsChangingPassword(true);
                       }}
                     >
-                      Change password
+                      <IconKey /> Change password
                     </button>
                   </>
                 )}
@@ -401,9 +656,7 @@ function ProfileContent() {
         </section>
       )}
 
-      <div style={{ marginTop: 22 }}>
-        <MyProposalsPanel isAdmin={user.role === "admin"} />
-      </div>
+      <MyProposalsPanel isAdmin={user.role === "admin"} />
     </main>
   );
 }
