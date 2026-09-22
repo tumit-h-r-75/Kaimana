@@ -10,6 +10,7 @@ import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from
 import { IconSearch } from "@/components/admin/icons";
 import { PageLoader } from "@/components/ui/Loader";
 import { Pagination } from "@/components/ui/Pagination";
+import { useDialog } from "@/providers/DialogProvider";
 
 const PAGE_SIZE = 20;
 
@@ -20,6 +21,7 @@ const parsePage = (value: string | null) => {
 };
 
 function AdminProblemsContent() {
+  const dialog = useDialog();
   const searchParams = useSearchParams();
   const page = parsePage(searchParams.get("page"));
   const [problems, setProblems] = useState<AdminProblemSummary[]>([]);
@@ -93,6 +95,16 @@ function AdminProblemsContent() {
   };
 
   const togglePublished = async (problem: AdminProblemSummary) => {
+    if (
+      problem.isPublished &&
+      !(await dialog.confirm({
+        title: `Unpublish "${problem.title}"?`,
+        message: "Learners stop seeing it straight away. You can publish it again at any time.",
+        confirmLabel: "Unpublish",
+        tone: "warning",
+      }))
+    )
+      return;
     setBusyId(problem.id);
     setError(null);
     try {
@@ -107,7 +119,15 @@ function AdminProblemsContent() {
   };
 
   const remove = async (problem: AdminProblemSummary) => {
-    if (!window.confirm(`Delete "${problem.title}"? This also removes its test cases and cannot be undone.`)) return;
+    if (
+      !(await dialog.confirm({
+        title: `Delete "${problem.title}"?`,
+        message: "This also removes its test cases, and it cannot be undone.",
+        confirmLabel: "Delete problem",
+        tone: "danger",
+      }))
+    )
+      return;
     setBusyId(problem.id);
     setError(null);
     try {

@@ -12,6 +12,7 @@ import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from
 import { IconSearch } from "@/components/admin/icons";
 import { PageLoader } from "@/components/ui/Loader";
 import { Pagination } from "@/components/ui/Pagination";
+import { useDialog } from "@/providers/DialogProvider";
 
 const PAGE_SIZE = 20;
 
@@ -68,6 +69,7 @@ const roleSelectStyle: CSSProperties = {
 };
 
 function AdminUsersContent() {
+  const dialog = useDialog();
   const { user: me } = useAuth();
   const searchParams = useSearchParams();
   const page = parsePage(searchParams.get("page"));
@@ -162,11 +164,20 @@ function AdminUsersContent() {
     }
   };
 
-  const changeRole = (target: AdminUser, nextRole: UserRole) => {
+  const changeRole = async (target: AdminUser, nextRole: UserRole) => {
     if (nextRole === target.role) return;
     // Admin is full control of the platform, so promoting needs a second yes.
     // Cancelling leaves the controlled select on the user's current role.
-    if (nextRole === "admin" && !window.confirm(`Make ${target.name} an admin? Admins can manage every problem, contest and user.`)) return;
+    if (
+      nextRole === "admin" &&
+      !(await dialog.confirm({
+        title: `Make ${target.name} an admin?`,
+        message: "Admins can manage every problem, contest and user on the platform.",
+        confirmLabel: "Make admin",
+        tone: "warning",
+      }))
+    )
+      return;
     void applyUpdate(target.id, { role: nextRole });
   };
 
@@ -272,7 +283,19 @@ function AdminUsersContent() {
                             type="button"
                             className="icon-button icon-button-danger"
                             disabled={busyId === user.id}
-                            onClick={() => applyUpdate(user.id, { status: user.status === "blocked" ? "active" : "blocked" })}
+                            onClick={async () => {
+                              if (
+                                user.status !== "blocked" &&
+                                !(await dialog.confirm({
+                                  title: `Block ${user.name}?`,
+                                  message: "They will not be able to sign in or submit until you unblock them.",
+                                  confirmLabel: "Block account",
+                                  tone: "danger",
+                                }))
+                              )
+                                return;
+                              void applyUpdate(user.id, { status: user.status === "blocked" ? "active" : "blocked" });
+                            }}
                           >
                             {user.status === "blocked" ? "Unblock" : "Block"}
                           </button>

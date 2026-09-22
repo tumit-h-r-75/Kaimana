@@ -19,10 +19,12 @@ import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import styles from "../../proposals.module.css";
+import { useDialog } from "@/providers/DialogProvider";
 
 type LoadState = { status: "loading" } | { status: "missing" } | { status: "error"; message: string } | { status: "ready"; proposal: ProposalDetail };
 
 function EditProposalContent() {
+  const dialog = useDialog();
   const params = useParams<{ id: string }>();
   const id = String(params?.id ?? "");
   const router = useRouter();
@@ -46,7 +48,12 @@ function EditProposalContent() {
     const resubmit = state.status === "ready" && state.proposal.status === "rejected";
     if (
       resubmit &&
-      !window.confirm(`Send it back for review for ${PROPOSAL_COST_GEMS} gems? If it's rejected again, ${PROPOSAL_REJECT_REFUND_GEMS} gems come back to you.`)
+      !(await dialog.confirm({
+        title: `Send it back for ${PROPOSAL_COST_GEMS} gems?`,
+        message: `If it's rejected again, ${PROPOSAL_REJECT_REFUND_GEMS} gems come back to you.`,
+        confirmLabel: "Send for review",
+        tone: "info",
+      }))
     ) {
       return;
     }

@@ -13,6 +13,7 @@ import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import styles from "../proposals.module.css";
+import { useDialog } from "@/providers/DialogProvider";
 
 type LoadState = { status: "loading" } | { status: "missing" } | { status: "error"; message: string } | { status: "ready"; proposal: ProposalDetail };
 
@@ -78,6 +79,7 @@ function StatusCard({ proposal }: { proposal: ProposalDetail }) {
 }
 
 function ProposalContent() {
+  const dialog = useDialog();
   const params = useParams<{ id: string }>();
   const id = String(params?.id ?? "");
   const { refresh } = useAuth();
@@ -102,7 +104,15 @@ function ProposalContent() {
 
   const remove = async (proposal: ProposalDetail) => {
     const refundNote = proposal.status === "pending" ? " It hasn't been reviewed yet, so the gems it cost come back to you." : "";
-    if (!window.confirm(`Delete your proposal "${proposal.title}"?${refundNote} This can't be undone.`)) return;
+    if (
+      !(await dialog.confirm({
+        title: `Delete "${proposal.title}"?`,
+        message: `${refundNote.trim() ? `${refundNote.trim()} ` : ""}This can't be undone.`,
+        confirmLabel: "Delete proposal",
+        tone: "danger",
+      }))
+    )
+      return;
     setIsDeleting(true);
     setActionError(null);
     try {

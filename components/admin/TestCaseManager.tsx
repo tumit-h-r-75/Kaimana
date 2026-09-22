@@ -10,6 +10,7 @@ import {
 } from "@/lib/api/admin";
 import { generateTestCases } from "@/lib/api/ai";
 import { ApiError, getErrorMessage } from "@/lib/api/client";
+import { useDialog } from "@/providers/DialogProvider";
 
 const emptyDraft = { input: "", expectedOutput: "", isSample: false };
 
@@ -20,6 +21,7 @@ const emptyDraft = { input: "", expectedOutput: "", isSample: false };
 // lands here with reviewed:false and stays invisible to the judge (see
 // testcase.service.ts's getTestCasesForJudging) until Approved.
 export function TestCaseManager({ problemId, hasReferenceSolution }: { problemId: string; hasReferenceSolution: boolean }) {
+  const dialog = useDialog();
   const [testCases, setTestCases] = useState<AdminTestCaseRecord[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [draft, setDraft] = useState(emptyDraft);
@@ -93,6 +95,16 @@ export function TestCaseManager({ problemId, hasReferenceSolution }: { problemId
   };
 
   const reject = async (id: string) => {
+    const testCase = testCases?.find((item) => item.id === id);
+    if (
+      !(await dialog.confirm({
+        title: testCase?.reviewed ? "Delete this test case?" : "Reject this generated test case?",
+        message: "It is removed from the problem and no longer used for judging. This can't be undone.",
+        confirmLabel: testCase?.reviewed ? "Delete" : "Reject",
+        tone: "danger",
+      }))
+    )
+      return;
     setBusyId(id);
     setRowError((prev) => ({ ...prev, [id]: "" }));
     try {

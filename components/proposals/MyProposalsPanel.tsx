@@ -10,6 +10,7 @@ import { ApiError, getErrorMessage } from "@/lib/api/client";
 import { deleteProposal, getMyProposals, type MyProposalsResult, type ProposalSummary } from "@/lib/api/proposals";
 import { DifficultyTag, ProposalStatusBadge } from "./ProposalBadges";
 import styles from "./MyProposalsPanel.module.css";
+import { useDialog } from "@/providers/DialogProvider";
 
 type LoadState = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; data: MyProposalsResult };
 
@@ -89,6 +90,7 @@ function EditorArt() {
 }
 
 export function MyProposalsPanel({ isAdmin }: { isAdmin: boolean }) {
+  const dialog = useDialog();
   const { refresh } = useAuth();
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -104,7 +106,15 @@ export function MyProposalsPanel({ isAdmin }: { isAdmin: boolean }) {
 
   const remove = async (proposal: ProposalSummary) => {
     const refundNote = proposal.status === "pending" ? " It hasn't been reviewed yet, so the gems it cost come back to you." : "";
-    if (!window.confirm(`Delete your proposal "${proposal.title}"?${refundNote} This can't be undone.`)) return;
+    if (
+      !(await dialog.confirm({
+        title: `Delete "${proposal.title}"?`,
+        message: `${refundNote.trim() ? `${refundNote.trim()} ` : ""}This can't be undone.`,
+        confirmLabel: "Delete proposal",
+        tone: "danger",
+      }))
+    )
+      return;
     setDeletingId(proposal.id);
     setFeedback(null);
     try {
