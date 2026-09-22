@@ -53,6 +53,8 @@ export interface InterviewSessionSummary {
   status: InterviewStatus;
   score?: number;
   createdAt: string;
+  /** For a completed session, when it finished. */
+  updatedAt?: string;
   messageCount: number;
   /** Short excerpt of the AI's closing feedback, only present once the
    *  session is completed — backed by the AIReport collection so this
