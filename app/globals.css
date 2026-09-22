@@ -943,9 +943,21 @@ button.text-link:disabled { opacity: .5; cursor: not-allowed; }
   .admin-sidebar { position: static; flex-direction: row; overflow-x: auto; align-items: center; }
   .admin-sidebar-kicker { display: none; }
   .admin-sidebar nav { flex-direction: row; margin-bottom: 0; }
+  /* The sidebar becomes a strip that scrolls sideways; an item that wrapped
+     would make the strip taller instead. */
+  .admin-nav-item { white-space: nowrap; }
   .admin-sidebar-exit { display: none; }
   .stat-card-grid { grid-template-columns: repeat(2, 1fr); }
   .admin-link-grid { grid-template-columns: 1fr; }
+}
+
+/* On a phone the topbar keeps the mark and the two actions. The scope
+   label repeats the page's own heading, and the name is in the account's
+   own pages; together they pushed Sign out off a 360px screen. */
+@media (max-width: 640px) {
+  .admin-topbar { gap: 12px; padding: 0 16px; }
+  .admin-topbar-scope, .admin-topbar-name { display: none; }
+  .admin-shell { width: calc(100% - 32px); padding-top: 20px; }
 }
 
 /* ---------------------------------------------------------------------- */
