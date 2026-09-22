@@ -145,9 +145,19 @@
 .workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "left right"
+    "coach right"
+    "subs right";
   align-items: start;
   gap: 18px;
 }
+.left { grid-area: left; }
+.right { grid-area: right; }
+/* scroll-margin clears the sticky header when See the review scrolls here. */
+.coachCard { grid-area: coach; scroll-margin-top: 96px; }
+.subsCard { grid-area: subs; }
 
 .left {
   min-width: 0;
@@ -287,48 +297,6 @@
   font-size: 13.5px;
 }
 
-.history {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.historyRow {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg);
-  transition: border-color .15s;
-}
-.historyRow:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
-.verdictPill {
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--tone) 12%, transparent);
-  color: var(--tone);
-  font: 700 11px 'JetBrains Mono', monospace;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.historyMeta {
-  overflow: hidden;
-  color: var(--text);
-  font-size: 13px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.historyTime {
-  color: var(--text-dim);
-  font: 12px 'JetBrains Mono', monospace;
-  white-space: nowrap;
-}
-
 .textLink {
   display: inline-flex;
   align-items: center;
@@ -338,15 +306,6 @@
   font: 600 13.5px Inter, Arial, sans-serif;
 }
 .textLink:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-/* The coach brings its own tab strip; inside this panel it drops its card
-   frame and reads as part of the column. */
-.coachPanel { padding: 0; }
-.coachPanel :global(.ai-workspace-panel) {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
 
 /* ------------------------------------------------------------------ right */
 
@@ -541,6 +500,136 @@
   font-size: 12.5px;
 }
 
+/* ------------------------------------------------------ coach and history */
+
+.coachCard,
+.subsCard {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px 12px;
+}
+.cardHead > div { flex: 1; min-width: 0; }
+.cardHead h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--text);
+  font: 700 16px Inter, Arial, sans-serif;
+}
+.cardHead p {
+  margin: 4px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.cardIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-hi));
+  color: var(--accent);
+}
+.cardIcon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+.cardLink {
+  flex: none;
+  align-self: center;
+  color: var(--accent);
+  font: 600 13px Inter, Arial, sans-serif;
+}
+.cardLink:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* What each coach tab does, in a line, so nobody has to click to find out. */
+.coachGuide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0 18px 14px;
+  list-style: none;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.coachGuide b {
+  margin-right: 4px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* The coach brings its own tab strip; inside the card it drops its frame. */
+.coachCard :global(.ai-workspace-panel) {
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.subsCard .muted { padding: 0 18px 18px; margin: 0; }
+.verdictPill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  color: var(--tone);
+  font: 700 11px 'JetBrains Mono', monospace;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.subsScroll {
+  overflow-x: auto;
+  border-top: 1px solid var(--border);
+}
+.subsTable {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+}
+.subsTable th {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font: 600 11px 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+  text-align: left;
+  text-transform: uppercase;
+}
+.subsTable td {
+  padding: 10px 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  color: var(--text);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.subsTable tr:last-child td { border-bottom: 0; }
+.subsTable time {
+  color: var(--text-dim);
+  font: 12px 'JetBrains Mono', monospace;
+}
+.subsTable .verdictPill:hover { text-decoration: underline; text-underline-offset: 3px; }
+
 /* ---------------------------------------------------------------- related */
 
 .related { margin-top: 36px; }
@@ -602,7 +691,11 @@
 /* ------------------------------------------------------------- responsive */
 
 @media (max-width: 1180px) {
-  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "left" "right" "coach" "subs";
+  }
   .relatedGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -617,8 +710,8 @@
   .exampleBox p { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .fileName { order: 3; flex-basis: 100%; }
   .editorActions { margin-left: auto; }
-  .historyRow { grid-template-columns: auto minmax(0, 1fr); }
-  .historyTime { grid-column: 1 / -1; }
+  .cardHead { padding: 14px 14px 10px; }
+  .coachGuide { padding: 0 14px 12px; }
   .relatedGrid { grid-template-columns: minmax(0, 1fr); }
 }
 
@@ -626,7 +719,6 @@
   .tab,
   .tag,
   .runButton,
-  .historyRow,
   .relatedCard { transition: none; }
   .relatedCard:hover { transform: none; }
 }
