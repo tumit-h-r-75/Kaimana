@@ -131,5 +131,5 @@
 
 @media (max-width: 620px) {
   .section { padding-block: 64px; }
-  .rail { grid-template-columns: 1fr; gap: 10px; }
+  .rail { grid-template-columns: minmax(0, 1fr); gap: 10px; }
 }

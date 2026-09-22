@@ -762,7 +762,7 @@
   }
   .sessionSide {
     grid-column: 1 / -1;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
     justify-items: end;
   }

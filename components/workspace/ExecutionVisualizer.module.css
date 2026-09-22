@@ -132,7 +132,7 @@
 
 .varRow {
   display: grid;
-  grid-template-columns: minmax(64px, auto) 1fr;
+  grid-template-columns: minmax(64px, auto) minmax(0, 1fr);
   gap: 12px;
   align-items: start;
 }
@@ -297,7 +297,7 @@
 
 @media (max-width: 620px) {
   .varRow {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 5px;
   }
 }

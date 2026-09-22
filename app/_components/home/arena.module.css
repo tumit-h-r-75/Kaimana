@@ -172,7 +172,7 @@
 }
 
 @media (max-width: 1040px) {
-  .inner { grid-template-columns: 1fr; gap: 46px; }
+  .inner { grid-template-columns: minmax(0, 1fr); gap: 46px; }
 }
 
 @media (max-width: 620px) {
