@@ -21,6 +21,26 @@ export interface ProblemSummary {
   tags: string[];
   basePoints: number;
   solvedByMe: boolean;
+  /** A line or two of the statement, for the library's cards. */
+  excerpt?: string;
+  submissionCount?: number;
+  /** Percent of submissions accepted; null before anyone has submitted. */
+  acceptanceRate?: number | null;
+}
+
+export interface ProblemTopics {
+  total: number;
+  byDifficulty: Record<Difficulty, number>;
+  topics: { tag: string; count: number }[];
+}
+
+export interface RelatedProblem {
+  slug: string;
+  title: string;
+  difficulty: Difficulty;
+  tags: string[];
+  acceptanceRate: number | null;
+  submissionCount: number;
 }
 
 export interface ProblemListResult {
@@ -53,6 +73,9 @@ export interface ProblemDetail {
   starterCode: Partial<Record<Language, string>>;
   mySubmissionsCount: number;
   myBestVerdict: string | null;
+  /** Everyone's submissions to this problem. */
+  stats?: { submissions: number; accepted: number; acceptanceRate: number | null };
+  related?: RelatedProblem[];
   /** Highest hint tier this user has already unlocked on the problem (0 if
    *  none), and the score penalty those hints cost, as a percentage. */
   myHintTier?: number;
