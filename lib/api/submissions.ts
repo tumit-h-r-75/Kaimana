@@ -1,5 +1,5 @@
 import { apiRequest } from "./client";
-import type { Language, Submission, SubmissionListResult } from "@/types/api";
+import type { Language, Submission, SubmissionListResult, Verdict } from "@/types/api";
 
 export interface SubmitPayload {
   problemId: string;
@@ -12,9 +12,13 @@ export const submitSolution = (payload: SubmitPayload) => apiRequest<Submission>
 
 export const getSubmissionById = (id: string) => apiRequest<Submission>(`/api/submissions/${id}`);
 
-export const listSubmissions = (params: { problemId?: string; page?: number; limit?: number } = {}) => {
+export const listSubmissions = (
+  params: { problemId?: string; page?: number; limit?: number; verdict?: Verdict; search?: string } = {},
+) => {
   const query = new URLSearchParams();
   if (params.problemId) query.set("problemId", params.problemId);
+  if (params.verdict) query.set("verdict", params.verdict);
+  if (params.search?.trim()) query.set("search", params.search.trim());
   if (params.page) query.set("page", String(params.page));
   if (params.limit) query.set("limit", String(params.limit));
   const queryString = query.toString();

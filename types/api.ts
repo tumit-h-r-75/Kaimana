@@ -129,10 +129,16 @@ export interface Submission {
 }
 
 export interface SubmissionListResult {
-  items: Submission[];
+  items: (Submission & {
+    /** The submission's problem, named — present on list responses only. */
+    problem?: { id: string; title: string; slug: string; difficulty: Difficulty } | null;
+  })[];
   total: number;
   page: number;
   limit: number;
+  /** Every verdict across the caller's whole history. Omitted when the list
+   *  was narrowed to one problem. */
+  counts?: Partial<Record<Verdict, number>>;
 }
 
 export interface LeaderboardEntry {
