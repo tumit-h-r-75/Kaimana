@@ -9,6 +9,7 @@ import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from
 import { invalidatePendingReviews } from "@/components/admin/usePendingReviews";
 import { Pagination } from "@/components/ui/Pagination";
 import styles from "./hostRequests.module.css";
+import { useDialog } from "@/providers/DialogProvider";
 
 const PAGE_SIZE = 20;
 const NOTE_MAX = 500;
@@ -54,6 +55,7 @@ const formatWindow = (start: string | null, end: string | null) => {
 type Review = { id: string; action: "approve" | "reject"; note: string };
 
 function HostRequestsContent() {
+  const dialog = useDialog();
   const baseId = useId();
   const [tab, setTab] = useState<HostRequestStatusFilter>("pending");
   const [page, setPage] = useState(1);
@@ -129,7 +131,16 @@ function HostRequestsContent() {
     const note = review.note.trim();
     if (note.length > NOTE_MAX) return;
     const requester = request.user?.name ?? "this user";
-    if (review.action === "reject" && !window.confirm(`Reject ${requester}'s request to host "${request.contestTitle}"?`)) return;
+    if (
+      review.action === "reject" &&
+      !(await dialog.confirm({
+        title: "Reject this host request?",
+        message: `${requester} asked to host "${request.contestTitle}". They will see your note.`,
+        confirmLabel: "Reject request",
+        tone: "danger",
+      }))
+    )
+      return;
 
     setBusyId(request.id);
     setFeedback(null);

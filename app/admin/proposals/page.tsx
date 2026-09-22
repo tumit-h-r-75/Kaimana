@@ -23,6 +23,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { ProposalDetails } from "@/components/proposals/ProposalDetails";
 import { DifficultyTag, ProposalStatusBadge } from "@/components/proposals/ProposalBadges";
 import styles from "./proposals.module.css";
+import { useDialog } from "@/providers/DialogProvider";
 
 const PAGE_SIZE = 20;
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -53,6 +54,7 @@ type DetailState = { status: "loading" } | { status: "error"; message: string } 
 type Feedback = { tone: "success" | "error"; text: string; problemId?: string };
 
 function ProposalsContent() {
+  const dialog = useDialog();
   const baseId = useId();
   const [tab, setTab] = useState<ProposalStatusFilter>("pending");
   const [page, setPage] = useState(1);
@@ -163,7 +165,12 @@ function ProposalsContent() {
       }
       payload = { ...payload, slug: slug || undefined, basePoints: Number(points), publish: review.publish };
     } else if (
-      !window.confirm(`Reject "${proposal.title}"${proposal.user ? ` by ${proposal.user.name}` : ""}? The author gets ${PROPOSAL_REJECT_REFUND_GEMS} gems back.`)
+      !(await dialog.confirm({
+        title: `Reject "${proposal.title}"?`,
+        message: `${proposal.user ? `${proposal.user.name} gets` : "The author gets"} ${PROPOSAL_REJECT_REFUND_GEMS} gems back and sees your note.`,
+        confirmLabel: "Reject proposal",
+        tone: "danger",
+      }))
     ) {
       return;
     }

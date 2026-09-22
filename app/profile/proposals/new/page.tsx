@@ -12,10 +12,12 @@ import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import styles from "../proposals.module.css";
+import { useDialog } from "@/providers/DialogProvider";
 
 type LoadState = { status: "loading" } | { status: "error"; message: string } | { status: "ready"; data: MyProposalsResult };
 
 function NewProposalContent() {
+  const dialog = useDialog();
   const router = useRouter();
   const { refresh } = useAuth();
   const [state, setState] = useState<LoadState>({ status: "loading" });
@@ -33,7 +35,15 @@ function NewProposalContent() {
   const submit = async (input: ProposalInput) => {
     if (state.status !== "ready") return;
     const { gems, cost, rejectRefund } = state.data;
-    if (!window.confirm(`Send this proposal for ${cost} gems? You have ${gems}. If it's rejected, ${rejectRefund} gems come back to you.`)) return;
+    if (
+      !(await dialog.confirm({
+        title: `Send this proposal for ${cost} gems?`,
+        message: `You have ${gems}. If it's rejected, ${rejectRefund} gems come back to you.`,
+        confirmLabel: `Send for ${cost} gems`,
+        tone: "info",
+      }))
+    )
+      return;
     setError(null);
     try {
       const created = await createProposal(input);

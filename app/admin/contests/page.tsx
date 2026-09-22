@@ -12,6 +12,7 @@ import { ContestForm, takeContestManagerFlash } from "@/components/admin/Contest
 import { Pagination } from "@/components/ui/Pagination";
 import { IconSearch } from "@/components/admin/icons";
 import styles from "@/components/admin/ContestForm.module.css";
+import { useDialog } from "@/providers/DialogProvider";
 
 const PAGE_SIZE = 20;
 const STATUS_TICK_MS = 30_000;
@@ -27,6 +28,7 @@ const formatDateTime = (iso: string) => {
 const roleBadgeClass = (role: UserRole) => (role === "admin" ? "badge badge-admin" : role === "guest" ? `badge ${styles.badgeGuest}` : "badge badge-user");
 
 function AdminContestsContent() {
+  const dialog = useDialog();
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
 
@@ -125,7 +127,15 @@ function AdminContestsContent() {
         : contest.participantCount === 1
           ? "its 1 registration"
           : `all ${contest.participantCount} of its registrations`;
-    if (!window.confirm(`Delete "${contest.title}"?\n\nThis permanently deletes the contest and removes ${registrations}. This can't be undone.`)) return;
+    if (
+      !(await dialog.confirm({
+        title: `Delete "${contest.title}"?`,
+        message: `This permanently deletes the contest and removes ${registrations}. This can't be undone.`,
+        confirmLabel: "Delete contest",
+        tone: "danger",
+      }))
+    )
+      return;
     setBusyId(contest.id);
     setListMessage(null);
     try {
