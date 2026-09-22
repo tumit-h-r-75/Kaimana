@@ -6,7 +6,8 @@
 import { apiRequest } from "./client";
 
 export type CommunityDifficulty = "EASY" | "MEDIUM" | "HARD";
-export type CommunityLanguage = "python" | "cpp" | "javascript";
+export type CommunityLanguage = "python" | "cpp" | "javascript" | "typescript";
+export type CommunitySort = "newest" | "oldest" | "fastest";
 
 export interface CommunityAuthor {
   id: string;
@@ -19,6 +20,8 @@ export interface CommunityProblemRef {
   title: string;
   slug: string;
   difficulty: CommunityDifficulty;
+  /** Present on feed items, where the card picks its icon from them. */
+  tags?: string[];
 }
 
 export interface CommunityFeedItem {
@@ -51,10 +54,24 @@ export interface CommunityComment {
   author: CommunityAuthor | null;
 }
 
-export const getCommunityFeed = (params: { page?: number; limit?: number } = {}) => {
+export interface CommunityFeedParams {
+  page?: number;
+  limit?: number;
+  /** Problem title or solver name. */
+  search?: string;
+  difficulty?: CommunityDifficulty;
+  language?: CommunityLanguage;
+  sort?: CommunitySort;
+}
+
+export const getCommunityFeed = (params: CommunityFeedParams = {}) => {
   const query = new URLSearchParams();
   if (params.page) query.set("page", String(params.page));
   if (params.limit) query.set("limit", String(params.limit));
+  if (params.search?.trim()) query.set("search", params.search.trim());
+  if (params.difficulty) query.set("difficulty", params.difficulty);
+  if (params.language) query.set("language", params.language);
+  if (params.sort && params.sort !== "newest") query.set("sort", params.sort);
   const queryString = query.toString();
   return apiRequest<CommunityFeedResult>(`/api/community/feed${queryString ? `?${queryString}` : ""}`);
 };

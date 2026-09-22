@@ -1,53 +1,6 @@
 /* CSS Module for the Community feature (feed + submission detail/comments).
    Colors copied from app/globals.css tokens — not importing that file. */
 
-.feedGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-  margin-top: 28px;
-}
-
-@media (max-width: 760px) {
-  .feedGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  border: 1px solid var(--border);
-  background: var(--surface-hi);
-  padding: 20px;
-  transition: border-color 0.15s, transform 0.15s;
-}
-
-.card:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-}
-
-.cardTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.cardTitle {
-  margin: 0;
-  font: 700 18px "JetBrains Mono", sans-serif;
-  color: var(--text);
-}
-
-.authorRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .avatar {
   width: 28px;
   height: 28px;
@@ -77,34 +30,6 @@
   color: var(--text);
   font-size: 13px;
   font-weight: 600;
-}
-
-.cardMeta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  color: var(--text-dim);
-  font: 11px "JetBrains Mono", monospace;
-}
-
-.cardMeta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.emptyState {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-dim);
-  padding: 34px 24px;
-  text-align: center;
-  margin-top: 28px;
-}
-
-.emptyState a {
-  color: var(--text);
-  font-weight: 700;
 }
 
 .detailHead {
