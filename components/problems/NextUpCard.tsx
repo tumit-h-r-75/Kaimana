@@ -20,11 +20,16 @@ import styles from "./NextUpCard.module.css";
  * genuinely nothing to suggest. An empty box that says "no recommendations"
  * is worse than no box.
  */
-export default function NextUpCard() {
+export default function NextUpCard({ recommendations }: { recommendations?: Recommendations | null } = {}) {
   const { user, isLoading } = useAuth();
-  const [data, setData] = useState<Recommendations | null>(null);
+  const [fetched, setData] = useState<Recommendations | null>(null);
+  // A page that already holds the recommendations passes them in, and the
+  // card skips its own request.
+  const provided = recommendations !== undefined;
+  const data = provided ? recommendations : fetched;
 
   useEffect(() => {
+    if (provided) return;
     if (!user) { setData(null); return; }
     let cancelled = false;
     getRecommendations()
@@ -34,7 +39,7 @@ export default function NextUpCard() {
       // banner over a perfectly working problem library.
       .catch(() => { if (!cancelled) setData(null); });
     return () => { cancelled = true; };
-  }, [user]);
+  }, [user, provided]);
 
   if (isLoading || !user || !data) return null;
   if (!data.resume && !data.next) return null;

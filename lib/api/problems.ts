@@ -1,5 +1,5 @@
 import { apiRequest } from "./client";
-import type { Difficulty, ProblemDetail, ProblemListResult } from "@/types/api";
+import type { Difficulty, ProblemDetail, ProblemListResult, ProblemTopics } from "@/types/api";
 
 export interface ListProblemsParams {
   difficulty?: string;
@@ -21,6 +21,9 @@ export const listProblems = (params: ListProblemsParams = {}) => {
 };
 
 export const getProblemBySlug = (slug: string) => apiRequest<ProblemDetail>(`/api/problems/${slug}`);
+
+/** Published problems counted by topic and difficulty. */
+export const getProblemTopics = () => apiRequest<ProblemTopics>("/api/problems/topics");
 
 /** A suggested problem, with the sentence that explains why it was picked. */
 export interface Suggestion {
