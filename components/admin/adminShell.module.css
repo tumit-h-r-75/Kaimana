@@ -372,14 +372,52 @@
 
 /* ------------------------------------------------------------------- page */
 
+/* A column that fills the row, so the footer sits at the bottom of the
+   screen however short the page is. */
 .main {
   grid-row: 2;
   grid-column: 2;
   justify-self: center;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 1440px;
   min-width: 0;
-  padding: 26px 34px 80px;
+  padding: 26px 34px 0;
+}
+
+.body {
+  flex: 1 0 auto;
+  min-width: 0;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 24px;
+  margin-top: 56px;
+  padding: 20px 0 26px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font: 12px 'JetBrains Mono', monospace;
+}
+
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+.footerLinks a {
+  color: var(--text-dim);
+  transition: color .15s;
+}
+.footerLinks a:hover { color: var(--text); }
+
+.footerBy b {
+  color: var(--text);
+  font-weight: 600;
 }
 
 .notice {
@@ -484,7 +522,7 @@
 
   .main {
     grid-column: 1;
-    padding: 22px 22px 64px;
+    padding: 22px 22px 0;
   }
   .welcome { text-align: left; }
   .welcomeTitle { font-size: 17px; }
@@ -499,7 +537,12 @@
   .toolsRule { display: none; }
   .tools { gap: 4px; padding: 0 10px; }
   .account { padding: 3px; }
-  .main { padding: 18px 16px 56px; }
+  .main { padding: 18px 16px 0; }
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 40px;
+  }
   /* Popovers span the screen instead of hanging off its left edge. The
      topbar's backdrop-filter makes it their containing block, so this is
      measured from the topbar, which spans the viewport. */
