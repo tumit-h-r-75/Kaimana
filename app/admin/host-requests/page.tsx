@@ -6,8 +6,8 @@ import type { HostRequest, HostRequestStatus, UserRole } from "@/types/api";
 import { ApiError, getErrorMessage } from "@/lib/api/client";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from "@/components/admin/AdminShell";
+import { invalidatePendingReviews } from "@/components/admin/usePendingReviews";
 import { Pagination } from "@/components/ui/Pagination";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import styles from "./hostRequests.module.css";
 
 const PAGE_SIZE = 20;
@@ -135,6 +135,7 @@ function HostRequestsContent() {
     setFeedback(null);
     try {
       await reviewHostRequest(request.id, { action: review.action, note: note || undefined });
+      invalidatePendingReviews();
       setFeedback({
         tone: "success",
         text:
@@ -373,7 +374,6 @@ export default function AdminHostRequestsPage() {
   return (
     <AdminRoute>
       <HostRequestsContent />
-      <SiteFooter />
     </AdminRoute>
   );
 }
