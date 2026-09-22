@@ -82,10 +82,10 @@
 @keyframes glow {
   0%,
   100% {
-    fill: var(--warn);
+    fill: #ffc83d;
   }
   50% {
-    fill: var(--warn);
+    fill: #fff1a8;
   }
 }
 

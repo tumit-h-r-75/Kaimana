@@ -116,9 +116,9 @@
   top: -10px;
   right: 8px;
   padding: 1px 8px;
-  border: 2px solid var(--surface-hi);
+  border: 2px solid #1b2240;
   border-radius: 999px;
-  background: var(--error);
+  background: #c9184a;
   color: #fff;
   font: 700 12px/1.4 var(--kq-display);
   font-style: normal;
@@ -136,7 +136,7 @@
 .count {
   padding: 2px 12px;
   border-radius: 999px;
-  background: var(--surface-hi);
+  background: #1b2240;
   color: #fff;
   font: 600 15px/1.6 var(--kq-display);
 }
@@ -153,9 +153,9 @@
 
 .root {
   padding: 10px;
-  border: 2.5px dashed color-mix(in srgb, var(--surface-hi) 22%, transparent);
+  border: 2.5px dashed rgba(27, 34, 64, 0.22);
   border-radius: 18px;
-  background: var(--text);
+  background: #f7f9ff;
 }
 
 .emptyProgram {
@@ -199,13 +199,13 @@
 }
 
 .active {
-  box-shadow: 0 0 0 4px var(--warn), 0 0 0 7px var(--surface-hi);
+  box-shadow: 0 0 0 4px #ffc83d, 0 0 0 7px #1b2240;
   transform: scale(1.015);
 }
 
 .failed {
-  background: var(--text);
-  box-shadow: 0 0 0 4px var(--error);
+  background: #ffe1e6;
+  box-shadow: 0 0 0 4px #ff6b81;
 }
 
 .stepper {
@@ -248,13 +248,13 @@
 .sensed {
   padding: 2px 10px;
   border-radius: 999px;
-  background: var(--surface-hi);
+  background: #1b2240;
   color: #fff;
   font: 600 14px/1.5 var(--kq-display);
 }
 
 .sensedYes {
-  background: var(--accent);
+  background: #15803d;
 }
 
 .tools {
@@ -268,16 +268,16 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border: 2px solid color-mix(in srgb, var(--surface-hi) 20%, transparent);
+  border: 2px solid rgba(27, 34, 64, 0.2);
   border-radius: 12px;
   background: #fff;
-  color: var(--surface-hi);
+  color: #1b2240;
   font: 700 18px/1 var(--kq-body);
   cursor: pointer;
 }
 
 .tool:hover:not(:disabled) {
-  border-color: var(--surface-hi);
+  border-color: #1b2240;
 }
 
 .tool:disabled {
@@ -286,15 +286,15 @@
 }
 
 .toolDelete:hover:not(:disabled) {
-  border-color: var(--error);
-  background: var(--text);
-  color: var(--error);
+  border-color: #b4233f;
+  background: #ffe4e8;
+  color: #b4233f;
 }
 
 .branch {
   margin: 0 8px 8px 14px;
   padding: 8px;
-  border: 2px dashed color-mix(in srgb, var(--surface-hi) 22%, transparent);
+  border: 2px dashed rgba(27, 34, 64, 0.22);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.7);
 }
@@ -317,10 +317,10 @@
   width: 100%;
   min-height: 44px;
   margin-top: 8px;
-  border: 2px dashed color-mix(in srgb, var(--surface-hi) 30%, transparent);
+  border: 2px dashed rgba(27, 34, 64, 0.3);
   border-radius: 12px;
   background: transparent;
-  color: var(--border);
+  color: #28325a;
   font: 600 15px var(--kq-display);
   cursor: pointer;
 }
@@ -333,7 +333,7 @@
 .slot[aria-pressed="true"] {
   border-style: solid;
   border-color: #1d4ed8;
-  background: var(--text);
+  background: #e8f0ff;
   color: #1d3ea8;
 }
 

@@ -33,16 +33,16 @@
 }
 
 .title span {
-  color: var(--warn);
-  -webkit-text-stroke: 3px var(--surface-hi);
+  color: #ff8c42;
+  -webkit-text-stroke: 3px #1b2240;
   paint-order: stroke fill;
-  text-shadow: 0 6px 0 var(--surface-hi);
+  text-shadow: 0 6px 0 #1b2240;
 }
 
 .lead {
   max-width: 520px;
   margin: 18px 0 26px;
-  color: var(--border);
+  color: #28325a;
   font-size: 20px;
   font-weight: 700;
 }
@@ -132,7 +132,7 @@
   height: 20px;
   margin-top: 14px;
   overflow: hidden;
-  border: 3px solid var(--surface-hi);
+  border: 3px solid #1b2240;
   border-radius: 999px;
   background: #fff;
 }
@@ -140,7 +140,7 @@
 .journey span {
   display: block;
   height: 100%;
-  background: repeating-linear-gradient(45deg, var(--warn) 0 12px, var(--warn) 12px 24px);
+  background: repeating-linear-gradient(45deg, #ffc83d 0 12px, #ffb000 12px 24px);
   transition: width 0.6s ease;
 }
 
@@ -157,7 +157,7 @@
 
 .sectionHead p {
   margin: 6px 0 0;
-  color: var(--border);
+  color: #28325a;
   font-weight: 600;
 }
 
@@ -191,13 +191,13 @@
   padding: 18px 20px 20px;
   border: 3px solid var(--world);
   border-radius: 28px;
-  background: linear-gradient(160deg, var(--world-soft) 0%, var(--text) 65%);
+  background: linear-gradient(160deg, var(--world-soft) 0%, #ffffff 65%);
   box-shadow: var(--kq-shadow);
 }
 
 .worldLocked {
   border-style: dashed;
-  background: linear-gradient(160deg, var(--text) 0%, var(--text) 65%);
+  background: linear-gradient(160deg, #eef1f7 0%, #fbfcff 65%);
 }
 
 .worldLocked .worldEmoji {
@@ -217,10 +217,10 @@
   place-items: center;
   width: 64px;
   height: 64px;
-  border: 3px solid var(--surface-hi);
+  border: 3px solid #1b2240;
   border-radius: 20px;
   background: var(--world);
-  box-shadow: 0 4px 0 var(--surface-hi);
+  box-shadow: 0 4px 0 #1b2240;
   font-size: 34px;
 }
 
@@ -244,7 +244,7 @@
 
 .worldTagline {
   margin: 0;
-  color: var(--border);
+  color: #3a4466;
   font-weight: 600;
 }
 
@@ -268,15 +268,15 @@
 
 .worldBadge {
   padding: 4px 12px;
-  border: 2px solid var(--warn);
+  border: 2px solid #e0a100;
   border-radius: 999px;
-  background: var(--text);
+  background: #fff3c4;
   font: 600 15px var(--kq-display);
 }
 
 .lockNote {
   margin: 12px 0 0;
-  color: var(--border);
+  color: #3a4466;
   font-weight: 700;
 }
 
@@ -309,7 +309,7 @@
 }
 
 .worldLocked .stop::after {
-  border-top-color: var(--text-dim);
+  border-top-color: #b5bdd1;
 }
 
 .node {
@@ -319,11 +319,11 @@
   place-items: center;
   width: 68px;
   height: 68px;
-  border: 4px solid var(--surface-hi);
+  border: 4px solid #1b2240;
   border-radius: 50%;
   font: 700 26px var(--kq-display);
   text-decoration: none;
-  box-shadow: 0 5px 0 var(--surface-hi);
+  box-shadow: 0 5px 0 #1b2240;
   transition: transform 0.15s ease;
 }
 
@@ -337,16 +337,16 @@ a.node:hover {
 }
 
 .nodeOpen {
-  background: var(--warn);
-  color: var(--surface-hi);
+  background: #ffc83d;
+  color: #1b2240;
 }
 
 .nodeLocked {
-  border-color: var(--text-dim);
-  background: var(--text);
-  color: var(--text-dim);
+  border-color: #9aa3bb;
+  background: #dfe4ee;
+  color: #6a7392;
   font-size: 22px;
-  box-shadow: 0 5px 0 var(--text-dim);
+  box-shadow: 0 5px 0 #9aa3bb;
 }
 
 .nodeNext {
@@ -355,13 +355,13 @@ a.node:hover {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 5px 0 var(--surface-hi), 0 0 0 0 color-mix(in srgb, var(--warn) 75%, transparent);
+    box-shadow: 0 5px 0 #1b2240, 0 0 0 0 rgba(255, 176, 0, 0.75);
   }
   70% {
-    box-shadow: 0 5px 0 var(--surface-hi), 0 0 0 18px transparent;
+    box-shadow: 0 5px 0 #1b2240, 0 0 0 18px rgba(255, 176, 0, 0);
   }
   100% {
-    box-shadow: 0 5px 0 var(--surface-hi), 0 0 0 0 transparent;
+    box-shadow: 0 5px 0 #1b2240, 0 0 0 0 rgba(255, 176, 0, 0);
   }
 }
 
@@ -373,7 +373,7 @@ a.node:hover {
 .playTag {
   padding: 1px 10px;
   border-radius: 999px;
-  background: var(--surface-hi);
+  background: #1b2240;
   color: #fff;
   font: 600 13px/1.5 var(--kq-display);
 }
@@ -420,10 +420,10 @@ a.node:hover {
   place-items: center;
   width: 78px;
   height: 78px;
-  border: 4px solid var(--surface-hi);
+  border: 4px solid #1b2240;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, var(--text) 0%, var(--world) 72%);
-  box-shadow: 0 5px 0 var(--surface-hi);
+  background: radial-gradient(circle at 35% 30%, #fff6c9 0%, var(--world) 72%);
+  box-shadow: 0 5px 0 #1b2240;
   font-size: 38px;
 }
 
@@ -433,9 +433,9 @@ a.node:hover {
 
 .badgeLocked .medal {
   border-style: dashed;
-  border-color: var(--text-dim);
-  background: var(--text);
-  color: var(--text-dim);
+  border-color: #9aa3bb;
+  background: #eceff6;
+  color: #7d86a1;
   box-shadow: none;
   font: 700 34px var(--kq-display);
 }
@@ -521,7 +521,7 @@ a.node:hover {
   width: 23px;
   height: 23px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #15803d;
   color: #fff;
   font-size: 13px;
   font-weight: 800;

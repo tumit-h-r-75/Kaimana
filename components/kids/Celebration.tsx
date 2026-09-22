@@ -8,7 +8,7 @@ import type { SaveResult } from "./useKidsProgress";
 import ui from "./kidsUi.module.css";
 import styles from "./Celebration.module.css";
 
-const CONFETTI_COLORS = ["var(--warn)", "var(--error)", "var(--accent)", "var(--accent)", "var(--accent)", "#2aa3e0", "var(--warn)"];
+const CONFETTI_COLORS = ["#ffc83d", "#ff7aa8", "#6ff7e8", "#8b5cf6", "#22c55e", "#2aa3e0", "#ff8c42"];
 
 // Deterministic "random" layout so every render (and SSR) agrees.
 const CONFETTI = Array.from({ length: 30 }, (_, index) => ({
