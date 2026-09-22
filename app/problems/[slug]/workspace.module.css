@@ -316,6 +316,28 @@
   scroll-margin-top: 96px;
 }
 
+/* Side by side, the editor column stays put under the header while the
+   problem, the coach and the history scroll past it — the code is always
+   in reach of what you are reading. If the column outgrows the window (a
+   long run result, say) it scrolls on its own, with a thin scrollbar. */
+@media (min-width: 1181px) {
+  .right {
+    position: sticky;
+    top: 88px;
+    max-height: calc(100vh - 104px);
+    max-height: calc(100dvh - 104px);
+    overflow-y: auto;
+    padding-right: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .right::-webkit-scrollbar { width: 6px; }
+  .right::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: var(--border);
+  }
+}
+
 .editorCard {
   overflow: hidden;
   border: 1px solid var(--border);

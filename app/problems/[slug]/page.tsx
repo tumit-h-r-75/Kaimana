@@ -764,7 +764,7 @@ export default function ProblemDetailPage() {
                     </button>
                   </div>
                 </div>
-                <MonacoEditor language={language} value={code} onChange={setCode} markers={editorMarkers} revealRequest={revealRequest} height="460px" />
+                <MonacoEditor language={language} value={code} onChange={setCode} markers={editorMarkers} revealRequest={revealRequest} height="clamp(300px, calc(100vh - 500px), 620px)" />
               </div>
 
               {submitError && (
