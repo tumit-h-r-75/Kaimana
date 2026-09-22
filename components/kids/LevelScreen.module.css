@@ -22,8 +22,37 @@
 }
 
 .levelCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: var(--kq-ink-soft);
   font: 600 15px var(--kq-display);
+}
+
+.dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dots i {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #9aa3bb;
+  border-radius: 999px;
+  background: #dfe4ee;
+  transition: width 0.25s ease;
+}
+
+.dots .dotDone {
+  border-color: var(--world-deep, #0b6fa4);
+  background: var(--world-deep, #0b6fa4);
+}
+
+.dots .dotHere {
+  width: 26px;
+  border-color: #1b2240;
+  background: #ffc83d;
 }
 
 .prevNext {
