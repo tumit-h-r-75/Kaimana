@@ -1,7 +1,10 @@
 /* Profile (app/profile/page.tsx). */
 
+/* An explicit column, so no row's widest unbreakable content can widen the
+   page past a phone's screen (the implicit `auto` column would let it). */
 .page {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 22px;
   padding: 34px 0 84px;
 }
