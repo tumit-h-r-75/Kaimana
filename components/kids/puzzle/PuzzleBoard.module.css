@@ -7,10 +7,10 @@
   width: 100%;
   margin-inline: auto;
   padding: 10px;
-  border: 4px solid var(--surface-hi);
+  border: 4px solid #1b2240;
   border-radius: 26px;
   background: var(--board-bg);
-  box-shadow: 0 8px 0 var(--surface-hi), 0 24px 40px -24px color-mix(in srgb, var(--surface-hi) 60%, transparent);
+  box-shadow: 0 8px 0 #1b2240, 0 24px 40px -24px rgba(27, 34, 64, 0.6);
 }
 
 .world_lagoon {
@@ -72,7 +72,7 @@
   width: 18%;
   height: 18%;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--surface-hi) 30%, transparent);
+  background: rgba(27, 34, 64, 0.3);
 }
 
 .gem {
@@ -121,7 +121,7 @@
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 3px 0 color-mix(in srgb, var(--surface-hi) 35%, transparent));
+  filter: drop-shadow(0 3px 0 rgba(27, 34, 64, 0.35));
 }
 
 /* Effects run in Bolt's own frame, so "up" is always the way Bolt faces. */
