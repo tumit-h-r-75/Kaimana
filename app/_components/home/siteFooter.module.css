@@ -1,0 +1,187 @@
+/* Site footer (SiteFooter.tsx). */
+
+.footer {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
+  gap: 40px;
+  padding: 64px 0 48px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 360px;
+}
+.brand p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+
+.langs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+.langs > span {
+  color: var(--text-dim);
+  font: 11px 'JetBrains Mono', monospace;
+}
+.langs ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.langs li {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: 500 11px 'JetBrains Mono', monospace;
+}
+
+.col h2 {
+  margin: 0 0 12px;
+  color: var(--text);
+  font: 600 11px 'JetBrains Mono', monospace;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+.col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.col a {
+  display: inline-block;
+  padding: 6px 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  transition: color .15s, transform .2s cubic-bezier(.16, 1, .3, 1);
+}
+.col a:hover {
+  color: var(--text);
+  transform: translateX(3px);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font: 11px 'JetBrains Mono', monospace;
+}
+.bottomEnd {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.maker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-dim);
+}
+.monogram {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--accent);
+  font: 700 10px 'JetBrains Mono', monospace;
+  letter-spacing: .5px;
+  transition: border-color .16s;
+}
+.maker b {
+  color: var(--text);
+  font-weight: 600;
+  transition: color .16s;
+}
+.maker:hover b { color: var(--accent); }
+.maker:hover .monogram { border-color: var(--accent); }
+
+.toTop {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-dim);
+  font: 11px 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: color .16s, border-color .16s;
+}
+.toTop:hover {
+  color: var(--text);
+  border-color: var(--text-dim);
+}
+
+/* The name, once more, as an engraving rather than a logo — outlined, very
+   faint, and cut off by the bottom edge so it reads as texture. */
+.wordmark {
+  display: block;
+  margin: 4px 0 -0.16em;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 10%, transparent);
+  font: 700 clamp(72px, 17vw, 236px)/.8 'JetBrains Mono', monospace;
+  letter-spacing: -.06em;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 25%, transparent 92%);
+  mask-image: linear-gradient(to bottom, #000 25%, transparent 92%);
+}
+
+@media (max-width: 960px) {
+  .main { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .brand { grid-column: 1 / -1; max-width: 520px; }
+}
+
+@media (max-width: 560px) {
+  .main {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 20px;
+    padding: 48px 0 36px;
+  }
+  /* A thumb needs more than a 13px line. */
+  .col a { padding: 9px 0; }
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .bottomEnd {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .col a { transition: color .15s; }
+  .col a:hover { transform: none; }
+}
