@@ -52,7 +52,7 @@
   border-radius: 999px;
   background: var(--orange, var(--warn));
   color: var(--surface-hi);
-  font: 700 10.5px 'JetBrains Mono', ui-monospace, monospace;
+  font: 700 11.5px 'JetBrains Mono', ui-monospace, monospace;
   text-align: center;
 }
 
@@ -125,7 +125,7 @@
 }
 
 .facts dt {
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-dim);
@@ -177,7 +177,7 @@
 
 .details h3 {
   margin: 0 0 6px;
-  font: 10px 'JetBrains Mono', ui-monospace, monospace;
+  font: 11px 'JetBrains Mono', ui-monospace, monospace;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-dim);

@@ -100,7 +100,7 @@
 .avatar-picker-placeholder { display: grid; place-items: center; }
 .avatar-picker-badge {
   position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
-  background: color-mix(in srgb, var(--bg) 82%, transparent); color: var(--text); font: 9px "JetBrains Mono"; letter-spacing: .3px;
+  background: color-mix(in srgb, var(--bg) 82%, transparent); color: var(--text); font: 10.5px "JetBrains Mono"; letter-spacing: .3px;
   padding: 4px 0;
 }
 .avatar-picker-copy p { margin: 0; font-size: 12.5px; color: var(--text); }
@@ -126,8 +126,8 @@
    bottom whatever the content height is. .kai-page-loader is itself a <main>. */
 body > main { flex: 1 0 auto; }
 body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a:focus-visible,button:focus-visible { outline:3px solid var(--cyan); outline-offset:4px; } .section-shell { width:min(1280px, calc(100% - 56px)); margin:auto; }
-.dashboard-shell{width:min(1100px,calc(100% - 48px));margin:0 auto;padding:82px 0 110px}.dashboard-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:42px}.dashboard-head h1{font:700 clamp(40px,6vw,68px)/1 'JetBrains Mono';letter-spacing:-3px;margin:0 0 14px}.dashboard-head p:not(.eyebrow){color:var(--text-dim);max-width:570px;margin:0;line-height:1.7}.profile-card,.admin-panel,.empty-panel{border:1px solid var(--border);background:var(--surface-hi);padding:28px;display:flex;gap:20px;align-items:center}.avatar{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:var(--surface-hi);color:var(--accent);border:1px solid var(--border);font:600 25px 'JetBrains Mono';letter-spacing:-.5px;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.profile-card h2,.admin-panel h2{font:700 25px 'JetBrains Mono';margin:0 0 5px}.profile-card p{margin:0 0 12px;color:var(--text-dim)}.status-pill{color:var(--accent);font:11px 'JetBrains Mono';text-transform:uppercase}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.metric-grid article{border:1px solid var(--border);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:8px}.metric-grid b{font:700 28px 'JetBrains Mono';color:var(--text)}.metric-grid span,.admin-panel p{color:var(--text-dim);font-size:12px}.empty-panel{flex-direction:column;align-items:flex-start;color:var(--text-dim)}.empty-panel a,.admin-panel .text-link{color:var(--text);font-weight:700;font-size:13px}.admin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.admin-panel{display:block}.panel-kicker{font:10px 'JetBrains Mono';color:var(--cyan)}.admin-panel p{line-height:1.7;min-height:42px}.admin-panel button:disabled{opacity:.5;cursor:not-allowed}
-.profile-hero{padding:34px;gap:24px}.profile-hero .avatar{width:96px;height:96px;flex:0 0 96px;border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);box-shadow:0 0 0 5px color-mix(in srgb, var(--accent) 8%, transparent)}.profile-identity{flex:1}.profile-identity h2{font-size:32px;margin-top:8px}.profile-actions{display:flex;flex-direction:column;align-items:flex-end;gap:14px}.metric-grid small{color:var(--text-dim);font:10px 'JetBrains Mono'}.profile-columns{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.profile-panel{border:1px solid var(--border);background:var(--surface-hi);padding:28px}.profile-panel h2{font:700 25px 'JetBrains Mono';margin:14px 0 10px}.profile-panel p{color:var(--text-dim);line-height:1.7;font-size:13px;margin:0 0 22px}.detail-row{display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);color:var(--text-dim);font-size:12px}.detail-row:last-child{border-bottom:0}.detail-row strong{color:var(--text);text-align:right;overflow-wrap:anywhere}
+.dashboard-shell{width:min(1100px,calc(100% - 48px));margin:0 auto;padding:82px 0 110px}.dashboard-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:42px}.dashboard-head h1{font:700 clamp(40px,6vw,68px)/1 'JetBrains Mono';letter-spacing:-3px;margin:0 0 14px}.dashboard-head p:not(.eyebrow){color:var(--text-dim);max-width:570px;margin:0;line-height:1.7}.profile-card,.admin-panel,.empty-panel{border:1px solid var(--border);background:var(--surface-hi);padding:28px;display:flex;gap:20px;align-items:center}.avatar{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:var(--surface-hi);color:var(--accent);border:1px solid var(--border);font:600 25px 'JetBrains Mono';letter-spacing:-.5px;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.profile-card h2,.admin-panel h2{font:700 25px 'JetBrains Mono';margin:0 0 5px}.profile-card p{margin:0 0 12px;color:var(--text-dim)}.status-pill{color:var(--accent);font:11px 'JetBrains Mono';text-transform:uppercase}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.metric-grid article{border:1px solid var(--border);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:8px}.metric-grid b{font:700 28px 'JetBrains Mono';color:var(--text)}.metric-grid span,.admin-panel p{color:var(--text-dim);font-size:12px}.empty-panel{flex-direction:column;align-items:flex-start;color:var(--text-dim)}.empty-panel a,.admin-panel .text-link{color:var(--text);font-weight:700;font-size:13px}.admin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.admin-panel{display:block}.panel-kicker{font:11px 'JetBrains Mono';color:var(--cyan)}.admin-panel p{line-height:1.7;min-height:42px}.admin-panel button:disabled{opacity:.5;cursor:not-allowed}
+.profile-hero{padding:34px;gap:24px}.profile-hero .avatar{width:96px;height:96px;flex:0 0 96px;border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);box-shadow:0 0 0 5px color-mix(in srgb, var(--accent) 8%, transparent)}.profile-identity{flex:1}.profile-identity h2{font-size:32px;margin-top:8px}.profile-actions{display:flex;flex-direction:column;align-items:flex-end;gap:14px}.metric-grid small{color:var(--text-dim);font:11px 'JetBrains Mono'}.profile-columns{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.profile-panel{border:1px solid var(--border);background:var(--surface-hi);padding:28px}.profile-panel h2{font:700 25px 'JetBrains Mono';margin:14px 0 10px}.profile-panel p{color:var(--text-dim);line-height:1.7;font-size:13px;margin:0 0 22px}.detail-row{display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);color:var(--text-dim);font-size:12px}.detail-row:last-child{border-bottom:0}.detail-row strong{color:var(--text);text-align:right;overflow-wrap:anywhere}
 .site-header { height:78px; border-bottom:1px solid var(--line); padding:0 max(24px, calc((100vw - 1280px)/2)); display:flex; align-items:center; gap:40px; background:color-mix(in srgb, var(--bg) 94%, transparent); position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); }.brand { display:inline-flex; align-items:center; gap:11px; font-family:'JetBrains Mono'; font-size:26px; font-weight:700; letter-spacing:-1.3px; line-height:1; white-space:nowrap; color:var(--text); }/* The tile was a gradient between three identical copies of --accent,
    with two white inset highlights on top — a glossy plastic chip, which is
    the look this brand is least. It has a real gradient now, a hairline
@@ -166,7 +166,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .brand:hover .brand-facet { stroke-opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .brand-mark, .brand-mark::after, .brand-facet { transition: none; }
-}.brand-mark svg { display:block; width:64%; height:64%; }.brand:hover .brand-mark { transform:translateY(-2px) rotate(-4deg); box-shadow:0 10px 22px -14px color-mix(in srgb, var(--accent) 60%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--text) 28%, transparent); }.brand-lg { font-size:34px; gap:14px; letter-spacing:-1.6px; }.brand-lg .brand-mark { width:58px; height:58px; border-radius:19px; }.brand-word span, em { color:var(--violet); font-style:normal; }.brand i { font-family:'JetBrains Mono'; color:var(--cyan); font-size:16px; font-style:normal; }.site-header.is-scrolled { box-shadow:0 12px 30px -18px rgba(0,0,0,.65); border-bottom-color:color-mix(in srgb, var(--border) 22%, transparent); }.nav-toggle { display:none; flex-direction:column; justify-content:center; align-items:center; gap:4px; width:36px; height:36px; flex-shrink:0; background:transparent; border:1px solid var(--border); border-radius:7px; cursor:pointer; padding:0; }.nav-toggle:hover { border-color:var(--cyan); }.nav-toggle span { display:block; width:15px; height:2px; border-radius:2px; background:var(--text); transition:transform .2s, opacity .2s; }.nav-toggle.is-open span:nth-child(1) { transform:translateY(6px) rotate(45deg); }.nav-toggle.is-open span:nth-child(2) { opacity:0; }.nav-toggle.is-open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }.mobile-nav { display:none; }.button { display:inline-flex; align-items:center; justify-content:center; gap:14px; background:var(--accent-fill); color:var(--bg); border-radius:8px; padding:14px 20px; font-weight:700; font-size:13.5px; box-shadow:none; transition:transform .2s, background-color .2s; }.button:hover { transform:translateY(-1px); background:var(--accent-fill-hover); }.button:active { transform:translateY(0); }.button span,.text-link span { font-size:19px; line-height:12px; transition:transform .2s; }.button:hover span,.text-link:hover span { transform:translateX(3px); }.button-small { padding:10px 13px; gap:9px; box-shadow:none; }.eyebrow { color:var(--cyan); font-family:'JetBrains Mono'; font-size:10px; letter-spacing:1.2px; margin:0 0 18px; }.eyebrow b { display:inline-block; height:7px; width:7px; border-radius:50%; background:var(--cyan); margin-right:8px; }.text-link { color:var(--text); font-size:13px; font-weight:700; display:inline-flex; gap:10px; align-items:center; }.text-link:hover { color:var(--cyan); }
+}.brand-mark svg { display:block; width:64%; height:64%; }.brand:hover .brand-mark { transform:translateY(-2px) rotate(-4deg); box-shadow:0 10px 22px -14px color-mix(in srgb, var(--accent) 60%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--text) 28%, transparent); }.brand-lg { font-size:34px; gap:14px; letter-spacing:-1.6px; }.brand-lg .brand-mark { width:58px; height:58px; border-radius:19px; }.brand-word span, em { color:var(--violet); font-style:normal; }.brand i { font-family:'JetBrains Mono'; color:var(--cyan); font-size:16px; font-style:normal; }.site-header.is-scrolled { box-shadow:0 12px 30px -18px rgba(0,0,0,.65); border-bottom-color:color-mix(in srgb, var(--border) 22%, transparent); }.nav-toggle { display:none; flex-direction:column; justify-content:center; align-items:center; gap:4px; width:36px; height:36px; flex-shrink:0; background:transparent; border:1px solid var(--border); border-radius:7px; cursor:pointer; padding:0; }.nav-toggle:hover { border-color:var(--cyan); }.nav-toggle span { display:block; width:15px; height:2px; border-radius:2px; background:var(--text); transition:transform .2s, opacity .2s; }.nav-toggle.is-open span:nth-child(1) { transform:translateY(6px) rotate(45deg); }.nav-toggle.is-open span:nth-child(2) { opacity:0; }.nav-toggle.is-open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }.mobile-nav { display:none; }.button { display:inline-flex; align-items:center; justify-content:center; gap:14px; background:var(--accent-fill); color:var(--bg); border-radius:8px; padding:14px 20px; font-weight:700; font-size:13.5px; box-shadow:none; transition:transform .2s, background-color .2s; }.button:hover { transform:translateY(-1px); background:var(--accent-fill-hover); }.button:active { transform:translateY(0); }.button span,.text-link span { font-size:19px; line-height:12px; transition:transform .2s; }.button:hover span,.text-link:hover span { transform:translateX(3px); }.button-small { padding:10px 13px; gap:9px; box-shadow:none; }.eyebrow { color:var(--cyan); font-family:'JetBrains Mono'; font-size:11px; letter-spacing:1.2px; margin:0 0 18px; }.eyebrow b { display:inline-block; height:7px; width:7px; border-radius:50%; background:var(--cyan); margin-right:8px; }.text-link { color:var(--text); font-size:13px; font-weight:700; display:inline-flex; gap:10px; align-items:center; }.text-link:hover { color:var(--cyan); }
 /* ------------------------------------------------------------ site header */
 .site-nav { display:flex; align-items:center; gap:2px; font-size:13px; }
 .site-nav a {
@@ -244,7 +244,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .problem-card-tags{display:flex;flex-wrap:wrap;gap:6px;color:var(--text-dim);font:11px 'JetBrains Mono'}
 .problem-card-tags span{background:var(--bg);border:1px solid var(--border);padding:3px 8px}
 .problem-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;color:var(--text-dim);font:12px 'JetBrains Mono'}
-.pill{display:inline-block;font:10px 'JetBrains Mono';padding:4px 9px;border-radius:100px;letter-spacing:.4px}
+.pill{display:inline-block;font:11px 'JetBrains Mono';padding:4px 9px;border-radius:100px;letter-spacing:.4px}
 .pill-easy{background:var(--accent-dim);color:var(--accent)}.pill-medium{background:var(--surface-hi);color:var(--warn)}.pill-hard{background:var(--surface-hi);color:var(--error)}.pill-solved{background:var(--surface-hi);color:var(--accent)}
 .problem-pagination{display:flex;align-items:center;gap:16px;justify-content:center;margin-top:32px;color:var(--text-dim);font:12px 'JetBrains Mono'}
 .problem-pagination button{background:var(--surface-hi);border:1px solid var(--border);color:var(--text);padding:8px 14px;cursor:pointer}.problem-pagination button:disabled{opacity:.4;cursor:not-allowed}
@@ -270,9 +270,9 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
   padding:11px 16px;border-bottom:1px solid var(--border);background:var(--surface-hi);flex:none;
   display:flex;align-items:center;justify-content:space-between;gap:10px;
 }
-.pane-head span:first-child{font:700 10.5px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.6px;color:var(--text-dim)}
+.pane-head span:first-child{font:700 11.5px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.6px;color:var(--text-dim)}
 .pane-head-state{font:11px 'JetBrains Mono';color:var(--accent);text-transform:lowercase}
-.pill{display:inline-block;font:10px 'JetBrains Mono';padding:4px 9px;border-radius:100px;letter-spacing:.4px}
+.pill{display:inline-block;font:11px 'JetBrains Mono';padding:4px 9px;border-radius:100px;letter-spacing:.4px}
 
 /* AI panel tabs (components/workspace/AIPanelTabs.tsx) — Results / Hint /
    Big-O / Refactor as one tabbed pane instead of four panels always
@@ -281,7 +281,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
    unchanged — this only supplies the switcher shell and the empty states
    shown before a tab has anything to show yet. */
 .ai-tabs{display:flex;gap:3px;padding:8px;border-bottom:1px solid var(--border);background:var(--surface-hi);overflow-x:auto;flex:none}
-.ai-tab{background:none;border:1px solid transparent;color:var(--text-dim);font:700 10.5px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.4px;padding:8px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;position:relative;transition:background .15s,color .15s,border-color .15s}
+.ai-tab{background:none;border:1px solid transparent;color:var(--text-dim);font:700 11.5px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.4px;padding:8px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;position:relative;transition:background .15s,color .15s,border-color .15s}
 .ai-tab:hover{color:var(--text)}
 .ai-tab.is-active{background:var(--surface-hi);border-color:var(--accent);color:var(--accent)}
 .ai-tab-dot{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
@@ -307,7 +307,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .problem-statement-body h2:first-child{margin-top:0}
 .problem-statement-body p,.problem-statement-body li{color:var(--text-dim);line-height:1.75;font-size:13.5px}
 .iobox{background:var(--bg);border:1px solid var(--surface-hi);border-radius:7px;padding:10px 12px;font:11.5px 'JetBrains Mono';white-space:pre-wrap;overflow-x:auto;color:var(--accent);margin-bottom:8px}
-.iobox .lab{color:var(--accent);font-size:10px;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.iobox .lab{color:var(--accent);font-size:11px;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
 
 .editor-shell{border:0;border-top:1px solid var(--border);overflow:hidden;flex:1}
 /* Placeholder while Monaco downloads: same size and colour as the editor, so the panel doesn't collapse and jump. */
@@ -320,10 +320,10 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .edbar select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:6px}
 .edbar .button-row{display:flex;gap:10px}
 .output-panel{border:0;border-top:1px solid var(--border);background:var(--surface);padding:14px 16px;flex:none}
-.output-panel h4{margin:0 0 8px;font:10.5px 'JetBrains Mono';color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px}
+.output-panel h4{margin:0 0 8px;font:11.5px 'JetBrains Mono';color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px}
 .output-panel pre{margin:0;white-space:pre-wrap;font:12px/1.6 'JetBrains Mono';color:var(--accent);max-height:180px;overflow-y:auto}
 .workspace-history{padding:16px;border-top:1px solid var(--border)}
-.workspace-history h4{margin:0 0 12px;font:10.5px 'JetBrains Mono';color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px}
+.workspace-history h4{margin:0 0 12px;font:11.5px 'JetBrains Mono';color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px}
 
 /* Verdict — a large, unmissable status box (color-coded per verdict) plus a
    per-test grid, replacing the old small inline badge + stat row. */
@@ -334,7 +334,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .verdict-box-warn{color:var(--warn);border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
 .verdict-box-info{color:var(--accent);border-color:var(--accent);background:rgba(143,195,255,.09)}
 .verdict-tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:5px;margin-bottom:14px}
-.verdict-tcell{aspect-ratio:1;border-radius:5px;background:var(--surface-hi);border:1px solid var(--border);display:grid;place-items:center;font:10px 'JetBrains Mono';color:var(--text-dim)}
+.verdict-tcell{aspect-ratio:1;border-radius:5px;background:var(--surface-hi);border:1px solid var(--border);display:grid;place-items:center;font:11px 'JetBrains Mono';color:var(--text-dim)}
 .verdict-tcell.pass{background:color-mix(in srgb, var(--accent) 16%, transparent);border-color:var(--accent);color:var(--accent)}
 .verdict-tcell.fail{background:color-mix(in srgb, var(--error) 16%, transparent);border-color:var(--error);color:var(--error)}
 .verdict-stats{display:flex;gap:22px;margin:0 0 14px;color:var(--text-dim);font:12px 'JetBrains Mono'}
@@ -353,13 +353,13 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .submission-history{margin-top:18px;overflow-x:auto}
 .submission-history table{width:100%;border-collapse:collapse;font-size:12px}
 .submission-history th,.submission-history td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--border);color:var(--text-dim)}
-.submission-history th{color:var(--text-dim);font:10px 'JetBrains Mono';text-transform:uppercase}
+.submission-history th{color:var(--text-dim);font:11px 'JetBrains Mono';text-transform:uppercase}
 
 /* Hint (F1) — hintcard for each unlocked tier, a dashed "locked" preview
    card for the next purchasable tier (cost shown before spending it). */
 .hint-panel{border:1px solid var(--border);background:var(--surface-hi);padding:18px;margin-top:18px}
 .hintcard{border:1px solid var(--accent);background:var(--surface-hi);border-radius:9px;padding:13px;margin-bottom:10px}
-.hintcard-lab{font:9.5px 'JetBrains Mono';letter-spacing:.5px;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.hintcard-lab{font:10.5px 'JetBrains Mono';letter-spacing:.5px;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
 .hintcard p{margin:0;font-size:13.5px;color:var(--text);line-height:1.6}
 .hint-locked{border:1px dashed var(--border);border-radius:9px;padding:16px;text-align:center;color:var(--text-dim);font-size:12.5px;margin-bottom:10px}
 .hint-locked b{display:block;color:var(--text);font:700 14px 'JetBrains Mono';margin-bottom:4px}
@@ -379,9 +379,9 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .complexity-panel-head h4{margin:0;font:11px 'JetBrains Mono';color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px}
 .complexity-summary{display:flex;gap:22px;margin:16px 0 4px;flex-wrap:wrap}
 .complexity-stat{display:flex;flex-direction:column;gap:3px}
-.complexity-stat span{color:var(--text-dim);font:10px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px}
+.complexity-stat span{color:var(--text-dim);font:11px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px}
 .complexity-stat b{color:var(--text);font:700 20px 'JetBrains Mono'}
-.complexity-confidence{display:inline-flex;align-items:center;padding:3px 9px;border-radius:3px;font:10px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px;width:fit-content}
+.complexity-confidence{display:inline-flex;align-items:center;padding:3px 9px;border-radius:3px;font:11px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px;width:fit-content}
 .complexity-confidence-high{background:var(--accent-dim);color:var(--accent)}
 .complexity-confidence-medium{background:var(--surface-hi);color:var(--warn)}
 .complexity-confidence-low{background:var(--surface-hi);color:var(--error)}
@@ -393,8 +393,8 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .complexity-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
 @media (max-width:640px){.complexity-charts{grid-template-columns:1fr}}
 .complexity-chart{background:var(--surface);border:1px solid var(--surface-hi);border-radius:8px;padding:12px}
-.complexity-chart-title{color:var(--text-dim);font:10px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px;margin:0 0 8px}
-.complexity-chart-axis{display:flex;justify-content:space-between;color:var(--text-dim);font:10px 'JetBrains Mono';margin-top:4px}
+.complexity-chart-title{color:var(--text-dim);font:11px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px;margin:0 0 8px}
+.complexity-chart-axis{display:flex;justify-content:space-between;color:var(--text-dim);font:11px 'JetBrains Mono';margin-top:4px}
 .complexity-chart-empty{color:var(--text-dim);font-size:12px;padding:20px 0;text-align:center}
 
 /* Refactor Recommendations panel (components/refactor/RefactorPanel.tsx) — F5.
@@ -409,7 +409,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .refcard-head{padding:11px 14px;border-bottom:1px solid var(--border);background:var(--surface-hi);display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
 .refcard-title{margin:0 0 4px;color:var(--text);font:700 14px 'JetBrains Mono'}
 .refcard-rationale{margin:0;color:var(--text-dim);line-height:1.6;font-size:13px}
-.refactor-verified-badge{flex-shrink:0;background:var(--accent-dim);color:var(--accent);font:10px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:3px}
+.refactor-verified-badge{flex-shrink:0;background:var(--accent-dim);color:var(--accent);font:11px 'JetBrains Mono';text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:3px}
 .refcard-actions{display:flex;gap:10px;flex-wrap:wrap;padding:12px 14px}
 .refactor-diff{border-top:1px solid var(--surface-hi);overflow:hidden}
 .pill-contest-upcoming{background:var(--surface-hi);color:var(--accent)}
@@ -561,7 +561,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .kai-skeleton { background:linear-gradient(90deg, var(--surface) 25%, var(--surface-hi) 50%, var(--surface) 75%); background-size:220% 100%; animation:kai-skeleton-shimmer 1.5s ease infinite; border-radius:7px; }
 @keyframes kai-skeleton-shimmer { 0% { background-position:100% 50%; } 100% { background-position:0 50%; } }
 
-.header-role-badge { flex-shrink:0; background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent); font:600 9px 'JetBrains Mono'; letter-spacing:.6px; padding:2px 7px; border-radius:20px; text-transform:uppercase; }
+.header-role-badge { flex-shrink:0; background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent); font:600 10.5px 'JetBrains Mono'; letter-spacing:.6px; padding:2px 7px; border-radius:20px; text-transform:uppercase; }
 
 /* Admin dashboard: forms, tables, badges (app/admin/**) */
 .admin-form { display:grid; gap:16px; max-width:720px; }
@@ -589,7 +589,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .admin-toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin:28px 0 18px; flex-wrap:wrap; }
 .admin-toolbar input { border:1px solid var(--border); background:var(--bg); color:var(--text); padding:10px 13px; font:13px Inter; border-radius:4px; min-width:240px; }
 .admin-table-wrap { overflow-x:auto; }
-.badge { display:inline-flex; align-items:center; padding:3px 9px; border-radius:20px; font:10px 'JetBrains Mono'; text-transform:uppercase; letter-spacing:.4px; }
+.badge { display:inline-flex; align-items:center; padding:3px 9px; border-radius:20px; font:11px 'JetBrains Mono'; text-transform:uppercase; letter-spacing:.4px; }
 .badge-admin { background:color-mix(in srgb, var(--accent) 18%, transparent); color:var(--violet); }
 .badge-user { background:var(--surface-hi); color:var(--text-dim); }
 .badge-active { background:var(--accent-dim); color:var(--accent); }
@@ -622,7 +622,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
   position: sticky; top: 0;
   background: var(--surface-hi);
   color: var(--text-dim);
-  font: 10px "JetBrains Mono";
+  font: 11px "JetBrains Mono";
   text-transform: uppercase;
   letter-spacing: .6px;
   text-align: left;
@@ -684,7 +684,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
   .admin-table-wrap tbody td[data-label]::before {
     content: attr(data-label);
     display: block;
-    font: 10px "JetBrains Mono";
+    font: 11px "JetBrains Mono";
     text-transform: uppercase;
     letter-spacing: .5px;
     color: var(--text-dim);

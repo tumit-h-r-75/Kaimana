@@ -182,7 +182,7 @@
 .youLabel {
   display: block;
   color: var(--accent);
-  font: 10px "JetBrains Mono";
+  font: 11px "JetBrains Mono";
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
@@ -210,7 +210,7 @@
 
 .youStats span {
   color: var(--text-dim);
-  font: 10.5px "JetBrains Mono";
+  font: 11.5px "JetBrains Mono";
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -246,7 +246,7 @@
   border-bottom: 1px solid var(--surface-hi);
   background: var(--surface-hi);
   color: var(--text-dim);
-  font: 10px "JetBrains Mono";
+  font: 11px "JetBrains Mono";
   letter-spacing: 0.7px;
   text-transform: uppercase;
 }
@@ -322,7 +322,7 @@
   border-radius: 100px;
   background: color-mix(in srgb, var(--accent) 24%, transparent);
   color: var(--text);
-  font: 9px "JetBrains Mono";
+  font: 10.5px "JetBrains Mono";
   letter-spacing: 0.5px;
   text-transform: uppercase;
   vertical-align: middle;
