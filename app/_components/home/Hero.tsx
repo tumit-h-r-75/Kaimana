@@ -115,7 +115,7 @@ export function Hero() {
 
             <div className={styles.gems}>
               <IconGem size={16} />
-              <span><b>+15 gems</b><small>first-try solve</small></span>
+              <span><b>+10 gems</b><small>first solve · easy</small></span>
             </div>
           </div>
         </div>

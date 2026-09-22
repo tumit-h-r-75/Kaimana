@@ -1,7 +1,6 @@
 "use client";
 
 import { useReveal } from "@/hooks/useReveal";
-import { IconGem } from "./icons";
 import { SpotlightCard } from "@/components/motion/SpotlightCard";
 import styles from "./coach.module.css";
 
@@ -10,9 +9,9 @@ import styles from "./coach.module.css";
  *
  * This is the part of the product nothing else on the page can stand in
  * for, so it shows the real output rather than describing it. "AI-powered
- * feedback" on a feature tile means nothing; a tier-2 hint that costs three
- * gems, a complexity verdict with its reasoning, and a diff of your own
- * code mean something.
+ * feedback" on a feature tile means nothing; a tier-2 hint that costs 15% of
+ * the problem's score, a complexity verdict with its reasoning, and a diff
+ * of your own code mean something.
  */
 export function Coach() {
   const head = useReveal<HTMLDivElement>();
@@ -40,19 +39,19 @@ export function Coach() {
           <SpotlightCard as="article" innerRef={a.ref} className={`${styles.card} ${a.className}`}>
             <header>
               <h3>Hints, one tier at a time</h3>
-              <p>A nudge first. The approach next. You choose how much to spoil.</p>
+              <p>A nudge first. The approach next. Each tier takes a little off the problem&apos;s score, so you choose how much to spoil.</p>
             </header>
             <div className={styles.tiers}>
               <div className={`${styles.tier} ${styles.open}`}>
-                <span className={styles.tierHead}>Tier 1 · nudge <b>free</b></span>
+                <span className={styles.tierHead}>Tier 1 · nudge <b className={styles.cost}>−5%</b></span>
                 <p>What changes as the loop moves? Something you already computed is worth keeping.</p>
               </div>
               <div className={styles.tier}>
-                <span className={styles.tierHead}>Tier 2 · approach <b className={styles.cost}><IconGem size={11} /> 3</b></span>
+                <span className={styles.tierHead}>Tier 2 · approach <b className={styles.cost}>−15%</b></span>
                 <p className={styles.locked}>████ ██████ ███ ████████ ██ █ ████ ███</p>
               </div>
               <div className={styles.tier}>
-                <span className={styles.tierHead}>Tier 3 · near-solution <b className={styles.cost}><IconGem size={11} /> 8</b></span>
+                <span className={styles.tierHead}>Tier 3 · near-solution <b className={styles.cost}>−30%</b></span>
                 <p className={styles.locked}>███████ ██ ████ █████ ███████</p>
               </div>
             </div>
