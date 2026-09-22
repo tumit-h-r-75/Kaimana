@@ -1,7 +1,7 @@
 // Shared loading indicators.
 //
 // The spinner is the brand mark rather than a generic ring: the same four
-// facets as the logo, drawn in strokes, with the outline tracing itself and
+// silhouette as the logo, drawn in strokes, with the outline tracing itself and
 // the cut lines breathing behind it. A loading state is often the first
 // thing a visitor sees on a cold start, so it may as well be the product's
 // own shape.
@@ -27,14 +27,14 @@ export function Spinner({ size = "md", className = "" }: { size?: LoaderSize; cl
         {/* The outline stays drawn the whole time. Tracing it with a dash
             instead left only a fragment visible at any moment, which read
             as a stray triangle rather than the mark. */}
-        <path className="kai-spinner-edge" d="M24 4 44 24 24 44 4 24Z" strokeWidth="2.5" />
+        <path className="kai-spinner-edge" d="M14 8H34L45 18 24 43 3 18Z" strokeWidth="2.5" />
         {/* A brighter segment travelling that same outline supplies the
             motion without ever hiding the shape. */}
-        <path className="kai-spinner-trace" d="M24 4 44 24 24 44 4 24Z" strokeWidth="2.5" />
-        {/* The crown line and two facets, lighting in sequence. */}
-        <path className="kai-spinner-cut" d="M12 16h24" strokeWidth="2" />
-        <path className="kai-spinner-cut kai-spinner-cut-b" d="M12 16 24 44" strokeWidth="2" />
-        <path className="kai-spinner-cut kai-spinner-cut-c" d="M36 16 24 44" strokeWidth="2" />
+        <path className="kai-spinner-trace" d="M14 8H34L45 18 24 43 3 18Z" strokeWidth="2.5" />
+        {/* The girdle, the table and the pavilion cuts, lighting in sequence. */}
+        <path className="kai-spinner-cut" d="M3 18H45" strokeWidth="2" />
+        <path className="kai-spinner-cut kai-spinner-cut-b" d="M14 8 24 18 34 8" strokeWidth="2" />
+        <path className="kai-spinner-cut kai-spinner-cut-c" d="M15 18 24 43 33 18" strokeWidth="2" />
       </svg>
     </span>
   );
