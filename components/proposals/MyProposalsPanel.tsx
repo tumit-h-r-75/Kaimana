@@ -4,7 +4,7 @@
 // gem balance, the way in to propose a problem, and the proposals they've sent.
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { ApiError, getErrorMessage } from "@/lib/api/client";
 import { deleteProposal, getMyProposals, type MyProposalsResult, type ProposalSummary } from "@/lib/api/proposals";
@@ -68,6 +68,26 @@ function ProposalRow({ proposal, isDeleting, onDelete }: { proposal: ProposalSum
   );
 }
 
+/** A code window with a plus on it: what the button beside it makes. */
+function EditorArt() {
+  return (
+    <svg className={styles.art} viewBox="0 0 200 150" aria-hidden="true">
+      <ellipse cx="100" cy="132" rx="84" ry="12" className={styles.artShadow} />
+      <g transform="rotate(-6 100 70)">
+        <rect x="34" y="18" width="136" height="100" rx="10" className={styles.artWindow} />
+        <path d="M34 36h136" className={styles.artLine} />
+        <circle cx="46" cy="27" r="2.6" className={styles.artDot} />
+        <circle cx="55" cy="27" r="2.6" className={styles.artDot} />
+        <circle cx="64" cy="27" r="2.6" className={styles.artDot} />
+        <path d="m56 52-8 7 8 7M72 52l8 7-8 7M66 50l-4 18" className={styles.artCode} />
+        <path d="M92 55h54M92 64h38M50 82h96M50 92h72M50 102h84" className={styles.artText} />
+      </g>
+      <circle cx="160" cy="108" r="17" className={styles.artPlusBg} />
+      <path d="M160 100v16M152 108h16" className={styles.artPlus} />
+    </svg>
+  );
+}
+
 export function MyProposalsPanel({ isAdmin }: { isAdmin: boolean }) {
   const { refresh } = useAuth();
   const [state, setState] = useState<LoadState>({ status: "loading" });
@@ -106,23 +126,27 @@ export function MyProposalsPanel({ isAdmin }: { isAdmin: boolean }) {
     }
   };
 
-  let body: React.ReactNode;
+  // The panel has three parts that change with the data: the cost and gem
+  // meter under the heading, the action beside it, and the list below.
+  let summary: ReactNode = null;
+  let action: ReactNode = null;
+  let list: ReactNode = null;
+
   if (state.status === "loading") {
-    body = <p className={styles.muted}>Loading your proposals…</p>;
+    summary = <p className={styles.muted}>Loading your proposals…</p>;
   } else if (state.status === "error") {
-    body = (
-      <div className={styles.cta}>
-        <p className="form-error">{state.message}</p>
-        <button type="button" className="icon-button" onClick={load}>
-          Retry
-        </button>
-      </div>
+    summary = <p className="form-error">{state.message}</p>;
+    action = (
+      <button type="button" className="icon-button" onClick={load}>
+        Retry
+      </button>
     );
   } else {
     const { gems, cost, rejectRefund, maxPending, pendingCount, canPropose, items } = state.data;
     const enough = gems >= cost;
     const progress = Math.min(100, Math.round((gems / cost) * 100));
-    body = (
+
+    summary = (
       <>
         <p className={styles.locked}>
           Sending a proposal costs <b>{cost} gems</b>. If it&apos;s rejected, {rejectRefund} come back. If you delete it before it&apos;s reviewed, all {cost}{" "}
@@ -132,7 +156,7 @@ export function MyProposalsPanel({ isAdmin }: { isAdmin: boolean }) {
         <div className={styles.meter}>
           <div className={styles.meterRow}>
             <span>
-              <span className={styles.gems}>✦ {gems}</span> / {cost} gems
+              <span className={styles.gems}>◆ {gems}</span> / {cost} gems
             </span>
             <span>{enough ? "Enough to send a proposal" : `${cost - gems} more to go`}</span>
           </div>
@@ -147,69 +171,90 @@ export function MyProposalsPanel({ isAdmin }: { isAdmin: boolean }) {
             <span style={{ width: `${progress}%` }} />
           </div>
         </div>
+      </>
+    );
 
-        <div className={styles.cta}>
-          {canPropose ? (
-            <Link className="button button-small" href="/profile/proposals/new">
-              Propose a problem <span aria-hidden="true">→</span>
-            </Link>
-          ) : enough ? (
-            <p className={styles.locked}>
-              You have {pendingCount} proposals waiting for review — the most you can have at once is {maxPending}. You can send another once one is reviewed.
-            </p>
-          ) : (
-            <>
-              <p className={styles.locked}>
-                Earn {cost - gems} more {cost - gems === 1 ? "gem" : "gems"} to send a proposal. You get gems for your first Accepted solution on each problem: Easy 10,
-                Medium 20, Hard 30.
-              </p>
-              <Link className="text-link" href="/problems">
-                Solve problems →
-              </Link>
-            </>
-          )}
+    action = canPropose ? (
+      <Link className="button" href="/profile/proposals/new">
+        Propose a problem <span aria-hidden="true">→</span>
+      </Link>
+    ) : enough ? (
+      <p className={styles.locked}>
+        You have {pendingCount} proposals waiting for review — the most you can have at once is {maxPending}. You can send another once one is reviewed.
+      </p>
+    ) : (
+      <div className={styles.earn}>
+        <p className={styles.locked}>
+          Earn {cost - gems} more {cost - gems === 1 ? "gem" : "gems"} to send a proposal. You get gems for your first Accepted solution on each problem: Easy 10,
+          Medium 20, Hard 30.
+        </p>
+        <Link className="text-link" href="/problems">
+          Solve problems →
+        </Link>
+      </div>
+    );
+
+    list =
+      items.length === 0 ? (
+        <p className={styles.empty}>You haven&apos;t proposed any problems yet.</p>
+      ) : (
+        <ul className={styles.list} aria-label="Your proposals">
+          {items.map((proposal) => (
+            <ProposalRow key={proposal.id} proposal={proposal} isDeleting={deletingId === proposal.id} onDelete={() => remove(proposal)} />
+          ))}
+        </ul>
+      );
+  }
+
+  return (
+    <section id="proposals" className={styles.panel} aria-labelledby="proposals-title">
+      <div className={styles.top}>
+        <span className={styles.iconTile} aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="m8 7-5 5 5 5M16 7l5 5-5 5" />
+          </svg>
+        </span>
+
+        <div className={styles.copy}>
+          <span className={styles.kicker}>Problem proposals</span>
+          <h2 id="proposals-title" className={styles.title}>
+            Propose a problem for the library
+          </h2>
+          <p className={styles.lead}>
+            Send the admins a problem of your own — statement, limits and test cases. If they accept it, it joins the Kaimana problem library.
+          </p>
+          {summary}
         </div>
-        {isAdmin && (
-          <p className={styles.adminNote}>
+
+        <div className={styles.aside}>
+          {action}
+          <EditorArt />
+        </div>
+      </div>
+
+      {isAdmin && (
+        <p className={styles.adminNote}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5M12 7.8h.01" />
+          </svg>
+          <span>
             As an admin you can also add problems directly in the{" "}
             <Link className="text-link" href="/admin/problems/new">
               problem manager
             </Link>
             .
-          </p>
-        )}
-
-        {feedback && (
-          <p className={feedback.tone === "success" ? "form-success" : "form-error"} role={feedback.tone === "error" ? "alert" : "status"}>
-            {feedback.text}
-          </p>
-        )}
-
-        {items.length === 0 ? (
-          <p className={styles.empty}>You haven&apos;t proposed any problems yet.</p>
-        ) : (
-          <ul className={styles.list} aria-label="Your proposals">
-            {items.map((proposal) => (
-              <ProposalRow key={proposal.id} proposal={proposal} isDeleting={deletingId === proposal.id} onDelete={() => remove(proposal)} />
-            ))}
-          </ul>
-        )}
-      </>
-    );
-  }
-
-  return (
-    <section id="proposals" className={`profile-panel ${styles.panel}`} aria-labelledby="proposals-title">
-      <div>
-        <span className="panel-kicker">PROBLEM PROPOSALS</span>
-        <h2 id="proposals-title" className={styles.title}>
-          Propose a problem for the library
-        </h2>
-        <p className={styles.lead}>
-          Send the admins a problem of your own — statement, limits and test cases. If they accept it, it joins the Kaimana problem library.
+          </span>
         </p>
-      </div>
-      {body}
+      )}
+
+      {feedback && (
+        <p className={feedback.tone === "success" ? "form-success" : "form-error"} role={feedback.tone === "error" ? "alert" : "status"}>
+          {feedback.text}
+        </p>
+      )}
+
+      {list}
     </section>
   );
 }
