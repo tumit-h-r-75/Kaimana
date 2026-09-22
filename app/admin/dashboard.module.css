@@ -1,0 +1,573 @@
+/* Admin overview (app/admin/page.tsx). */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.primary {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+.side {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------------ tiles */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.tileIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-hi));
+  color: var(--accent);
+}
+.tileIcon svg { width: 20px; height: 20px; }
+
+.tile > div { min-width: 0; }
+.tile b {
+  display: block;
+  color: var(--text);
+  font: 700 24px/1.1 'JetBrains Mono', monospace;
+  letter-spacing: -.5px;
+}
+.tile > div > span:not(.tileSkeleton) {
+  display: block;
+  margin-top: 3px;
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.tile small {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--text-dim);
+  font: 10.5px 'JetBrains Mono', monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tileSkeleton {
+  display: block;
+  width: 56px;
+  height: 26px;
+  border-radius: 6px;
+}
+
+/* ------------------------------------------------------------ folder tabs */
+
+.tabList {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 0 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabList::-webkit-scrollbar { display: none; }
+
+/* Folder tabs: the chosen one stands taller and runs into the panel below
+   it; the others sit a step lower, on the panel's edge. */
+.tab {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: -1px;
+  padding: 11px 18px 10px;
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: var(--surface);
+  color: var(--text-dim);
+  font: 500 13px Inter, Arial, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s, background-color .15s, padding .2s;
+}
+.tab:hover { color: var(--text); }
+.tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.tabActive {
+  padding-top: 17px;
+  padding-bottom: 13px;
+  background: var(--surface-hi);
+  color: var(--text);
+  font-weight: 600;
+}
+.tabActive::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 18px;
+  left: 18px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.tabCount {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg);
+  font: 700 10.5px/1.5 'JetBrains Mono', monospace;
+  font-style: normal;
+}
+
+.panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 5%, var(--surface-hi)) 0%, var(--surface-hi) 55%);
+  box-shadow: 0 30px 60px -40px rgba(0, 0, 0, .8);
+}
+
+.panelMain {
+  padding: 36px 38px 38px;
+  border-right: 1px solid var(--border);
+}
+
+.panelIcon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--accent);
+}
+.panelIcon svg { width: 26px; height: 26px; }
+
+.panelMain h2 {
+  margin: 22px 0 12px;
+  color: var(--text);
+  font: 700 clamp(26px, 2.6vw, 34px)/1.1 'JetBrains Mono', monospace;
+  letter-spacing: -1.2px;
+}
+
+.panelBody {
+  max-width: 470px;
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.panelFigure {
+  display: inline-block;
+  margin: 16px 0 0;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  font: 600 11.5px 'JetBrains Mono', monospace;
+}
+
+.panelActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+.panelActions svg { width: 16px; height: 16px; }
+
+.panelSide { padding: 60px 38px 38px; }
+.panelSide h3 {
+  margin: 0 0 18px;
+  color: var(--text);
+  font: 700 17px 'JetBrains Mono', monospace;
+}
+
+.canList {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.canList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.canList svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+}
+
+/* A comment in the margin, where the portal this layout follows puts its
+   handwritten slogan. */
+.marginNote {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  margin: 0;
+  color: color-mix(in srgb, var(--accent) 80%, var(--text));
+  font: 600 13px 'JetBrains Mono', monospace;
+  transform: rotate(-4deg);
+  transform-origin: right center;
+  pointer-events: none;
+}
+.marginNote svg {
+  display: block;
+  width: 100%;
+  height: 10px;
+  margin-top: 3px;
+}
+.marginNote path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+  opacity: .7;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ------------------------------------------------------------------ cards */
+
+.card {
+  min-width: 0;
+  padding: 22px 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.sideTitle {
+  margin: 0;
+  color: var(--text);
+  font: 700 18px/1.2 'JetBrains Mono', monospace;
+  letter-spacing: -.4px;
+}
+
+.sideText {
+  margin: 8px 0 0;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.queue {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.queue li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--surface-hi);
+  color: var(--text);
+  font-size: 13px;
+}
+.queue b {
+  color: var(--accent);
+  font: 700 13px 'JetBrains Mono', monospace;
+}
+
+.outlineButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--border));
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color .15s, border-color .15s;
+}
+.outlineButton:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.sideRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.sideRow > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.sideIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-hi);
+  color: var(--accent);
+}
+.sideIcon svg { width: 20px; height: 20px; }
+
+.bigFigure {
+  margin: 10px 0 0;
+  color: var(--text);
+  font: 700 30px/1 'JetBrains Mono', monospace;
+  letter-spacing: -1px;
+}
+.bigFigure small {
+  margin-left: 6px;
+  color: var(--text-dim);
+  font: 500 12px Inter, Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.meter {
+  height: 6px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-hi);
+}
+.meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+}
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  text-underline-offset: 4px;
+  transition: color .15s;
+}
+.textLink:hover { color: var(--accent); }
+
+.tipCard {
+  border-color: color-mix(in srgb, var(--accent) 16%, var(--border));
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
+}
+
+/* ------------------------------------------------- activity + quick links */
+
+.lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 28px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.cardHead h2 {
+  margin: 0;
+  color: var(--text);
+  font: 700 19px 'JetBrains Mono', monospace;
+  letter-spacing: -.4px;
+}
+.cardHead .textLink {
+  margin-top: 0;
+  text-decoration: none;
+}
+
+.feed,
+.links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.feed li + li,
+.links li + li { border-top: 1px solid var(--border); }
+
+.feedRow,
+.linkRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 -8px;
+  padding: 14px 8px;
+  border-radius: 10px;
+  transition: background-color .15s;
+}
+.feedRow:hover,
+.linkRow:hover { background: var(--surface-hi); }
+
+.feedIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface-hi);
+  color: var(--accent);
+}
+.feedRow:hover .feedIcon,
+.linkRow:hover .feedIcon { background: var(--bg); }
+.feedIcon svg { width: 18px; height: 18px; }
+
+.feedText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.feedText b {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.feedText span {
+  overflow: hidden;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feedTime {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  color: var(--text);
+  font: 500 12px 'JetBrains Mono', monospace;
+}
+.feedTime small {
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.chevron {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--text-dim);
+  transition: transform .15s, color .15s;
+}
+.linkRow:hover .chevron {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.feedLoading {
+  display: grid;
+  gap: 12px;
+  padding-top: 16px;
+}
+.feedLoading span {
+  display: block;
+  height: 44px;
+  border-radius: 10px;
+}
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 1320px) {
+  .layout { grid-template-columns: minmax(0, 1fr) 290px; }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* The side cards move under the panel and sit three across. */
+@media (max-width: 1120px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .side { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lower { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .panel { grid-template-columns: minmax(0, 1fr); }
+  .panelMain {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .panelSide { padding-top: 30px; }
+  .marginNote { display: none; }
+  .side { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .tiles { gap: 10px; }
+  .tile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+  }
+  .tabList { padding: 0 10px; }
+  .panelMain,
+  .panelSide { padding: 26px 20px; }
+  .panelActions > * {
+    justify-content: center;
+    width: 100%;
+  }
+  .card { padding: 18px; }
+  .feedTime small { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .chevron { transition: none; }
+  .linkRow:hover .chevron { transform: none; }
+}
