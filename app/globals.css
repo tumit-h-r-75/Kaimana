@@ -832,7 +832,15 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
    override in app/layout.tsx guarantees full visibility with JS off, so
    nothing here can ever leave real content invisible or unreachable. */
 
-html, body { overflow-x: hidden; }
+/* Stops anything wide from scrolling the page sideways — without breaking
+   position: sticky. With overflow-x: hidden on both html and body, the body
+   became a scroll container that never scrolls, and every sticky element
+   (the site header, the admin topbar and rail) stuck to it instead of the
+   viewport, which is to say not at all. html's overflow passes to the
+   viewport, and clip on the body cuts overflow off without making it a
+   scroll container. */
+html { overflow-x: hidden; }
+body { overflow-x: clip; }
 
 /* Grid/flex overflow guard: a grid or flex item defaults to min-width:auto,
    so a wide child (an admin table, the code editor, long unbroken text)
