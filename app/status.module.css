@@ -32,7 +32,7 @@
 
 .code {
   margin: 0 0 6px;
-  background: linear-gradient(96deg, var(--accent) 0%, var(--accent) 48%, var(--accent) 100%);
+  background: linear-gradient(96deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 45%, var(--text)) 48%, var(--accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

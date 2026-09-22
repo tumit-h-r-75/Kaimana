@@ -298,8 +298,8 @@
   display: grid;
   place-items: center;
   border: 0;
-  background: linear-gradient(140deg, var(--accent), var(--accent));
-  color: var(--text);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 22%, var(--surface-hi)), var(--surface-hi));
+  color: var(--accent);
   font: 700 14px "JetBrains Mono";
 }
 
@@ -359,7 +359,7 @@
   display: block;
   height: 100%;
   border-radius: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent));
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
   transform-origin: left;
   animation: growX 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
