@@ -70,7 +70,7 @@
   padding: 28px 30px 30px;
   border: 1px solid var(--border);
   border-radius: 20px;
-  background: radial-gradient(120% 150% at 0% 0%, var(--surface-hi) 0%, var(--surface-hi) 52%, var(--surface-hi) 100%);
+  background: radial-gradient(120% 150% at 0% 0%, color-mix(in srgb, var(--accent) 7%, var(--surface-hi)) 0%, var(--surface-hi) 52%, var(--surface) 100%);
 }
 
 .setupGlow {
@@ -645,7 +645,7 @@
   padding: 26px 28px;
   border: 1px solid var(--border);
   border-radius: 18px;
-  background: radial-gradient(120% 150% at 100% 0%, var(--surface-hi) 0%, var(--surface-hi) 55%, var(--surface-hi) 100%);
+  background: radial-gradient(120% 150% at 100% 0%, color-mix(in srgb, var(--accent) 7%, var(--surface-hi)) 0%, var(--surface-hi) 55%, var(--surface) 100%);
 }
 
 .feedbackHead {
