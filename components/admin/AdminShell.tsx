@@ -191,7 +191,15 @@ export function AdminShell({ eyebrow, title, description, actions, notice, child
     if (!railOpen) return;
     const onKey = (event: KeyboardEvent) => event.key === "Escape" && setRailOpen(false);
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    // On the root element, not the body: html's overflow is what reaches
+    // the viewport, so that is the one that stops the page scrolling.
+    const root = document.documentElement;
+    const previous = root.style.overflow;
+    root.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      root.style.overflow = previous;
+    };
   }, [railOpen]);
 
   const signOut = async () => {

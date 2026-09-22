@@ -151,23 +151,23 @@ export function TestCaseManager({ problemId, hasReferenceSolution }: { problemId
             <tbody>
               {testCases.map((testCase) => (
                 <tr key={testCase.id}>
-                  <td>{testCase.order}</td>
-                  <td>{testCase.isSample ? "Yes" : "—"}</td>
-                  <td>
+                  <td data-label="Test">{testCase.order}</td>
+                  <td data-label="Sample">{testCase.isSample ? "Yes" : "—"}</td>
+                  <td data-label="Source">
                     <span className={testCase.source === "ai-generated" ? "badge badge-draft" : "badge badge-user"}>
                       {testCase.source === "ai-generated" ? "AI" : "Manual"}
                     </span>
                   </td>
-                  <td>
+                  <td data-label="Status">
                     <span className={testCase.reviewed ? "badge badge-active" : "badge badge-draft"}>{testCase.reviewed ? "Reviewed" : "Pending"}</span>
                   </td>
-                  <td style={{ maxWidth: 220 }}>
+                  <td data-label="Input" style={{ maxWidth: 220 }}>
                     <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontSize: 11, maxHeight: 80, overflow: "auto" }}>{testCase.input}</pre>
                   </td>
-                  <td style={{ maxWidth: 220 }}>
+                  <td data-label="Expected output" style={{ maxWidth: 220 }}>
                     <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontSize: 11, maxHeight: 80, overflow: "auto" }}>{testCase.expectedOutput}</pre>
                   </td>
-                  <td>
+                  <td className="admin-cell-actions">
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                       {!testCase.reviewed && (
                         <button type="button" className="icon-button" onClick={() => approve(testCase.id)} disabled={busyId === testCase.id}>
