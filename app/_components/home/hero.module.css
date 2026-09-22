@@ -213,7 +213,7 @@
 /* The test grid: what a verdict actually looks like being assembled. */
 .tests {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 6px;
   padding: 14px 16px;
   border-top: 1px solid var(--border);
@@ -309,16 +309,20 @@
 }
 
 @media (max-width: 1040px) {
+  /* minmax(0, 1fr), not 1fr: a bare 1fr column takes its widest unbreakable
+     child as its minimum, and the judge console made the copy column wider
+     than a 320px phone, clipping the headline at the right edge. */
   .inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 52px;
   }
+  .inner > * { min-width: 0; }
   .gems { right: 8px; }
 }
 
 @media (max-width: 560px) {
   .hero { padding-block: 60px 76px; }
-  .tests { grid-template-columns: 1fr; }
+  .tests { grid-template-columns: minmax(0, 1fr); }
   .gems { position: static; margin-top: 16px; width: fit-content; }
   /* -3.4px was tuned for a 66px headline; at the 40px floor it pulls the
      letters into each other. */

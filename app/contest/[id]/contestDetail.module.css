@@ -342,7 +342,7 @@ a.problemCard .problemAction {
 @media (max-width: 900px) {
   .hero,
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .hero {
@@ -352,7 +352,7 @@ a.problemCard .problemAction {
 
 @media (max-width: 520px) {
   .facts {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .panelBody {

@@ -238,7 +238,7 @@
 
 @media (max-width: 620px) {
   .main {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 34px 22px;
     padding: 52px 0 38px;
   }
