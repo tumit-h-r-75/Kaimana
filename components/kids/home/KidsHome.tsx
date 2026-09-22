@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { MAX_STARS, TOTAL_LEVELS, WORLDS, levelHref } from "@/lib/kids/curriculum";
 import {
   completedLevelCount,
@@ -15,9 +15,31 @@ import {
 } from "@/lib/kids/progress";
 import { Mascot } from "../Mascot";
 import { StarIcon, StarRow } from "../StarRow";
+import { BlockIcon } from "../puzzle/blockMeta";
 import { useKidsProgress } from "../useKidsProgress";
 import ui from "../kidsUi.module.css";
 import styles from "./KidsHome.module.css";
+
+/*
+ * The map's trail is drawn, not bordered. On wide screens a world's levels
+ * sit in one row and alternate high and low, like stepping stones, and an
+ * SVG curve runs through their centres — the winding path Duolingo made the
+ * shape of a course. The numbers below are the geometry the stylesheet
+ * uses for that row (.stop and .trail); change one, change both.
+ */
+const NODE = 68; // node diameter
+const DROP = 48; // how much lower every second stop sits
+
+function trailPath(count: number) {
+  const y = (i: number) => NODE / 2 + (i % 2 ? DROP : 0);
+  let d = `M 50 ${y(0)}`;
+  for (let i = 1; i < count; i += 1) {
+    const x0 = 50 + (i - 1) * 100;
+    const x1 = 50 + i * 100;
+    d += ` C ${x0 + 50} ${y(i - 1)}, ${x1 - 50} ${y(i)}, ${x1} ${y(i)}`;
+  }
+  return d;
+}
 
 export function KidsHome() {
   const { progress, status, error, retry } = useKidsProgress();
@@ -68,15 +90,37 @@ export function KidsHome() {
               <span aria-hidden="true">🗺️</span> See the map
             </a>
           </div>
+          <ul className={styles.heroFacts}>
+            <li><b>{TOTAL_LEVELS}</b> levels</li>
+            <li><b>{WORLDS.length}</b> worlds</li>
+            <li><b>Real</b> Python</li>
+          </ul>
         </div>
+
         <div className={styles.heroArt}>
           <p className={`${ui.bubble} ${ui.bubbleDown} ${styles.heroBubble}`}>{bubble}</p>
-          <Mascot mood={started ? "cheer" : "happy"} size={230} title="Bolt the robot" className={styles.heroMascot} />
-          <div className={styles.heroGround} aria-hidden="true" />
+          <div className={styles.stage}>
+            {/* The blocks kids will actually snap together, in the colours
+                the puzzle editor gives them — a preview, not decoration. */}
+            <span className={`${styles.sticker} ${styles.stickerMove}`} aria-hidden="true">
+              <BlockIcon name="forward" /> Move forward
+            </span>
+            <span className={`${styles.sticker} ${styles.stickerLoop}`} aria-hidden="true">
+              <BlockIcon name="repeat" /> Repeat 3
+            </span>
+            <span className={`${styles.sticker} ${styles.stickerLogic}`} aria-hidden="true">
+              <BlockIcon name="if" /> If wall ahead
+            </span>
+            <Mascot mood={started ? "cheer" : "happy"} size={230} title="Bolt the robot" className={styles.heroMascot} />
+            <svg className={styles.hill} viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <path d="M0 62 Q90 18 200 40 T400 34 V90 H0 Z" fill="#9be07a" />
+              <path d="M0 74 Q120 44 230 62 T400 58 V90 H0 Z" fill="#6fcf4f" />
+            </svg>
+          </div>
         </div>
       </section>
 
-      <section aria-label="Your progress">
+      <section aria-label="Your progress" className={styles.progress}>
         <div className={styles.stats}>
           <div className={styles.stat}>
             <StarIcon filled className={styles.statStar} />
@@ -143,11 +187,14 @@ export function KidsHome() {
             {WORLDS.map((world, worldIndex) => {
               const unlocked = isWorldUnlocked(progress, world);
               const complete = isWorldComplete(progress, world);
+              const count = world.levels.length;
               return (
                 <li key={world.id} id={`world-${world.id}`} className={`${styles.world} ${ui[`theme_${world.id}`]} ${unlocked ? "" : styles.worldLocked}`}>
-                  <div className={styles.worldHead}>
+                  {/* A unit header in the Duolingo sense: the world's colour,
+                      its number and idea, and how far into it you are. */}
+                  <div className={styles.banner}>
                     <span className={styles.worldEmoji} aria-hidden="true">
-                      {world.emoji}
+                      {unlocked ? world.emoji : "🔒"}
                     </span>
                     <div className={styles.worldTitle}>
                       <p className={styles.worldKicker}>
@@ -160,7 +207,7 @@ export function KidsHome() {
                       <span className={styles.worldStars}>
                         <StarIcon filled />
                         <span>
-                          {worldStars(progress, world)} / {world.levels.length * 3}
+                          {worldStars(progress, world)} / {count * 3}
                           <span className={ui.srOnly}> stars</span>
                         </span>
                       </span>
@@ -174,48 +221,60 @@ export function KidsHome() {
 
                   {!unlocked && worldIndex > 0 && (
                     <p className={styles.lockNote}>
-                      <span aria-hidden="true">🔒</span> Finish {WORLDS[worldIndex - 1].name} to unlock this world.
+                      Finish {WORLDS[worldIndex - 1].name} to unlock this world.
                     </p>
                   )}
 
-                  <ol className={styles.path}>
-                    {world.levels.map((level, index) => {
-                      const state = levelStatus(progress, level.id);
-                      const levelStars = progress[level.id]?.stars ?? 0;
-                      const isNext = next?.level.id === level.id;
-                      const nodeClass = `${styles.node} ${state === "completed" ? styles.nodeDone : state === "unlocked" ? styles.nodeOpen : styles.nodeLocked} ${isNext ? styles.nodeNext : ""}`;
-                      return (
-                        <li key={level.id} className={styles.stop}>
-                          {state === "locked" ? (
-                            <span className={nodeClass} aria-hidden="true">
-                              🔒
+                  <div className={styles.pathWrap}>
+                    <svg
+                      className={styles.trail}
+                      viewBox={`0 0 ${count * 100} ${NODE + DROP}`}
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d={trailPath(count)} vectorEffect="non-scaling-stroke" />
+                    </svg>
+                    <ol className={styles.path} style={{ "--count": count } as CSSProperties}>
+                      {world.levels.map((level, index) => {
+                        const state = levelStatus(progress, level.id);
+                        const levelStars = progress[level.id]?.stars ?? 0;
+                        const isNext = next?.level.id === level.id;
+                        const nodeClass = `${styles.node} ${state === "completed" ? styles.nodeDone : state === "unlocked" ? styles.nodeOpen : styles.nodeLocked} ${isNext ? styles.nodeNext : ""}`;
+                        return (
+                          <li key={level.id} className={styles.stop}>
+                            {isNext && (
+                              <span className={styles.playTag} aria-hidden="true">
+                                {started ? "Next!" : "Start!"}
+                              </span>
+                            )}
+                            {state === "locked" ? (
+                              <span className={nodeClass} aria-hidden="true">
+                                🔒
+                              </span>
+                            ) : (
+                              <Link
+                                href={levelHref(world.id, level.slug)}
+                                className={nodeClass}
+                                aria-label={`Level ${index + 1}: ${level.title}. ${state === "completed" ? `${levelStars} of 3 stars.` : "Ready to play!"}`}
+                              >
+                                {state === "completed" && levelStars === 3 ? "★" : index + 1}
+                              </Link>
+                            )}
+                            <span className={styles.stopName}>
+                              {level.title}
+                              {state === "locked" && <span className={ui.srOnly}> (locked)</span>}
                             </span>
-                          ) : (
-                            <Link
-                              href={levelHref(world.id, level.slug)}
-                              className={nodeClass}
-                              aria-label={`Level ${index + 1}: ${level.title}. ${state === "completed" ? `${levelStars} of 3 stars.` : "Ready to play!"}`}
-                            >
-                              {index + 1}
-                            </Link>
-                          )}
-                          <span className={styles.stopName}>
-                            {level.title}
-                            {state === "locked" && <span className={ui.srOnly}> (locked)</span>}
-                          </span>
-                          {state === "completed" ? (
-                            <StarRow stars={levelStars} size="sm" />
-                          ) : isNext ? (
-                            <span className={styles.playTag} aria-hidden="true">
-                              Play!
-                            </span>
-                          ) : (
-                            <span className={styles.starSpacer} aria-hidden="true" />
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ol>
+                            {state === "completed" ? (
+                              <StarRow stars={levelStars} size="sm" />
+                            ) : (
+                              <span className={styles.starSpacer} aria-hidden="true" />
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </div>
                 </li>
               );
             })}
@@ -246,6 +305,7 @@ export function KidsHome() {
 
       <section className={styles.parents} aria-labelledby="kq-parents-title">
         <div className={styles.sectionHead}>
+          <p className={styles.parentsKicker}>For grown-ups</p>
           <h2 id="kq-parents-title">For parents &amp; teachers</h2>
           <p>Code Quest takes kids from their very first instruction to small Python programs, one idea at a time.</p>
         </div>

@@ -1,6 +1,6 @@
 .home {
   display: grid;
-  gap: 36px;
+  gap: 40px;
 }
 
 /* ---------- Hero ---------- */
@@ -59,6 +59,28 @@
   font-size: 22px;
 }
 
+.heroFacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.heroFacts li {
+  padding: 5px 14px;
+  border: 2px solid var(--kq-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #28325a;
+  font: 600 15px var(--kq-display);
+}
+
+.heroFacts b {
+  color: #1b2240;
+}
+
 .heroArt {
   position: relative;
   display: grid;
@@ -72,16 +94,99 @@
   text-align: center;
 }
 
-.heroGround {
-  width: min(330px, 90%);
-  height: 40px;
-  margin-top: -40px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, #7ed957 0 58%, rgba(126, 217, 87, 0) 62%);
-  z-index: -1;
+/* Bolt stands on a hill, with the blocks of the first worlds floating round
+   him — a look at what the lessons are made of. */
+.stage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  justify-items: center;
+  width: min(420px, 100%);
 }
 
-/* ---------- Stats ---------- */
+.heroMascot {
+  position: relative;
+  z-index: 1;
+  height: auto;
+}
+
+.hill {
+  position: absolute;
+  bottom: -6px;
+  left: -8%;
+  z-index: -1;
+  width: 116%;
+  height: 76px;
+}
+
+.sticker {
+  --tone: #16a34a;
+  --tone-bg: #dcfce7;
+  --tone-ink: #14532d;
+
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 2.5px solid var(--tone);
+  border-bottom-width: 5px;
+  border-radius: 14px;
+  background: var(--tone-bg);
+  color: var(--tone-ink);
+  font: 600 14px/1 var(--kq-display);
+  white-space: nowrap;
+  box-shadow: 0 12px 20px -14px rgba(27, 34, 64, 0.6);
+  animation: float 6s ease-in-out infinite;
+}
+
+.sticker svg {
+  width: 16px;
+  height: 16px;
+  color: var(--tone);
+}
+
+.stickerMove {
+  top: 10%;
+  left: -4%;
+  rotate: -6deg;
+}
+
+.stickerLoop {
+  --tone: #ea580c;
+  --tone-bg: #ffedd5;
+  --tone-ink: #7c2d12;
+
+  top: 38%;
+  right: -8%;
+  rotate: 5deg;
+  animation-delay: -2s;
+}
+
+.stickerLogic {
+  --tone: #7c3aed;
+  --tone-bg: #ede9fe;
+  --tone-ink: #4c1d95;
+
+  bottom: 20%;
+  left: -10%;
+  rotate: -3deg;
+  animation-delay: -4s;
+}
+
+/* translate, not transform, so the stickers keep their tilt while they bob. */
+@keyframes float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
+  }
+}
+
+/* ---------- Progress ---------- */
 
 .stats {
   display: grid;
@@ -137,14 +242,25 @@
   background: #fff;
 }
 
+/* The stripes march, slowly: a bar that moves reads as a journey under way.
+   The tile is 24px·√2 square — exactly one period of a 45° stripe each way —
+   so it repeats without a seam. */
 .journey span {
   display: block;
   height: 100%;
   background: repeating-linear-gradient(45deg, #ffc83d 0 12px, #ffb000 12px 24px);
+  background-size: 33.94px 33.94px;
+  animation: march 1.4s linear infinite;
   transition: width 0.6s ease;
 }
 
-/* ---------- Map ---------- */
+@keyframes march {
+  to {
+    background-position: 33.94px 0;
+  }
+}
+
+/* ---------- Section heads ---------- */
 
 .sectionHead {
   margin-bottom: 16px;
@@ -160,6 +276,8 @@
   color: #28325a;
   font-weight: 600;
 }
+
+/* ---------- Map ---------- */
 
 .mapSection,
 .world {
@@ -180,7 +298,7 @@
 
 .worlds {
   display: grid;
-  gap: 18px;
+  gap: 22px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -188,40 +306,38 @@
 
 .world {
   position: relative;
-  padding: 18px 20px 20px;
+  padding: 8px 8px 22px;
   border: 3px solid var(--world);
   border-radius: 28px;
   background: linear-gradient(160deg, var(--world-soft) 0%, #ffffff 65%);
   box-shadow: var(--kq-shadow);
 }
 
-.worldLocked {
-  border-style: dashed;
-  background: linear-gradient(160deg, #eef1f7 0%, #fbfcff 65%);
-}
-
-.worldLocked .worldEmoji {
-  filter: grayscale(0.8);
-}
-
-.worldHead {
+/* The world's banner: its deep shade, which carries white text at 5:1 or
+   better for every world — the bright shade does not. */
+.banner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px 16px;
+  padding: 14px 16px;
+  border-radius: 21px;
+  background: var(--world-deep);
+  color: #fff;
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.2);
 }
 
 .worldEmoji {
   flex: none;
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
-  border: 3px solid #1b2240;
-  border-radius: 20px;
+  width: 60px;
+  height: 60px;
+  border: 3px solid #fff;
+  border-radius: 18px;
   background: var(--world);
-  box-shadow: 0 4px 0 #1b2240;
-  font-size: 34px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
+  font-size: 32px;
 }
 
 .worldTitle {
@@ -237,14 +353,19 @@
   text-transform: uppercase;
 }
 
-.worldTitle h3 {
+.banner .worldKicker {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.world .banner h3 {
   margin: 2px 0;
+  color: #fff;
   font-size: 28px;
 }
 
 .worldTagline {
   margin: 0;
-  color: #3a4466;
+  color: rgba(255, 255, 255, 0.92);
   font-weight: 600;
 }
 
@@ -255,66 +376,105 @@
   gap: 8px;
 }
 
-.worldStars {
+.worldStars,
+.worldBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
-  border: 2px solid var(--kq-line);
+  padding: 5px 12px;
   border-radius: 999px;
-  background: #fff;
+  color: #1b2240;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.22);
   font: 600 16px var(--kq-display);
 }
 
+.worldStars {
+  background: #fff;
+}
+
 .worldBadge {
-  padding: 4px 12px;
-  border: 2px solid #e0a100;
-  border-radius: 999px;
   background: #fff3c4;
-  font: 600 15px var(--kq-display);
+  font-size: 15px;
+}
+
+.worldLocked {
+  border-style: dashed;
+  border-color: #b5bdd1;
+  background: linear-gradient(160deg, #eef1f7 0%, #fbfcff 65%);
+}
+
+.worldLocked .banner {
+  background: #646d88;
+}
+
+.worldLocked .worldEmoji {
+  background: #9aa3bb;
 }
 
 .lockNote {
-  margin: 12px 0 0;
+  margin: 14px 12px 0;
   color: #3a4466;
   font-weight: 700;
 }
 
+/* The trail. Stops alternate high and low (--lift); the SVG curve behind
+   them passes through each node's centre — see NODE and DROP in
+   KidsHome.tsx, which these 68px and 48px mirror. */
+.pathWrap {
+  position: relative;
+  padding: 44px 8px 0;
+}
+
+.trail {
+  position: absolute;
+  top: 44px;
+  left: 8px;
+  width: calc(100% - 16px);
+  height: 116px;
+  overflow: visible;
+}
+
+.trail path {
+  fill: none;
+  stroke: var(--world);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 15;
+  opacity: 0.7;
+}
+
+.worldLocked .trail path {
+  stroke: #b5bdd1;
+}
+
 .path {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
-  gap: 18px 8px;
-  margin: 20px 0 0;
+  grid-template-columns: repeat(var(--count, 5), minmax(0, 1fr));
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .stop {
+  --lift: 0px;
+
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  padding: var(--lift) 4px 0;
   text-align: center;
 }
 
-/* Dotted trail to the next stop. */
-.stop:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 32px;
-  left: calc(50% + 40px);
-  width: calc(100% - 72px);
-  border-top: 5px dotted var(--world);
-}
-
-.worldLocked .stop::after {
-  border-top-color: #b5bdd1;
+.stop:nth-child(even) {
+  --lift: 48px;
 }
 
 .node {
   position: relative;
   z-index: 1;
+  flex: none;
   display: grid;
   place-items: center;
   width: 68px;
@@ -324,11 +484,17 @@
   font: 700 26px var(--kq-display);
   text-decoration: none;
   box-shadow: 0 5px 0 #1b2240;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 a.node:hover {
   transform: translateY(-3px);
+  box-shadow: 0 8px 0 #1b2240;
+}
+
+a.node:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #1b2240;
 }
 
 .nodeDone {
@@ -370,12 +536,41 @@ a.node:hover {
   font: 600 15px/1.2 var(--kq-display);
 }
 
+/* "Start!" floats over the level to play next, bobbing, with a tail down to
+   it — the same call Duolingo puts over its next lesson. */
 .playTag {
-  padding: 1px 10px;
-  border-radius: 999px;
+  position: absolute;
+  top: calc(var(--lift) - 40px);
+  left: 50%;
+  z-index: 2;
+  padding: 4px 12px;
+  border-radius: 12px;
   background: #1b2240;
   color: #fff;
-  font: 600 13px/1.5 var(--kq-display);
+  font: 600 14px/1.4 var(--kq-display);
+  white-space: nowrap;
+  translate: -50% 0;
+  animation: bob 1.8s ease-in-out infinite;
+}
+
+.playTag::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 7px solid transparent;
+  border-top-color: #1b2240;
+  translate: -50% 0;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .starSpacer {
@@ -384,13 +579,27 @@ a.node:hover {
 
 /* ---------- Badges ---------- */
 
+/* The medals stand on a shelf, which is what makes it a collection. */
 .badgeGrid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
   margin: 0;
-  padding: 0;
+  padding: 0 0 26px;
   list-style: none;
+}
+
+.badgeGrid::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  bottom: 0;
+  left: -8px;
+  height: 16px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #dca06a 0%, #b8763c 100%);
+  box-shadow: 0 5px 0 #8a5222, 0 16px 24px -16px rgba(27, 34, 64, 0.6);
 }
 
 .badge {
@@ -457,11 +666,19 @@ a.node:hover {
 /* ---------- Parents & teachers ---------- */
 
 .parents {
-  padding: 24px;
+  padding: 26px;
   border: 2px solid var(--kq-line);
   border-radius: 30px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   box-shadow: var(--kq-shadow);
+}
+
+.sectionHead .parentsKicker {
+  margin: 0 0 4px;
+  color: #15803d;
+  font: 700 13px var(--kq-display);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 
 .parentGrid {
@@ -543,22 +760,98 @@ a.node:hover {
     margin-inline: auto;
   }
 
-  .heroActions {
+  .heroActions,
+  .heroFacts {
     justify-content: center;
   }
 
   .heroMascot {
     width: 170px;
   }
+}
 
-  .stop::after {
+/* Below this the row of stepping stones gets too tight for the level names,
+   so the trail turns and runs down the card: one level per line, swinging
+   out and back like the path on a phone course map. */
+@media (max-width: 760px) {
+  .pathWrap {
+    padding: 14px 6px 0;
+  }
+
+  .trail {
+    display: none;
+  }
+
+  .path {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 16px;
+  }
+
+  .stop,
+  .stop:nth-child(even) {
+    --lift: 0px;
+  }
+
+  .stop {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    justify-items: start;
+    column-gap: 14px;
+    row-gap: 2px;
+    margin-left: var(--snake, 0px);
+    padding: 0;
+    text-align: left;
+  }
+
+  .stop:nth-child(4n + 2),
+  .stop:nth-child(4n) {
+    --snake: 32px;
+  }
+
+  .stop:nth-child(4n + 3) {
+    --snake: 58px;
+  }
+
+  .node {
+    grid-row: 1 / span 2;
+    grid-column: 1;
+  }
+
+  .stopName {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: end;
+    max-width: none;
+  }
+
+  .stop > :last-child:not(.stopName) {
+    grid-row: 2;
+    grid-column: 2;
+    align-self: start;
+  }
+
+  .playTag {
+    position: static;
+    grid-row: 2;
+    grid-column: 2;
+    align-self: start;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    translate: none;
+    animation: none;
+  }
+
+  .playTag::after {
     display: none;
   }
 }
 
 @media (max-width: 560px) {
   .home {
-    gap: 28px;
+    gap: 30px;
   }
 
   .stats {
@@ -598,24 +891,42 @@ a.node:hover {
     width: 100%;
   }
 
+  /* Two stickers fit beside a 170px Bolt on a phone; three crowd him. */
+  .sticker {
+    padding: 5px 9px;
+    font-size: 12.5px;
+  }
+
+  .stickerMove {
+    left: 0;
+  }
+
+  .stickerLoop {
+    right: 0;
+  }
+
+  .stickerLogic {
+    display: none;
+  }
+
   .world {
-    padding: 14px;
+    padding: 6px 6px 18px;
     border-radius: 22px;
   }
 
+  .banner {
+    padding: 12px;
+    border-radius: 17px;
+  }
+
   .worldEmoji {
-    width: 52px;
-    height: 52px;
-    font-size: 28px;
+    width: 50px;
+    height: 50px;
+    font-size: 26px;
   }
 
-  .worldTitle h3 {
+  .world .banner h3 {
     font-size: 24px;
-  }
-
-  .path {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px 4px;
   }
 
   .node {
@@ -625,7 +936,7 @@ a.node:hover {
   }
 
   .stopName {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .parents {
@@ -636,7 +947,10 @@ a.node:hover {
 
 @media (prefers-reduced-motion: reduce) {
   .nodeNext,
-  .badgeEarned .medal {
+  .badgeEarned .medal,
+  .sticker,
+  .playTag,
+  .journey span {
     animation: none;
   }
 
@@ -645,7 +959,8 @@ a.node:hover {
     transition: none;
   }
 
-  a.node:hover {
+  a.node:hover,
+  a.node:active {
     transform: none;
   }
 }
