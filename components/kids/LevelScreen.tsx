@@ -126,6 +126,16 @@ export function LevelScreen({ worldId, levelSlug }: { worldId: string; levelSlug
             <span aria-hidden="true">{world.emoji}</span> World {world.number} · {world.name}
           </span>
           <span className={styles.levelCount}>
+            {/* The world's levels as a row of dots — finished, here, still
+                to come — so "3 of 5" can be seen as well as read. */}
+            <span className={styles.dots} aria-hidden="true">
+              {world.levels.map((item, index) => (
+                <i
+                  key={item.id}
+                  className={index === indexInWorld ? styles.dotHere : progress[item.id] ? styles.dotDone : undefined}
+                />
+              ))}
+            </span>
             Level {indexInWorld + 1} of {world.levels.length}
           </span>
         </p>
