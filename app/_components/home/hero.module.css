@@ -34,7 +34,7 @@
   height: 620px;
   border-radius: 50%;
   background: var(--accent);
-  opacity: 0.16;
+  opacity: 0.1;
   filter: blur(120px);
 }
 
