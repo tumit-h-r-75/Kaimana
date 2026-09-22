@@ -1,9 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Kaimana">
-  <rect width="64" height="64" rx="14" fill="#0A0B0D"/>
-  <g fill="none" stroke="#4FF0C5" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
-    <path d="M32 10 54 32 32 54 10 32Z"/>
-    <path d="M20 22h24" stroke-opacity=".85"/>
-    <path d="M20 22 32 54" stroke-opacity=".6"/>
-    <path d="M44 22 32 54" stroke-opacity=".6"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Kaimana">
+  <g transform="translate(0 -1.5)">
+  <defs>
+    <linearGradient id="kt" x1="24" y1="8" x2="24" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E6FFF9"/><stop offset="1" stop-color="#8DF5DE"/>
+    </linearGradient>
+    <linearGradient id="kl" x1="6" y1="18" x2="24" y2="43" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3ED8C4"/><stop offset="1" stop-color="#168893"/>
+    </linearGradient>
+    <linearGradient id="kc" x1="24" y1="18" x2="24" y2="43" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1F93D2"/><stop offset="1" stop-color="#123C88"/>
+    </linearGradient>
+    <linearGradient id="kr" x1="42" y1="18" x2="24" y2="43" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23B4C2"/><stop offset="1" stop-color="#0F5F82"/>
+    </linearGradient>
+  </defs>
+  <path d="M3 18 14 8 24 18Z" fill="#74EED8"/>
+  <path d="M14 8H34L24 18Z" fill="url(#kt)"/>
+  <path d="M34 8 45 18H24Z" fill="#45D6C4"/>
+  <path d="M3 18H15L24 43Z" fill="url(#kl)"/>
+  <path d="M15 18H33L24 43Z" fill="url(#kc)"/>
+  <path d="M33 18H45L24 43Z" fill="url(#kr)"/>
+  <path d="M3 18H45M14 8 24 18 34 8M15 18 24 43 33 18" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".7" stroke-linejoin="round"/></g>
 </svg>
