@@ -165,6 +165,22 @@
   box-shadow: 0 0 0 2px var(--surface);
 }
 
+/* Unread count on the bell. */
+.count {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--surface);
+  color: var(--bg);
+  font: 700 10.5px/18px 'JetBrains Mono', monospace;
+  text-align: center;
+}
+
 .rule {
   width: 1px;
   height: 28px;
@@ -354,7 +370,49 @@
   color: var(--error);
 }
 .popList button:disabled { opacity: .6; cursor: default; }
-.popList .unread { box-shadow: inset 2px 0 0 var(--accent); }
+.popList .unread {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* The notification list: scrolls inside the panel, each line led by a dot
+   in the colour of what happened. */
+.noteList {
+  max-height: min(420px, 60vh);
+  overflow-y: auto;
+}
+.noteList a,
+.noteStatic {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--text-dim);
+  font: 13.5px Inter, Arial, sans-serif;
+}
+.noteStatic b { display: block; color: var(--text); font-weight: 600; }
+.noteStatic small { display: block; margin-top: 2px; color: var(--text-dim); font-size: 12px; }
+.noteList small { line-height: 1.45; }
+.noteList .noteTime {
+  margin-top: 4px;
+  font: 11.5px 'JetBrains Mono', monospace;
+  opacity: .85;
+}
+.noteMark {
+  --tone: #6CB6FF;
+
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--tone);
+}
+.mark_ok { --tone: var(--accent); }
+.mark_warn { --tone: var(--warn); }
+.mark_info { --tone: #6CB6FF; }
 .pop a:focus-visible,
 .pop button:focus-visible {
   outline: 2px solid var(--accent);

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { DialogProvider } from "@/providers/DialogProvider";
+import { NotificationsProvider } from "@/providers/NotificationsProvider";
 import { ConsoleSignature } from "@/components/layout/ConsoleSignature";
 import { appConfig } from "@/lib/config";
 
@@ -54,7 +55,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </noscript>
         <ConsoleSignature />
         <AuthProvider>
-          <DialogProvider>{children}</DialogProvider>
+          <DialogProvider>
+            <NotificationsProvider>{children}</NotificationsProvider>
+          </DialogProvider>
         </AuthProvider>
       </body>
     </html>

@@ -1,132 +1,72 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { getMyHostRequest } from "@/lib/api/hosts";
-import { getMyProposals } from "@/lib/api/proposals";
+import { useCallback, useRef, useState } from "react";
 import { usePendingReviews } from "@/components/admin/usePendingReviews";
 import { useDismiss } from "@/hooks/useDismiss";
+import { useNotifications } from "@/providers/NotificationsProvider";
+import type { NotificationType } from "@/lib/api/notifications";
 import type { CurrentUser } from "@/types/api";
 import styles from "./siteHeader.module.css";
 
 /**
- * The bell only rings for things that happened: a decision on one of your
- * problem proposals or on your request to host, and — for admins — the
- * review queues. There is no notification service behind it; these are the
- * records the account already has, read on demand.
+ * The bell in the site header. Its list comes from NotificationsProvider,
+ * which keeps it current while the site is open; opening it marks
+ * everything read. Admins also see the review queues, which keep the dot on
+ * for as long as there is work waiting.
  */
 
-interface Note {
-  key: string;
-  at: string;
-  title: string;
-  detail: string;
-  href: string;
-}
-
-const RECENT_DAYS = 30;
-const TTL_MS = 120_000;
-let cached: { userId: string; at: number; promise: Promise<Note[]> } | null = null;
-
-function loadNotes(userId: string): Promise<Note[]> {
-  if (cached && cached.userId === userId && Date.now() - cached.at < TTL_MS) return cached.promise;
-  const since = Date.now() - RECENT_DAYS * 86_400_000;
-  const promise = Promise.all([getMyProposals().catch(() => null), getMyHostRequest().catch(() => null)]).then(([proposals, host]) => {
-    const notes: Note[] = [];
-    for (const p of proposals?.items ?? []) {
-      if (p.status === "pending" || !p.reviewedAt || Date.parse(p.reviewedAt) < since) continue;
-      notes.push({
-        key: `proposal-${p.id}-${p.status}`,
-        at: p.reviewedAt,
-        title: p.status === "accepted" ? "Your proposal was accepted" : "Your proposal was not accepted",
-        detail: p.title,
-        href: `/profile/proposals/${p.id}`,
-      });
-    }
-    const request = host?.request;
-    if (request && request.status !== "pending" && request.reviewedAt && Date.parse(request.reviewedAt) >= since) {
-      notes.push({
-        key: `host-${request.id}-${request.status}`,
-        at: request.reviewedAt,
-        title: request.status === "approved" ? "You can host contests now" : "Your host request was declined",
-        detail: request.contestTitle,
-        href: request.status === "approved" ? "/admin/contests" : "/host",
-      });
-    }
-    return notes.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
-  });
-  cached = { userId, at: Date.now(), promise };
-  return promise;
-}
-
-const seenKey = (userId: string) => `kai-notes-seen:${userId}`;
-
-// Per-browser, and allowed to fail: a private window just shows the dot again.
-function readSeen(userId: string): number {
-  try {
-    return Number(window.localStorage.getItem(seenKey(userId))) || 0;
-  } catch {
-    return 0;
-  }
-}
-function writeSeen(userId: string, at: number) {
-  try {
-    window.localStorage.setItem(seenKey(userId), String(at));
-  } catch {
-    // Not remembered, and that is all.
-  }
-}
-
 const relative = (iso: string) => {
-  const days = Math.floor((Date.now() - Date.parse(iso)) / 86_400_000);
-  if (days <= 0) return "today";
-  if (days === 1) return "yesterday";
-  return `${days} days ago`;
+  const minutes = Math.round((Date.now() - Date.parse(iso)) / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.round(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString();
+};
+
+const MARK: Record<NotificationType, string> = {
+  "proposal.accepted": "ok",
+  "host.approved": "ok",
+  "proposal.rejected": "warn",
+  "host.rejected": "warn",
+  "proposal.submitted": "info",
+  "host.requested": "info",
+  "comment.new": "info",
+  "role.changed": "info",
+  "contest.published": "info",
+  "problem.published": "info",
 };
 
 export function NotificationBell({ user }: { user: CurrentUser }) {
-  const userId = user.id ?? user._id ?? user.email;
   const isAdmin = user.role === "admin";
   const pending = usePendingReviews(isAdmin);
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [seenAt, setSeenAt] = useState(0);
+  const { items, unreadCount, seenAt, loaded, markSeen, desktop, enableDesktop } = useNotifications();
   const [open, setOpen] = useState(false);
+  // Items newer than this were unread when the panel opened; they stay
+  // highlighted while it is open even though opening marked them read.
+  const [newSince, setNewSince] = useState<number>(0);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const close = useCallback(() => setOpen(false), []);
   useDismiss(open, close, rootRef, triggerRef);
 
-  useEffect(() => {
-    let cancelled = false;
-    setSeenAt(readSeen(userId));
-    void loadNotes(userId).then((result) => {
-      if (!cancelled) setNotes(result);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
+  const hosts = pending.hostRequests ?? 0;
+  const proposals = pending.proposals ?? 0;
+  const queue = hosts + proposals;
+  const hasDot = unreadCount > 0 || queue > 0;
 
-  const queue = (pending.hostRequests ?? 0) + (pending.proposals ?? 0);
-  const unread = notes.filter((n) => Date.parse(n.at) > seenAt).length;
-  // The review queue keeps the dot on for as long as it is not empty: it is
-  // work waiting, not news.
-  const hasDot = unread > 0 || queue > 0;
-
-  // Opening the panel marks everything read (the dot goes), but the items
-  // that were new when it opened stay highlighted until the next time.
-  const [newSince, setNewSince] = useState(0);
   const toggle = () => {
-    if (!open && notes.length) {
-      const newest = Date.parse(notes[0].at);
-      setNewSince(seenAt);
-      setSeenAt(newest);
-      writeSeen(userId, newest);
+    if (!open) {
+      setNewSince(seenAt ? Date.parse(seenAt) : 0);
+      if (unreadCount > 0) markSeen();
     }
     setOpen(!open);
   };
 
-  const label = hasDot ? `Notifications, ${unread + (queue > 0 ? 1 : 0)} new` : "Notifications";
+  const label = unreadCount > 0 ? `Notifications, ${unreadCount} unread` : queue > 0 ? "Notifications, reviews waiting" : "Notifications";
 
   return (
     <div className={styles.popRoot} ref={rootRef}>
@@ -143,7 +83,13 @@ export function NotificationBell({ user }: { user: CurrentUser }) {
           <path d="M6 16V11a6 6 0 1 1 12 0v5l1.6 2H4.4L6 16Z" />
           <path d="M10 20.5a2.2 2.2 0 0 0 4 0" />
         </svg>
-        {hasDot && <span className={styles.dot} aria-hidden="true" />}
+        {unreadCount > 0 ? (
+          <span className={styles.count} aria-hidden="true">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        ) : (
+          hasDot && <span className={styles.dot} aria-hidden="true" />
+        )}
       </button>
 
       {open && (
@@ -152,18 +98,22 @@ export function NotificationBell({ user }: { user: CurrentUser }) {
 
           {isAdmin && queue > 0 && (
             <div className={styles.popList}>
-              {(pending.hostRequests ?? 0) > 0 && (
+              {hosts > 0 && (
                 <Link href="/admin/host-requests" onClick={close}>
                   <span>
-                    <b>{pending.hostRequests} host {pending.hostRequests === 1 ? "request" : "requests"} to review</b>
+                    <b>
+                      {hosts} host {hosts === 1 ? "request" : "requests"} to review
+                    </b>
                     <small>Waiting in the admin</small>
                   </span>
                 </Link>
               )}
-              {(pending.proposals ?? 0) > 0 && (
+              {proposals > 0 && (
                 <Link href="/admin/proposals" onClick={close}>
                   <span>
-                    <b>{pending.proposals} problem {pending.proposals === 1 ? "proposal" : "proposals"} to review</b>
+                    <b>
+                      {proposals} problem {proposals === 1 ? "proposal" : "proposals"} to review
+                    </b>
                     <small>Waiting in the admin</small>
                   </span>
                 </Link>
@@ -171,25 +121,51 @@ export function NotificationBell({ user }: { user: CurrentUser }) {
             </div>
           )}
 
-          {notes.length > 0 ? (
-            <div className={styles.popList}>
-              {notes.map((note) => (
-                <Link key={note.key} href={note.href} onClick={close} className={Date.parse(note.at) > newSince ? styles.unread : undefined}>
-                  <span>
-                    <b>{note.title}</b>
-                    <small>
-                      {note.detail} · {relative(note.at)}
-                    </small>
-                  </span>
-                </Link>
-              ))}
+          {!loaded ? (
+            <p className={styles.popEmpty}>Loading…</p>
+          ) : items.length > 0 ? (
+            <div className={`${styles.popList} ${styles.noteList}`}>
+              {items.map((note) => {
+                const isNew = Date.parse(note.createdAt) > newSince;
+                const content = (
+                  <>
+                    <i className={`${styles.noteMark} ${styles[`mark_${MARK[note.type] ?? "info"}`]}`} aria-hidden="true" />
+                    <span>
+                      <b>{note.title}</b>
+                      {note.body && <small>{note.body}</small>}
+                      <small className={styles.noteTime}>{relative(note.createdAt)}</small>
+                    </span>
+                  </>
+                );
+                return note.href ? (
+                  <Link key={note.id} href={note.href} onClick={close} className={isNew ? styles.unread : undefined}>
+                    {content}
+                  </Link>
+                ) : (
+                  <div key={note.id} className={`${styles.noteStatic}${isNew ? ` ${styles.unread}` : ""}`}>
+                    {content}
+                  </div>
+                );
+              })}
             </div>
           ) : (
             !(isAdmin && queue > 0) && (
               <p className={styles.popEmpty}>
-                Nothing new. Decisions on your problem proposals and host requests will show up here.
+                Nothing yet. Decisions on your proposals and host requests, comments on your solutions, and new contests and problems
+                show up here.
               </p>
             )
+          )}
+
+          {desktop === "default" && (
+            <div className={styles.popList}>
+              <button type="button" onClick={() => void enableDesktop()}>
+                <span>
+                  <b>Get desktop alerts</b>
+                  <small>For news that arrives while this tab is in the background</small>
+                </span>
+              </button>
+            </div>
           )}
         </div>
       )}
