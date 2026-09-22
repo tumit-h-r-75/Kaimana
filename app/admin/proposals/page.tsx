@@ -18,8 +18,8 @@ import {
 } from "@/lib/api/proposals";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from "@/components/admin/AdminShell";
+import { invalidatePendingReviews } from "@/components/admin/usePendingReviews";
 import { Pagination } from "@/components/ui/Pagination";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProposalDetails } from "@/components/proposals/ProposalDetails";
 import { DifficultyTag, ProposalStatusBadge } from "@/components/proposals/ProposalBadges";
 import styles from "./proposals.module.css";
@@ -173,6 +173,7 @@ function ProposalsContent() {
     setReviewError(null);
     try {
       const reviewed = await reviewProposal(proposal.id, payload);
+      invalidatePendingReviews();
       setFeedback(
         review.action === "accept"
           ? {
@@ -486,7 +487,6 @@ export default function AdminProposalsPage() {
   return (
     <AdminRoute>
       <ProposalsContent />
-      <SiteFooter />
     </AdminRoute>
   );
 }
