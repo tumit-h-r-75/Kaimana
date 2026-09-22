@@ -9,7 +9,6 @@ import type { AdminUser, UserRole } from "@/types/api";
 import { getErrorMessage } from "@/lib/api/client";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from "@/components/admin/AdminShell";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { IconSearch } from "@/components/admin/icons";
 import { PageLoader } from "@/components/ui/Loader";
 import { Pagination } from "@/components/ui/Pagination";
@@ -302,7 +301,6 @@ export default function AdminUsersPage() {
       <Suspense fallback={<PageLoader label="Loading users…" />}>
         <AdminUsersContent />
       </Suspense>
-      <SiteFooter />
     </AdminRoute>
   );
 }

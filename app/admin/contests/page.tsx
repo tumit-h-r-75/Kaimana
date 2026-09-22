@@ -10,7 +10,6 @@ import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from "@/components/admin/AdminShell";
 import { ContestForm, takeContestManagerFlash } from "@/components/admin/ContestForm";
 import { Pagination } from "@/components/ui/Pagination";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { IconSearch } from "@/components/admin/icons";
 import styles from "@/components/admin/ContestForm.module.css";
 
@@ -300,7 +299,6 @@ export default function AdminContestsPage() {
   return (
     <AdminRoute allowRoles={MANAGER_ROLES}>
       <AdminContestsContent />
-      <SiteFooter />
     </AdminRoute>
   );
 }
