@@ -3,19 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CurrentUser } from "@/types/api";
+import { useDismiss } from "@/hooks/useDismiss";
 import { IconGem } from "./icons";
+import styles from "./siteHeader.module.css";
 
 /**
- * Everything about the signed-in account, behind the avatar.
- *
- * The header used to lay all of it out in a row — gems, avatar, name, role
- * badge, a Sign out button — beside a nav of up to eight links. There was no
- * room for that, which is why the nav collapsed into a hamburger at 1320px
- * and why the stylesheet carried a stack of fixes for the row shrinking into
- * itself. Folding the account into one control is what lets the navigation
- * stay visible on an ordinary laptop.
+ * Everything about the signed-in account, behind the avatar: profile,
+ * analytics, submissions, the admin or host panel, and sign out. Keeping it
+ * in one control is what lets the navigation stay visible on a laptop.
  */
 export function AccountMenu({
   user,
@@ -37,33 +34,14 @@ export function AccountMenu({
   const rootRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const pathname = usePathname();
+  const close = useCallback(() => setOpen(false), []);
+  useDismiss(open, close, rootRef, triggerRef);
 
-  // Close on navigation, outside click and Escape — the three ways people
-  // expect a menu to go away. Escape hands focus back to the trigger so a
-  // keyboard user is not left on a node that just disappeared.
   useEffect(() => setOpen(false), [pathname]);
-
-  useEffect(() => {
-    if (!open) return;
-    const onPointer = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      setOpen(false);
-      triggerRef.current?.focus();
-    };
-    document.addEventListener("pointerdown", onPointer);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onPointer);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
 
   const toggle = () => {
     if (!open) onOpen?.();
-    setOpen((v) => !v);
+    setOpen(!open);
   };
 
   const initial = user.name.slice(0, 1).toUpperCase();
@@ -77,77 +55,66 @@ export function AccountMenu({
   ];
 
   return (
-    <div className="account-menu" ref={rootRef}>
-      {hasGems && (
-        <Link href="/profile" className="header-gems" title="Gems — earned by solving, spent on hints">
-          <IconGem /> {user.gems}
-        </Link>
-      )}
-
+    <div className={styles.popRoot} ref={rootRef}>
       <button
         ref={triggerRef}
         type="button"
-        className={`account-trigger${open ? " is-open" : ""}`}
+        className={`${styles.account}${open ? ` ${styles.isOpen}` : ""}`}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls="account-panel"
         onClick={toggle}
       >
         {user.profilePicUrl ? (
-          <Image className="header-avatar" src={user.profilePicUrl} alt="" width={32} height={32} />
+          <Image className={styles.avatar} src={user.profilePicUrl} alt="" width={34} height={34} />
         ) : (
-          <span className="header-avatar header-avatar-fallback" aria-hidden="true">{initial}</span>
+          <span className={`${styles.avatar} ${styles.avatarFallback}`} aria-hidden="true">
+            {initial}
+          </span>
         )}
-        <span className="account-caret" aria-hidden="true" />
+        <svg className={styles.caret} viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
         <span className="sr-only">Account menu for {user.name}</span>
       </button>
 
       {open && (
-        <div id="account-panel" className="account-panel" role="menu" aria-label="Account">
-          <div className="account-panel-head">
-            <div className="account-panel-who">
+        <div id="account-panel" className={styles.pop} role="menu" aria-label="Account">
+          <div className={styles.popWho}>
+            <div className={styles.popName}>
               <b>{user.name}</b>
-              {roleBadge && <span className="header-role-badge">{roleBadge}</span>}
+              {roleBadge && <span className={styles.roleBadge}>{roleBadge}</span>}
             </div>
-            <span className="account-panel-email">{user.email}</span>
+            <span>{user.email}</span>
             {hasGems && (
-              <span className="account-panel-gems">
+              <span className={styles.popGems}>
                 <IconGem size={12} /> {user.gems} gems
               </span>
             )}
           </div>
 
-          <div className="account-panel-links">
+          <div className={styles.popList}>
             {links.map((link) => (
-              <Link
-                key={link.href}
-                role="menuitem"
-                href={link.href}
-                className={isHere(link.href) ? "is-active" : undefined}
-              >
+              <Link key={link.href} role="menuitem" href={link.href} className={isHere(link.href) ? styles.here : undefined}>
                 {link.label}
               </Link>
             ))}
           </div>
 
           {adminLink && (
-            <div className="account-panel-links">
-              <Link role="menuitem" href={adminLink.href} className="account-panel-admin">
+            <div className={styles.popList}>
+              <Link role="menuitem" href={adminLink.href} className={styles.popAccent}>
                 {adminLink.label}
                 <span aria-hidden="true">→</span>
               </Link>
             </div>
           )}
 
-          <button
-            type="button"
-            role="menuitem"
-            className="account-panel-signout"
-            onClick={onSignOut}
-            disabled={isSigningOut}
-          >
-            {isSigningOut ? "Signing out…" : "Sign out"}
-          </button>
+          <div className={styles.popList}>
+            <button type="button" role="menuitem" className={styles.popDanger} onClick={onSignOut} disabled={isSigningOut}>
+              {isSigningOut ? "Signing out…" : "Sign out"}
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -30,7 +30,7 @@ import {
   IconTrophy,
   IconUsers,
 } from "./icons";
-import { useDismiss } from "./useDismiss";
+import { useDismiss } from "@/hooks/useDismiss";
 import { usePendingReviews, type PendingReviews } from "./usePendingReviews";
 import styles from "./adminShell.module.css";
 
