@@ -404,7 +404,9 @@
   color: var(--text);
   font: 700 26px/1.1 'JetBrains Mono', monospace;
 }
-.stat span {
+/* The label under the number only — a bare `.stat span` also caught the icon
+   tile (a span too), turned it into a plain block and whitened its icon. */
+.stat > div > span {
   display: block;
   margin-top: 6px;
   color: var(--text);
