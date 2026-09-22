@@ -9,7 +9,6 @@ import { TestCaseManager } from "@/components/admin/TestCaseManager";
 import { Loader } from "@/components/ui/Loader";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell, AdminErrorState } from "@/components/admin/AdminShell";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 
 function EditProblemContent() {
   const params = useParams<{ id: string }>();
@@ -98,7 +97,6 @@ export default function EditProblemPage() {
   return (
     <AdminRoute>
       <EditProblemContent />
-      <SiteFooter />
     </AdminRoute>
   );
 }

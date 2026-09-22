@@ -7,7 +7,6 @@ import { deleteAdminProblem, listAdminProblems, updateAdminProblem, type AdminPr
 import { getErrorMessage } from "@/lib/api/client";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell, AdminErrorState, AdminEmptyState, AdminTableSkeleton } from "@/components/admin/AdminShell";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { IconSearch } from "@/components/admin/icons";
 import { PageLoader } from "@/components/ui/Loader";
 import { Pagination } from "@/components/ui/Pagination";
@@ -208,7 +207,6 @@ export default function AdminProblemsPage() {
       <Suspense fallback={<PageLoader label="Loading problems…" />}>
         <AdminProblemsContent />
       </Suspense>
-      <SiteFooter />
     </AdminRoute>
   );
 }

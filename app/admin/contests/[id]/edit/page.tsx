@@ -11,7 +11,6 @@ import { ContestForm, setContestManagerFlash } from "@/components/admin/ContestF
 import { Loader } from "@/components/ui/Loader";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell, AdminErrorState, AdminEmptyState } from "@/components/admin/AdminShell";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import styles from "@/components/admin/ContestForm.module.css";
 
 const MANAGER_ROLES: readonly UserRole[] = ["admin", "guest"];
@@ -170,7 +169,6 @@ export default function EditContestPage() {
   return (
     <AdminRoute allowRoles={MANAGER_ROLES}>
       <EditContestContent />
-      <SiteFooter />
     </AdminRoute>
   );
 }

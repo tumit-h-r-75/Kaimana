@@ -8,7 +8,6 @@ import { ApiError, getErrorMessage } from "@/lib/api/client";
 import { ProblemForm, type ProblemFormValues } from "@/components/admin/ProblemForm";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { SiteFooter } from "@/app/_components/home/SiteFooter";
 
 function NewProblemContent() {
   const router = useRouter();
@@ -97,7 +96,6 @@ export default function NewProblemPage() {
   return (
     <AdminRoute>
       <NewProblemContent />
-      <SiteFooter />
     </AdminRoute>
   );
 }
