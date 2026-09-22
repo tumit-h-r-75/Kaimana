@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { BrandLogo } from "@/components/layout/BrandLogo";
-import { IconGem } from "./icons";
+import { AccountMenu } from "./AccountMenu";
 
 const Arrow = () => <span aria-hidden="true">→</span>;
 
@@ -15,11 +14,18 @@ interface NavLink {
   label: string;
 }
 
+/**
+ * The same six links for everyone. Interview used to appear only after
+ * signing in, which hid the feature from exactly the people deciding whether
+ * to sign up; the page itself sends a signed-out visitor to /signin.
+ * Account-scoped pages (Analytics, Submissions, Admin) live in AccountMenu.
+ */
 const PRIMARY_LINKS: NavLink[] = [
   { href: "/problems", label: "Problems" },
   { href: "/contest", label: "Contests" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/community", label: "Community" },
+  { href: "/interview", label: "Interview" },
   { href: "/kids", label: "Kids" },
 ];
 
@@ -30,25 +36,19 @@ export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // A signed-in user unlocks a couple of extra links; admins (and approved
-  // guest contest hosts, who only get the contest manager) get one more on
-  // top of that. Computed once per render so both the desktop nav and the
-  // mobile drawer stay in sync from a single source of truth.
-  const signedInLinks: NavLink[] = !isLoading && user ? [{ href: "/analytics", label: "Analytics" }, { href: "/interview", label: "Interview" }] : [];
+  const signedIn = !isLoading && Boolean(user);
   const adminLink: NavLink | null =
-    !isLoading && user?.role === "admin"
-      ? { href: "/admin", label: "Admin" }
-      : !isLoading && user?.role === "guest"
+    user?.role === "admin"
+      ? { href: "/admin", label: "Admin dashboard" }
+      : user?.role === "guest"
         ? { href: "/admin/contests", label: "Host panel" }
         : null;
   const roleBadge = user?.role === "admin" ? "Admin" : user?.role === "guest" ? "Host" : null;
-  const allLinks = [...PRIMARY_LINKS, ...signedInLinks, ...(adminLink ? [adminLink] : [])];
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
-  // Close the mobile drawer automatically on navigation, and give the header
-  // a subtle shadow once the page has scrolled — both small touches that
-  // make the sticky header feel considered rather than just pinned in place.
+  // Close the drawer on navigation, and lift the header off the page with a
+  // shadow once it has scrolled.
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
@@ -73,55 +73,39 @@ export function SiteHeader() {
   return (
     <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
       <BrandLogo />
-      <nav aria-label="Primary navigation">
+
+      <nav className="site-nav" aria-label="Primary navigation">
         {PRIMARY_LINKS.map((link) => (
-          <Link key={link.href} href={link.href} className={isActive(link.href) ? "is-active" : undefined}>
+          <Link
+            key={link.href}
+            href={link.href}
+            className={isActive(link.href) ? "is-active" : undefined}
+            aria-current={isActive(link.href) ? "page" : undefined}
+          >
             {link.label}
           </Link>
         ))}
-        {signedInLinks.map((link) => (
-          <Link key={link.href} href={link.href} className={isActive(link.href) ? "is-active" : undefined}>
-            {link.label}
-          </Link>
-        ))}
-        {adminLink && (
-          <Link href={adminLink.href} className={`admin-nav-link${isActive(adminLink.href) ? " is-active" : ""}`}>
-            {adminLink.label}
-          </Link>
-        )}
       </nav>
+
       <div className="header-actions">
-        {!isLoading && user ? (
-          <div className="header-account">
-            {typeof user.gems === "number" && (
-              <span className="header-gems" title="Gems earned by solving problems">
-                <IconGem /> {user.gems}
-              </span>
-            )}
-            <Link className="header-avatar-link" href="/profile" aria-label="Your profile">
-              {user.profilePicUrl ? (
-                <Image
-                  className="header-avatar"
-                  src={user.profilePicUrl}
-                  alt={`${user.name} profile`}
-                  width={36}
-                  height={36}
-                />
-              ) : (
-                <span className="header-avatar header-avatar-fallback">{user.name.slice(0, 1).toUpperCase()}</span>
-              )}
-              <span className="header-account-name">{user.name}</span>
-              {roleBadge && <span className="header-role-badge">{roleBadge}</span>}
-            </Link>
-            <button className="sign-in header-signout" type="button" onClick={handleSignOut} disabled={isSigningOut}>
-              {isSigningOut ? "Signing out…" : "Sign out"}
-            </button>
-          </div>
+        {signedIn && user ? (
+          <AccountMenu
+            user={user}
+            roleBadge={roleBadge}
+            adminLink={adminLink}
+            onSignOut={handleSignOut}
+            isSigningOut={isSigningOut}
+            onOpen={() => setIsMenuOpen(false)}
+          />
         ) : (
-          <>
+          // Kept in the layout, invisibly, while the session check runs —
+          // see .header-guest.is-pending.
+          <div className={`header-guest${isLoading ? " is-pending" : ""}`}>
             <Link className="sign-in" href="/signin">Sign in</Link>
-            <Link className="button button-small" href="/problems">Start coding <Arrow /></Link>
-          </>
+            <Link className="button button-small" href="/signin?mode=register">
+              Start free <Arrow />
+            </Link>
+          </div>
         )}
         <button
           type="button"
@@ -134,42 +118,26 @@ export function SiteHeader() {
           <span /><span /><span />
         </button>
       </div>
+
       <div id="mobile-nav" className={`mobile-nav${isMenuOpen ? " is-open" : ""}`}>
         <nav aria-label="Mobile navigation">
-          {allLinks.map((link) => (
-            <Link key={link.href} href={link.href} className={isActive(link.href) ? "is-active" : undefined}>
+          {PRIMARY_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={isActive(link.href) ? "is-active" : undefined}
+              aria-current={isActive(link.href) ? "page" : undefined}
+            >
               {link.label}
             </Link>
           ))}
         </nav>
-        <div className="mobile-nav-actions">
-          {!isLoading && user ? (
-            <>
-              <Link href="/profile" className="mobile-nav-account">
-                {user.profilePicUrl ? (
-                  <Image className="header-avatar" src={user.profilePicUrl} alt="" width={32} height={32} />
-                ) : (
-                  <span className="header-avatar header-avatar-fallback">{user.name.slice(0, 1).toUpperCase()}</span>
-                )}
-                <span>{user.name}</span>
-                {roleBadge && <span className="header-role-badge">{roleBadge}</span>}
-                {typeof user.gems === "number" && (
-                  <span className="header-gems">
-                    <IconGem /> {user.gems}
-                  </span>
-                )}
-              </Link>
-              <button className="button-outline" type="button" onClick={handleSignOut} disabled={isSigningOut}>
-                {isSigningOut ? "Signing out…" : "Sign out"}
-              </button>
-            </>
-          ) : (
-            <>
-              <Link className="button-outline" href="/signin">Sign in</Link>
-              <Link className="button" href="/problems">Start coding <Arrow /></Link>
-            </>
-          )}
-        </div>
+        {!signedIn && (
+          <div className="mobile-nav-actions">
+            <Link className="button-outline" href="/signin">Sign in</Link>
+            <Link className="button" href="/signin?mode=register">Start free <Arrow /></Link>
+          </div>
+        )}
       </div>
     </header>
   );

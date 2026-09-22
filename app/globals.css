@@ -120,7 +120,7 @@ body > main { flex: 1 0 auto; }
 body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a:focus-visible,button:focus-visible { outline:3px solid var(--cyan); outline-offset:4px; } .section-shell { width:min(1280px, calc(100% - 56px)); margin:auto; }
 .dashboard-shell{width:min(1100px,calc(100% - 48px));margin:0 auto;padding:82px 0 110px}.dashboard-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:42px}.dashboard-head h1{font:700 clamp(40px,6vw,68px)/1 'JetBrains Mono';letter-spacing:-3px;margin:0 0 14px}.dashboard-head p:not(.eyebrow){color:var(--text-dim);max-width:570px;margin:0;line-height:1.7}.profile-card,.admin-panel,.empty-panel{border:1px solid var(--border);background:var(--surface-hi);padding:28px;display:flex;gap:20px;align-items:center}.avatar{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:var(--surface-hi);color:var(--accent);border:1px solid var(--border);font:600 25px 'JetBrains Mono';letter-spacing:-.5px;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.profile-card h2,.admin-panel h2{font:700 25px 'JetBrains Mono';margin:0 0 5px}.profile-card p{margin:0 0 12px;color:var(--text-dim)}.status-pill{color:var(--accent);font:11px 'JetBrains Mono';text-transform:uppercase}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.metric-grid article{border:1px solid var(--border);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:8px}.metric-grid b{font:700 28px 'JetBrains Mono';color:var(--text)}.metric-grid span,.admin-panel p{color:var(--text-dim);font-size:12px}.empty-panel{flex-direction:column;align-items:flex-start;color:var(--text-dim)}.empty-panel a,.admin-panel .text-link{color:var(--text);font-weight:700;font-size:13px}.admin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.admin-panel{display:block}.panel-kicker{font:10px 'JetBrains Mono';color:var(--cyan)}.admin-panel p{line-height:1.7;min-height:42px}.admin-panel button:disabled{opacity:.5;cursor:not-allowed}
 .profile-hero{padding:34px;gap:24px}.profile-hero .avatar{width:96px;height:96px;flex:0 0 96px;border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);box-shadow:0 0 0 5px color-mix(in srgb, var(--accent) 8%, transparent)}.profile-identity{flex:1}.profile-identity h2{font-size:32px;margin-top:8px}.profile-actions{display:flex;flex-direction:column;align-items:flex-end;gap:14px}.metric-grid small{color:var(--text-dim);font:10px 'JetBrains Mono'}.profile-columns{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.profile-panel{border:1px solid var(--border);background:var(--surface-hi);padding:28px}.profile-panel h2{font:700 25px 'JetBrains Mono';margin:14px 0 10px}.profile-panel p{color:var(--text-dim);line-height:1.7;font-size:13px;margin:0 0 22px}.detail-row{display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);color:var(--text-dim);font-size:12px}.detail-row:last-child{border-bottom:0}.detail-row strong{color:var(--text);text-align:right;overflow-wrap:anywhere}
-.site-header { height:78px; border-bottom:1px solid var(--line); padding:0 max(24px, calc((100vw - 1280px)/2)); display:flex; align-items:center; gap:54px; background:color-mix(in srgb, var(--bg) 94%, transparent); position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); }.brand { display:inline-flex; align-items:center; gap:11px; font-family:'JetBrains Mono'; font-size:26px; font-weight:700; letter-spacing:-1.3px; line-height:1; white-space:nowrap; color:var(--text); }/* The tile was a gradient between three identical copies of --accent,
+.site-header { height:78px; border-bottom:1px solid var(--line); padding:0 max(24px, calc((100vw - 1280px)/2)); display:flex; align-items:center; gap:40px; background:color-mix(in srgb, var(--bg) 94%, transparent); position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); }.brand { display:inline-flex; align-items:center; gap:11px; font-family:'JetBrains Mono'; font-size:26px; font-weight:700; letter-spacing:-1.3px; line-height:1; white-space:nowrap; color:var(--text); }/* The tile was a gradient between three identical copies of --accent,
    with two white inset highlights on top — a glossy plastic chip, which is
    the look this brand is least. It has a real gradient now, a hairline
    instead of a gloss, and the facets do the work on hover. */
@@ -143,7 +143,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 /* A light sweeping across the facets on hover — the one moment the mark
    behaves like the stone it is named after. */
 .brand-mark::after {
-  content: ;
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(115deg, transparent 38%, color-mix(in srgb, var(--text) 45%, transparent) 50%, transparent 62%);
@@ -158,34 +158,74 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .brand:hover .brand-facet { stroke-opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .brand-mark, .brand-mark::after, .brand-facet { transition: none; }
-}.brand-mark svg { display:block; width:64%; height:64%; }.brand:hover .brand-mark { transform:translateY(-2px) rotate(-4deg); box-shadow:0 14px 30px -12px color-mix(in srgb, var(--accent) 100%, transparent), inset 0 0 0 1px rgba(255,255,255,.36), inset 0 1.5px 0 rgba(255,255,255,.5); }.brand-lg { font-size:34px; gap:14px; letter-spacing:-1.6px; }.brand-lg .brand-mark { width:58px; height:58px; border-radius:19px; }.brand-word span, em { color:var(--violet); font-style:normal; }.brand i { font-family:'JetBrains Mono'; color:var(--cyan); font-size:16px; font-style:normal; }.site-header nav { display:flex; gap:28px; color:var(--text-dim); font-size:13px; }.site-header nav a:hover,.sign-in:hover { color:white; }.site-header nav a.is-active,.admin-nav-link.is-active { color:var(--text); font-weight:700; }.site-header.is-scrolled { box-shadow:0 12px 30px -18px rgba(0,0,0,.65); border-bottom-color:color-mix(in srgb, var(--border) 22%, transparent); }.header-actions { display:flex; align-items:center; gap:22px; margin-left:auto; }.sign-in { color:var(--text-dim); font-size:13px; }.nav-toggle { display:none; flex-direction:column; justify-content:center; align-items:center; gap:4px; width:36px; height:36px; flex-shrink:0; background:transparent; border:1px solid var(--border); border-radius:7px; cursor:pointer; padding:0; }.nav-toggle:hover { border-color:var(--cyan); }.nav-toggle span { display:block; width:15px; height:2px; border-radius:2px; background:var(--text); transition:transform .2s, opacity .2s; }.nav-toggle.is-open span:nth-child(1) { transform:translateY(6px) rotate(45deg); }.nav-toggle.is-open span:nth-child(2) { opacity:0; }.nav-toggle.is-open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }.mobile-nav { display:none; }.button { display:inline-flex; align-items:center; justify-content:center; gap:16px; background:var(--violet); color:white; border-radius:7px; padding:15px 21px; font-weight:700; font-size:13px; box-shadow:0 10px 26px -12px color-mix(in srgb, var(--accent) 65%, transparent); transition:transform .2s, background .2s, box-shadow .2s; }.button:hover { transform:translateY(-2px); background:var(--accent); box-shadow:0 14px 30px -12px color-mix(in srgb, var(--accent) 80%, transparent); }.button:active { transform:translateY(0); }.button span,.text-link span { font-size:19px; line-height:12px; transition:transform .2s; }.button:hover span,.text-link:hover span { transform:translateX(3px); }.button-small { padding:10px 13px; gap:9px; box-shadow:none; }.eyebrow { color:var(--cyan); font-family:'JetBrains Mono'; font-size:10px; letter-spacing:1.2px; margin:0 0 18px; }.eyebrow b { display:inline-block; height:7px; width:7px; border-radius:50%; background:var(--cyan); margin-right:8px; }.text-link { color:var(--text); font-size:13px; font-weight:700; display:inline-flex; gap:10px; align-items:center; }.text-link:hover { color:var(--cyan); } footer { border-top:1px solid var(--line); background:var(--surface-hi); }.footer-main { padding:62px 0 50px; display:grid; grid-template-columns:1.7fr 1fr 1fr 1fr; gap:28px; }.footer-brand { display:flex; flex-direction:column; align-items:flex-start; gap:18px; max-width:340px; }.footer-brand .brand { display:inline-flex; }.footer-main p { color:var(--text-dim); font-size:13px; line-height:1.8; margin:0; }.footer-main h2 { color:var(--text-dim); font:400 10px 'JetBrains Mono'; letter-spacing:.8px; text-transform:uppercase; margin:0 0 14px; }/* Only the unclassed column links: this rule out-specifies .brand-lg and
+}.brand-mark svg { display:block; width:64%; height:64%; }.brand:hover .brand-mark { transform:translateY(-2px) rotate(-4deg); box-shadow:0 14px 30px -12px var(--accent), inset 0 0 0 1px color-mix(in srgb, var(--text) 28%, transparent); }.brand-lg { font-size:34px; gap:14px; letter-spacing:-1.6px; }.brand-lg .brand-mark { width:58px; height:58px; border-radius:19px; }.brand-word span, em { color:var(--violet); font-style:normal; }.brand i { font-family:'JetBrains Mono'; color:var(--cyan); font-size:16px; font-style:normal; }.site-header.is-scrolled { box-shadow:0 12px 30px -18px rgba(0,0,0,.65); border-bottom-color:color-mix(in srgb, var(--border) 22%, transparent); }.nav-toggle { display:none; flex-direction:column; justify-content:center; align-items:center; gap:4px; width:36px; height:36px; flex-shrink:0; background:transparent; border:1px solid var(--border); border-radius:7px; cursor:pointer; padding:0; }.nav-toggle:hover { border-color:var(--cyan); }.nav-toggle span { display:block; width:15px; height:2px; border-radius:2px; background:var(--text); transition:transform .2s, opacity .2s; }.nav-toggle.is-open span:nth-child(1) { transform:translateY(6px) rotate(45deg); }.nav-toggle.is-open span:nth-child(2) { opacity:0; }.nav-toggle.is-open span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }.mobile-nav { display:none; }.button { display:inline-flex; align-items:center; justify-content:center; gap:16px; background:var(--accent); color:var(--bg); border-radius:7px; padding:15px 21px; font-weight:700; font-size:13px; box-shadow:0 10px 26px -12px color-mix(in srgb, var(--accent) 65%, transparent); transition:transform .2s, background .2s, box-shadow .2s; }.button:hover { transform:translateY(-2px); background:color-mix(in srgb, var(--accent) 86%, var(--text)); box-shadow:0 14px 30px -12px color-mix(in srgb, var(--accent) 80%, transparent); }.button:active { transform:translateY(0); }.button span,.text-link span { font-size:19px; line-height:12px; transition:transform .2s; }.button:hover span,.text-link:hover span { transform:translateX(3px); }.button-small { padding:10px 13px; gap:9px; box-shadow:none; }.eyebrow { color:var(--cyan); font-family:'JetBrains Mono'; font-size:10px; letter-spacing:1.2px; margin:0 0 18px; }.eyebrow b { display:inline-block; height:7px; width:7px; border-radius:50%; background:var(--cyan); margin-right:8px; }.text-link { color:var(--text); font-size:13px; font-weight:700; display:inline-flex; gap:10px; align-items:center; }.text-link:hover { color:var(--cyan); } footer { border-top:1px solid var(--line); background:var(--surface-hi); }.footer-main { padding:62px 0 50px; display:grid; grid-template-columns:1.7fr 1fr 1fr 1fr; gap:28px; }.footer-brand { display:flex; flex-direction:column; align-items:flex-start; gap:18px; max-width:340px; }.footer-brand .brand { display:inline-flex; }.footer-main p { color:var(--text-dim); font-size:13px; line-height:1.8; margin:0; }.footer-main h2 { color:var(--text-dim); font:400 10px 'JetBrains Mono'; letter-spacing:.8px; text-transform:uppercase; margin:0 0 14px; }/* Only the unclassed column links: this rule out-specifies .brand-lg and
    .button, so without the guard it shrank the footer logo to 12px and
    flattened the footer's call-to-action button into a plain block link. */
 /* padding rather than margin: a 12.5px line box is only ~17px tall, well
    under the ~40px a thumb needs, so the padding is the tap target. */
 .footer-main div a:not([class]) { display:block; color:var(--text-dim); font-size:12.5px; margin:0; padding:7px 0; transition:color .15s; }.footer-main div a:not([class]):hover { color:var(--cyan); }.footer-bottom { border-top:1px solid var(--line); padding:16px 0; display:flex; justify-content:space-between; color:var(--text-dim); font:10px 'JetBrains Mono'; }
-/* Header nav switches to the hamburger drawer starting at 1240px, not 760 —
-   at 768px (a very common tablet/iPad-portrait width) the full nav plus
-   "Sign in" plus "Start coding" no longer fit on one line and were wrapping
-   into a cramped two-line mess. Kept separate from the 760px block below
-   so the hero/footer/etc breakpoint (already fine at 768) doesn't move.
-   Raised from the original 880px once the nav grew to 7 links (Analytics,
-   Interview, Admin) and the header-account row grew a Gems badge — for a
-   signed-in admin with a longer name, the full desktop row no longer fit
-   until well past 1280px (it was overflowing off the right edge of the
-   viewport, with "Sign out" clipped and unreachable, on very common
-   1280px/1366px-wide laptop screens). 1240px kept a comfortable margin
-   above the worst case (admin badge + Gems badge + a ~20-character name)
-   for 7 links; the 8-link row raised it again to 1320px (see below). */
-/* The Kids link, and a guest host's "Host panel" link, made the signed-in row
-   one link longer (8). A headless render of the worst case (admin or guest,
-   Gems badge, ~20-character name) overflowed at 1280px and "Host panel"
-   wrapped onto two lines — so links never wrap, the hamburger takes over
-   below 1320px, and 1321–1440px tightens the gaps so 1366px laptops keep the
-   full row. */
-.site-header nav a{white-space:nowrap}
-@media (min-width:1321px) and (max-width:1440px){.site-header{gap:36px}.site-header nav{gap:20px}}
-@media (max-width:1320px){.site-header nav,.sign-in{display:none}.header-actions{margin-left:auto}.nav-toggle{display:flex}.mobile-nav.is-open{display:block;position:absolute;top:78px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 18px 22px;box-shadow:0 20px 30px -20px rgba(0,0,0,.6);z-index:9}.mobile-nav nav{display:flex;flex-direction:column;gap:2px}.mobile-nav nav a{padding:12px 10px;border-radius:8px;color:var(--text-dim);font-size:14px}.mobile-nav nav a:hover,.mobile-nav nav a.is-active{background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--text)}.mobile-nav-actions{display:flex;flex-direction:column;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.mobile-nav-actions .button,.mobile-nav-actions .button-outline{justify-content:center}.mobile-nav-account{display:flex;align-items:center;gap:10px;color:var(--text);font-size:13px;font-weight:600;padding:8px 10px}}
+/* ------------------------------------------------------------ site header */
+.site-nav { display:flex; align-items:center; gap:2px; font-size:13px; }
+.site-nav a {
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  transition: color .16s, background-color .16s;
+}
+.site-nav a:hover { color: var(--text); background: var(--surface); }
+.site-nav a.is-active { color: var(--text); font-weight: 600; }
+/* The current page carries a short accent rule under its label. It grows
+   from the centre, so arriving on a page reads as the marker settling in
+   rather than a colour snapping on. */
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform .3s cubic-bezier(.16,1,.3,1);
+}
+.site-nav a.is-active::after { transform: scaleX(1); }
+
+.header-actions { display:flex; align-items:center; gap:12px; margin-left:auto; }
+/* Present but invisible while the session check runs: a signed-in visitor
+   never sees "Sign in" flash up, and a signed-out one never sees the row
+   arrive late and shove the layout. */
+.header-guest { display:flex; align-items:center; gap:18px; transition:opacity .2s; }
+.header-guest.is-pending { opacity:0; pointer-events:none; }
+.sign-in { color:var(--text-dim); font-size:13px; transition:color .16s; }
+.sign-in:hover { color:var(--text); }
+
+@keyframes kai-menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav a::after { transition: none; }
+  .account-panel, .mobile-nav.is-open { animation: none !important; }
+}
+
+/* Six short links and a single account control fit on one row down to about
+   1000px. The old row — up to eight links plus avatar, name, badge, gems and
+   a Sign out button — needed a 1320px breakpoint, which put 1280px laptops
+   on the hamburger. */
+@media (max-width:1060px){
+  .site-nav,.header-guest .sign-in{display:none}
+  .nav-toggle{display:flex}
+  .mobile-nav.is-open{display:block;position:absolute;top:100%;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 18px 20px;box-shadow:0 20px 30px -20px rgba(0,0,0,.6);z-index:9;transform-origin:top;animation:kai-menu-in .2s cubic-bezier(.16,1,.3,1)}
+  .mobile-nav nav{display:flex;flex-direction:column;gap:2px}
+  .mobile-nav nav a{padding:12px;border-radius:8px;color:var(--text-dim);font-size:14px}
+  .mobile-nav nav a:hover{background:var(--surface);color:var(--text)}
+  .mobile-nav nav a.is-active{background:var(--surface);color:var(--text);box-shadow:inset 2px 0 0 var(--accent)}
+  .mobile-nav-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+  .mobile-nav-actions .button,.mobile-nav-actions .button-outline{justify-content:center}
+}
 @media (max-width:760px){.section-shell{width:min(100% - 36px,1280px)}.site-header{height:68px;padding:0 18px;gap:12px;position:relative}.brand{font-size:21px;gap:9px}.brand-mark{width:36px;height:36px;border-radius:12px}.brand-lg{font-size:27px;gap:11px}.brand-lg .brand-mark{width:46px;height:46px;border-radius:15px}.mobile-nav.is-open{top:68px}.footer-main{grid-template-columns:1fr 1fr}.footer-main>.footer-brand{grid-column:span 2}.footer-bottom{gap:10px}}
 @media (max-width:760px){.dashboard-shell{width:min(100% - 36px,1100px);padding:58px 0 78px}.dashboard-head{display:block}.dashboard-head .button{margin-top:24px}.profile-hero{display:block;padding:24px}.profile-hero .avatar{margin-bottom:20px}.profile-actions{align-items:flex-start;margin-top:24px}.metric-grid{grid-template-columns:1fr}.profile-columns{grid-template-columns:1fr}.detail-row{align-items:flex-start;flex-direction:column;gap:5px}.detail-row strong{text-align:left}}
 
@@ -374,55 +414,108 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .pill-contest-ended{background:var(--surface-hi);color:var(--text-dim)}
 .contest-card-description{color:var(--text-dim);font-size:13px;line-height:1.5;margin:0}
 
-/* Auth-aware site header: profile avatar + sign out (replaces the static
-   "Sign in" link when a session — cookie or Bearer-token — is active). */
-.header-account { display:flex; align-items:center; gap:16px; }
-.header-avatar-link { display:flex; align-items:center; gap:10px; color:var(--text); font-size:13px; font-weight:600; min-width:0; flex-shrink:1; }
-.header-avatar-link:hover { color:var(--cyan); }
-.header-avatar { width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid var(--border); flex-shrink:0; }
-.header-avatar-fallback { display:flex; align-items:center; justify-content:center; background:var(--violet); color:white; font:700 14px 'JetBrains Mono'; }
-.header-account-name { max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.header-role-badge { flex-shrink:0; }
-/* .header-signout used to have no protection against the flexbox shrinking
-   it below its text's natural width — once the Gems badge (below) joined
-   the row, the row regularly ran out of space and the browser's only way
-   to shrink the button further was to wrap "Sign out" onto two lines
-   ("Sign" / "out"). white-space:nowrap forbids that wrap outright, and
-   flex-shrink:0 stops the button from being squeezed at all — any slack
-   now comes out of .header-account-name's ellipsis instead, which is
-   exactly what that max-width + overflow:hidden are already there for. */
-.header-signout { background:transparent; border:1px solid var(--border); border-radius:5px; padding:8px 14px; cursor:pointer; font:inherit; white-space:nowrap; flex-shrink:0; }
-.header-signout:hover { color:white; border-color:var(--cyan); }
-.header-signout:disabled { opacity:.6; cursor:default; }
-
-/* Between ~880px (where the row switches to the hamburger drawer anyway)
-   and ~1080px, an admin account — full name + "Admin" badge + Gems badge +
-   avatar + Sign out — is the tightest combination this row ever holds.
-   Trim the name and inter-item gap a bit earlier here so it stays one
-   tidy line instead of relying on the name being squeezed to nothing. */
-@media (max-width:1080px) {
-  .header-account { gap:10px; }
-  .header-account-name { max-width:70px; }
-}
-
-/* Gems balance badge — Reward currency earned by solving problems (see
-   submission.controller.ts), shown next to the avatar so it's visible on
-   every page right after signing in. Orange keeps it visually distinct
-   from the violet/cyan already used elsewhere in the header. */
+/* Account menu (app/_components/home/AccountMenu.tsx): a gems chip and an
+   avatar that opens everything else about the account. */
+.account-menu { position:relative; display:flex; align-items:center; gap:10px; }
 .header-gems {
-  display: flex; align-items: center; gap: 6px;
-  color: var(--orange); font: 700 12.5px 'JetBrains Mono';
-  background: color-mix(in srgb, var(--warn) 12%, transparent); border: 1px solid color-mix(in srgb, var(--warn) 32%, transparent);
-  border-radius: 20px; padding: 6px 11px; flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--warn); font: 600 12px 'JetBrains Mono';
+  padding: 6px 10px; border-radius: 999px; flex-shrink: 0;
+  background: color-mix(in srgb, var(--warn) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warn) 26%, transparent);
+  transition: border-color .16s;
 }
-.mobile-nav-account .header-gems { margin-left: auto; }
+.header-gems:hover { border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
+
+.account-trigger {
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 10px 3px 3px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color .16s, background-color .16s;
+}
+.account-trigger:hover, .account-trigger.is-open {
+  background: var(--surface);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+.header-avatar { display:block; width:32px; height:32px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+.header-avatar-fallback {
+  display: grid; place-items: center;
+  background: var(--surface-hi); color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--border);
+  font: 700 13px 'JetBrains Mono';
+}
+.account-caret {
+  width: 6px; height: 6px;
+  border-right: 1.5px solid var(--text-dim);
+  border-bottom: 1.5px solid var(--text-dim);
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform .22s cubic-bezier(.16,1,.3,1);
+}
+.account-trigger.is-open .account-caret { transform: translateY(1px) rotate(-135deg); }
+
+.account-panel {
+  position: absolute; top: calc(100% + 16px); right: 0; z-index: 20;
+  width: 272px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 26px 50px -22px rgba(0,0,0,.75);
+  transform-origin: top right;
+  animation: kai-menu-in .18s cubic-bezier(.16,1,.3,1);
+}
+.account-panel-head {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 12px 12px 14px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.account-panel-who { display:flex; align-items:center; gap:8px; min-width:0; }
+.account-panel-who b { color:var(--text); font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.account-panel-email { color:var(--text-dim); font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.account-panel-gems { display:inline-flex; align-items:center; gap:6px; margin-top:8px; color:var(--warn); font:600 11.5px 'JetBrains Mono'; }
+
+.account-panel-links {
+  display: flex; flex-direction: column;
+  padding-bottom: 6px; margin-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.account-panel-links a, .account-panel-signout {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0; border-radius: 7px;
+  background: transparent;
+  color: var(--text-dim);
+  font: 13px Inter, Arial, sans-serif;
+  text-align: left;
+  transition: color .14s, background-color .14s;
+}
+.account-panel-links a:hover { color:var(--text); background:var(--surface-hi); }
+.account-panel-links a.is-active { color:var(--text); }
+.account-panel-links .account-panel-admin { color:var(--accent); }
+.account-panel-signout { cursor:pointer; }
+.account-panel-signout:hover { color:var(--error); background:color-mix(in srgb, var(--error) 8%, transparent); }
+.account-panel-signout:disabled { opacity:.6; cursor:default; }
+/* The site-wide focus ring sits 4px outside its element, which here would
+   run into the neighbouring rows. */
+.account-panel a:focus-visible, .account-panel button:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
 
 @media (max-width:760px) {
-  .header-account-name { display:none; }
-  /* On a phone the header row is avatar + role badge + hamburger already;
-     the gems badge pushed that past the edge, so it drops out here. It is
-     still one tap away — the mobile drawer's account row carries it. */
-  .header-account .header-gems { display:none; }
+  /* The panel carries the balance, so the chip leaves the header row. */
+  .account-menu .header-gems { display:none; }
+  /* Anchor the panel to the header rather than the avatar, so it spans the
+     screen instead of hanging off the left edge of a narrow phone. */
+  .account-menu { position:static; }
+  .account-panel { top:calc(100% + 6px); left:12px; right:12px; width:auto; }
+}
+@media (max-width:400px) {
+  /* Logo, button and hamburger overrun a 320px screen; the drawer carries
+     both sign-in buttons. */
+  .header-guest { display:none; }
 }
 
 /* Shared loading indicators (components/ui/Loader.tsx) */
@@ -465,8 +558,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .kai-skeleton { background:linear-gradient(90deg, var(--surface) 25%, var(--surface-hi) 50%, var(--surface) 75%); background-size:220% 100%; animation:kai-skeleton-shimmer 1.5s ease infinite; border-radius:7px; }
 @keyframes kai-skeleton-shimmer { 0% { background-position:100% 50%; } 100% { background-position:0 50%; } }
 
-.admin-nav-link { color:var(--cyan) !important; font-weight:700; }
-.header-role-badge { background:color-mix(in srgb, var(--accent) 18%, transparent); color:var(--violet); font:9px 'JetBrains Mono'; letter-spacing:.5px; padding:2px 7px; border-radius:20px; text-transform:uppercase; }
+.header-role-badge { flex-shrink:0; background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent); font:600 9px 'JetBrains Mono'; letter-spacing:.6px; padding:2px 7px; border-radius:20px; text-transform:uppercase; }
 
 /* Admin dashboard: forms, tables, badges (app/admin/**) */
 .admin-form { display:grid; gap:16px; max-width:720px; }
