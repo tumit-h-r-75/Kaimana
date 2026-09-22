@@ -33,7 +33,7 @@ const DEFAULT_LIMITS: RunLimits = { timeLimitMs: 2000, memoryLimitMb: 256 };
 const CONTEST_TICK_MS = 15_000;
 const CONTEST_GATE_BANNER_ID = "contest-gate-banner";
 
-type LeftTab = "description" | "submissions" | "coach" | "discuss";
+type LeftTab = "description" | "discuss";
 
 type ContestLoad = { status: "idle" | "loading" | "ready" | "missing" | "error"; message?: string };
 
@@ -248,6 +248,7 @@ export default function ProblemDetailPage() {
   const [runTab, setRunTab] = useState<"tests" | "custom">("tests");
   const [customInput, setCustomInput] = useState("");
   const editorRef = useRef<HTMLElement | null>(null);
+  const coachRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -519,10 +520,11 @@ export default function ProblemDetailPage() {
           ? "Locked"
           : "Ready";
 
-  const LEFT_TABS: { key: LeftTab; label: string; count?: number }[] = [
+  // The coach and the submission history are not tabs: hidden behind one,
+  // nobody found them. They stay in view as cards of their own — under the
+  // problem on wide screens, under the editor on narrow ones.
+  const LEFT_TABS: { key: LeftTab; label: string }[] = [
     { key: "description", label: "Description" },
-    { key: "submissions", label: "Submissions", count: history.length || undefined },
-    { key: "coach", label: "AI coach" },
     { key: "discuss", label: "Discuss" },
   ];
 
@@ -647,16 +649,11 @@ export default function ProblemDetailPage() {
                     onClick={() => setLeftTab(tab.key)}
                   >
                     {tab.label}
-                    {tab.count ? <b>{tab.count}</b> : null}
-                    {tab.key === "coach" && submission && (
-                      <i className={submission.verdict === "ACCEPTED" ? styles.dotOk : styles.dotBad} aria-hidden="true" />
-                    )}
                   </button>
                 ))}
               </div>
 
-              {/* Every panel stays mounted and is only hidden, so switching
-                  never throws away the coach's hints, reports or reviews. */}
+              {/* Both panels stay mounted and are only hidden. */}
               <div id="panel-description" role="tabpanel" aria-labelledby="tab-description" hidden={leftTab !== "description"} className={styles.panel}>
                 <h2 className={styles.panelTitle}>Problem statement</h2>
                 <p className={styles.prose}>{problem.statement}</p>
@@ -708,66 +705,6 @@ export default function ProblemDetailPage() {
                     </ul>
                   </>
                 )}
-              </div>
-
-              <div id="panel-submissions" role="tabpanel" aria-labelledby="tab-submissions" hidden={leftTab !== "submissions"} className={styles.panel}>
-                <h2 className={styles.panelTitle}>Your submissions</h2>
-                {!user ? (
-                  <p className={styles.muted}>Sign in to keep a history of your attempts.</p>
-                ) : history.length === 0 ? (
-                  <p className={styles.muted}>Nothing yet — submit a solution and every attempt is listed here, newest first.</p>
-                ) : (
-                  <>
-                    <ul className={styles.history}>
-                      {history.map((item) => {
-                        const tone =
-                          item.verdict === "ACCEPTED"
-                            ? styles.toneOk
-                            : item.verdict === "TIME_LIMIT_EXCEEDED" || item.verdict === "MEMORY_LIMIT_EXCEEDED"
-                              ? styles.toneWarn
-                              : styles.toneBad;
-                        return (
-                          <li key={item.id}>
-                            <Link href={`/submissions/${item.id}`} className={styles.historyRow}>
-                              <span className={`${styles.verdictPill} ${tone}`}>{item.verdict.replace(/_/g, " ").toLowerCase()}</span>
-                              <span className={styles.historyMeta}>
-                                {item.passedTests}/{item.totalTests} tests · {item.score} pts · {LANGUAGE_NAME[item.language as LanguageKey] ?? item.language}
-                              </span>
-                              <time className={styles.historyTime} dateTime={item.createdAt}>
-                                {new Date(item.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
-                              </time>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    <Link className={styles.textLink} href="/submissions">
-                      All your submissions <span aria-hidden="true">→</span>
-                    </Link>
-                  </>
-                )}
-              </div>
-
-              <div id="panel-coach" role="tabpanel" aria-labelledby="tab-coach" hidden={leftTab !== "coach"} className={`${styles.panel} ${styles.coachPanel}`}>
-                <AIPanelTabs
-                  problemId={problem.id}
-                  code={code}
-                  isSignedIn={Boolean(user)}
-                  submission={submission}
-                  initialHintTier={problem.myHintTier ?? 0}
-                  initialHintPenaltyPercent={problem.myHintPenaltyPercent ?? 0}
-                  referenceSolution={problem.referenceSolution ?? null}
-                  onApplyRefactor={(refactoredCode) => {
-                    // The refactored code is in the submission's language, which may
-                    // not be the editor's currently-selected tab (the user could
-                    // have switched languages after submitting) — so switch to that
-                    // language too, not just overwrite whatever tab happens to be
-                    // open.
-                    if (!submission) return;
-                    setLanguage(submission.language);
-                    setCodeByLanguage((prev) => ({ ...prev, [submission.language]: refactoredCode }));
-                  }}
-                />
               </div>
 
               <div id="panel-discuss" role="tabpanel" aria-labelledby="tab-discuss" hidden={leftTab !== "discuss"} className={styles.panel}>
@@ -845,7 +782,7 @@ export default function ProblemDetailPage() {
                     {submission.passedTests}/{submission.totalTests} tests
                     {submission.verdict === "ACCEPTED" ? ` · ${submission.runtimeMs} ms · ${submission.score} pts` : ""}
                   </span>
-                  <button type="button" onClick={() => setLeftTab("coach")}>
+                  <button type="button" onClick={() => coachRef.current?.scrollIntoView({ block: "start" })}>
                     See the review <span aria-hidden="true">→</span>
                   </button>
                 </div>
@@ -894,6 +831,130 @@ export default function ProblemDetailPage() {
 
               {appConfig.executionVisualizer && (
                 <ExecutionVisualizer language={language} source={code} disabled={contestBlocksActions} onLineChange={jumpToLine} />
+              )}
+            </section>
+
+            {/* The coach: each tab says what it is for, so nobody has to guess
+                what "Big-O" or "Refactor" will do before clicking. */}
+            <section className={styles.coachCard} ref={coachRef} aria-labelledby="coach-title">
+              <div className={styles.cardHead}>
+                <span className={styles.cardIcon} aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3Z" />
+                    <path d="M9 18h6M10 21h4" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="coach-title">
+                    AI coach
+                    {submission && <i className={submission.verdict === "ACCEPTED" ? styles.dotOk : styles.dotBad} aria-hidden="true" />}
+                  </h2>
+                  <p>Help with this problem, on your own code.</p>
+                </div>
+              </div>
+              <ul className={styles.coachGuide}>
+                <li>
+                  <b>Results</b> the full verdict of your last submission
+                </li>
+                <li>
+                  <b>Hint</b> a nudge first, then more — each tier takes a little off the score
+                </li>
+                <li>
+                  <b>Big-O</b> the time and space your submission really takes
+                </li>
+                <li>
+                  <b>Refactor</b> a cleaner version of your accepted code
+                </li>
+                <li>
+                  <b>Solution</b> the reference answer, once you have solved it
+                </li>
+              </ul>
+              <AIPanelTabs
+                problemId={problem.id}
+                code={code}
+                isSignedIn={Boolean(user)}
+                submission={submission}
+                initialHintTier={problem.myHintTier ?? 0}
+                initialHintPenaltyPercent={problem.myHintPenaltyPercent ?? 0}
+                referenceSolution={problem.referenceSolution ?? null}
+                onApplyRefactor={(refactoredCode) => {
+                  // The refactored code is in the submission's language, which may
+                  // not be the editor's currently-selected tab (the user could
+                  // have switched languages after submitting) — so switch to that
+                  // language too, not just overwrite whatever tab happens to be
+                  // open.
+                  if (!submission) return;
+                  setLanguage(submission.language);
+                  setCodeByLanguage((prev) => ({ ...prev, [submission.language]: refactoredCode }));
+                }}
+              />
+            </section>
+
+            <section className={styles.subsCard} aria-labelledby="subs-title">
+              <div className={styles.cardHead}>
+                <span className={styles.cardIcon} aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 3h8l4 4v14H6z" />
+                    <path d="M14 3v4h4M9 12h6M9 16h6" />
+                  </svg>
+                </span>
+                <div>
+                  <h2 id="subs-title">Recent submissions</h2>
+                  <p>Your attempts at this problem, newest first. Open one to see its code and verdict.</p>
+                </div>
+                {history.length > 0 && (
+                  <Link className={styles.cardLink} href="/submissions">
+                    All <span aria-hidden="true">→</span>
+                  </Link>
+                )}
+              </div>
+              {!user ? (
+                <p className={styles.muted}>Sign in to keep a history of your attempts.</p>
+              ) : history.length === 0 ? (
+                <p className={styles.muted}>Nothing yet — press Submit and every attempt is listed here.</p>
+              ) : (
+                <div className={styles.subsScroll}>
+                  <table className={styles.subsTable}>
+                    <thead>
+                      <tr>
+                        <th scope="col">Verdict</th>
+                        <th scope="col">Tests</th>
+                        <th scope="col">Score</th>
+                        <th scope="col">Language</th>
+                        <th scope="col">When</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {history.map((item) => {
+                        const tone =
+                          item.verdict === "ACCEPTED"
+                            ? styles.toneOk
+                            : item.verdict === "TIME_LIMIT_EXCEEDED" || item.verdict === "MEMORY_LIMIT_EXCEEDED"
+                              ? styles.toneWarn
+                              : styles.toneBad;
+                        return (
+                          <tr key={item.id}>
+                            <td>
+                              <Link href={`/submissions/${item.id}`} className={`${styles.verdictPill} ${tone}`}>
+                                {item.verdict.replace(/_/g, " ").toLowerCase()}
+                              </Link>
+                            </td>
+                            <td>
+                              {item.passedTests}/{item.totalTests}
+                            </td>
+                            <td>{item.score}</td>
+                            <td>{LANGUAGE_NAME[item.language as LanguageKey] ?? item.language}</td>
+                            <td>
+                              <time dateTime={item.createdAt}>
+                                {new Date(item.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
+                              </time>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </section>
           </div>
