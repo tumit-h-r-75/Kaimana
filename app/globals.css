@@ -569,7 +569,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .admin-form input, .admin-form select, .admin-form textarea { width:100%; border:1px solid var(--border); background:var(--bg); color:var(--text); padding:12px; font:14px Inter; border-radius:4px; }
 .admin-form textarea { resize:vertical; min-height:90px; font-family:'JetBrains Mono'; font-size:12px; }
 .admin-form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:14px; }
-.admin-form-actions { display:flex; gap:14px; align-items:center; margin-top:6px; }
+.admin-form-actions { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:6px; }
 
 /* Contest problem picker (app/admin/contests/page.tsx) — a scrollable
    checklist of problems + a per-problem points input, used when scheduling
@@ -587,7 +587,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .admin-form .contest-problem-checkbox input[type="checkbox"] { width:16px; height:16px; accent-color:var(--violet); flex-shrink:0; }
 .admin-form .contest-problem-points { width:68px; flex-shrink:0; border:1px solid var(--border); background:var(--surface-hi); color:var(--text); padding:6px 8px; font:12px 'JetBrains Mono'; border-radius:5px; text-align:right; }
 .admin-toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin:28px 0 18px; flex-wrap:wrap; }
-.admin-toolbar input { border:1px solid var(--border); background:var(--bg); color:var(--text); padding:10px 13px; font:13px Inter; border-radius:4px; min-width:240px; }
+.admin-toolbar input { border:1px solid var(--border); background:var(--bg); color:var(--text); padding:10px 13px; font:13px Inter; border-radius:4px; min-width:min(240px, 100%); }
 .admin-table-wrap { overflow-x:auto; }
 .badge { display:inline-flex; align-items:center; padding:3px 9px; border-radius:20px; font:11px 'JetBrains Mono'; text-transform:uppercase; letter-spacing:.4px; }
 .badge-admin { background:color-mix(in srgb, var(--accent) 18%, transparent); color:var(--violet); }
@@ -632,7 +632,7 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 .admin-table-wrap tbody td { padding: 13px 14px; border-bottom: 1px solid color-mix(in srgb, var(--border) 8%, transparent); font-size: 13px; color: var(--text); }
 .admin-table-wrap tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
 .admin-table-wrap tbody tr:last-child td { border-bottom: 0; }
-.admin-table-wrap { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.admin-table-wrap { border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; }
 
 .admin-cell-user { display: flex; align-items: center; gap: 10px; }
 .admin-cell-avatar {
@@ -703,6 +703,23 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
     border-top: 1px solid color-mix(in srgb, var(--border) 8%, transparent);
   }
   .admin-table-wrap .admin-cell-actions > * { margin: 4px 8px 4px 0; }
+  /* Inline max-widths suit a table column, not a full-width card line. */
+  .admin-table-wrap tbody td { max-width: none !important; overflow-wrap: anywhere; }
+  .admin-table-wrap pre { max-width: 100%; }
+  /* Row buttons are thumb targets on a phone. */
+  .admin-table-wrap .icon-button { min-height: 38px; padding: 8px 14px; font-size: 12.5px; }
+}
+
+/* The rest of the admin on a phone: tighter cards, a full-width search,
+   and form buttons that share the row instead of running off it. */
+@media (max-width: 640px) {
+  .admin-card { padding: 16px; border-radius: 12px; }
+  .admin-toolbar { gap: 10px; margin: 20px 0 14px; }
+  .admin-toolbar-search { flex-basis: 100%; max-width: none; }
+  .admin-toolbar select { flex: 1 1 auto; }
+  .admin-form-actions > .button,
+  .admin-form-actions > .button-outline { flex: 1 1 auto; justify-content: center; }
+  .icon-button { min-height: 36px; padding: 8px 13px; }
 }
 
 /* Toolbar: search input with an icon, kept above tables. */
