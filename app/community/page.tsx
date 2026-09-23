@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import {
   getCommunityFeed,
   type CommunityDifficulty,
@@ -18,10 +18,13 @@ import { getErrorMessage } from "@/lib/api/client";
 import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useDialog } from "@/providers/DialogProvider";
 import styles from "./feed.module.css";
 
 const PAGE_SIZE = 20;
 const VIEW_KEY = "kai-community-view";
+/** Tags shown on a card; the rest are on the problem's own page. */
+const TAG_LIMIT = 3;
 
 const DIFFICULTIES: { value: CommunityDifficulty; label: string }[] = [
   { value: "EASY", label: "Easy" },
@@ -32,7 +35,7 @@ const LANGUAGES: CommunityLanguage[] = ["python", "cpp", "javascript", "typescri
 const SORTS: { value: CommunitySort; label: string }[] = [
   { value: "newest", label: "Newest" },
   { value: "oldest", label: "Oldest" },
-  { value: "fastest", label: "Fastest runtime" },
+  { value: "fastest", label: "Fastest" },
 ];
 
 const oneOf = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
@@ -57,42 +60,28 @@ function formatSubmittedAt(iso: string) {
 
 /* ------------------------------------------------------------------ icons */
 
-const svg = (children: ReactNode, className?: string) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+const svg = (children: ReactNode) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     {children}
   </svg>
 );
 
-// A card's icon comes from its problem's first recognised tag, so a graph
-// problem looks like a graph problem at a glance.
-const TOPIC_ICONS: { match: string[]; icon: ReactNode }[] = [
-  { match: ["graph", "tree", "bfs", "dfs"], icon: svg(<><circle cx="6" cy="7" r="2.5" /><circle cx="18" cy="7" r="2.5" /><circle cx="12" cy="18" r="2.5" /><path d="M8.3 8.3 10.7 16M15.7 8.3 13.3 16M8.5 7h7" /></>) },
-  { match: ["dp", "dynamic-programming"], icon: svg(<path d="M4 20h4v-5h4v-5h4V5h4" />) },
-  { match: ["matrix", "grid"], icon: svg(<><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M4 9.3h16M4 14.7h16M9.3 4v16M14.7 4v16" /></>) },
-  { match: ["hashmap", "hash", "hash-table"], icon: svg(<path d="M9 4 7.5 20M16.5 4 15 20M4.5 9h15M4 15h15" />) },
-  { match: ["string"], icon: svg(<><path d="M5 7h14M5 12h10M5 17h12" /></>) },
-  { match: ["math", "bit-manipulation"], icon: svg(<><rect x="5" y="3.5" width="14" height="17" rx="2" /><path d="M8.5 8h7M9 12.5h.01M12 12.5h.01M15 12.5h.01M9 16h.01M12 16h.01M15 16h.01" /></>) },
-  { match: ["stack", "heap", "queue"], icon: svg(<><path d="m12 4 8 4-8 4-8-4z" /><path d="m4 12 8 4 8-4M4 16l8 4 8-4" /></>) },
-  { match: ["two-pointers", "sliding-window"], icon: svg(<path d="M8 8 4 12l4 4M16 8l4 4-4 4M4 12h16" />) },
-  { match: ["binary-search", "sorting", "search"], icon: svg(<><circle cx="11" cy="11" r="6.5" /><path d="m20 20-4.2-4.2" /></>) },
-  { match: ["backtracking", "recursion"], icon: svg(<><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v4.5h-4.5" /></>) },
-  { match: ["array", "prefix-sum", "implementation"], icon: svg(<><path d="M8 4H5v16h3M16 4h3v16h-3" /><path d="M10 12h.01M14 12h.01" /></>) },
-];
-const DEFAULT_ICON = svg(<path d="m8 7-5 5 5 5M16 7l5 5-5 5" />);
-
-function topicIcon(tags: string[] | undefined) {
-  const lower = (tags ?? []).map((tag) => tag.toLowerCase());
-  return TOPIC_ICONS.find((entry) => entry.match.some((m) => lower.includes(m)))?.icon ?? DEFAULT_ICON;
-}
-
 const ICON = {
-  search: svg(<><circle cx="11" cy="11" r="7" /><path d="m20 20-3.8-3.8" /></>),
-  clock: svg(<><circle cx="12" cy="12" r="8" /><path d="M12 8v4.5l2.8 1.6" /></>),
-  comment: svg(<path d="M5 5.5h14v10H10l-4 3.5v-3.5H5z" />),
-  calendar: svg(<><rect x="4" y="5.5" width="16" height="14" rx="2" /><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" /></>),
-  chevron: svg(<path d="m9 5 7 7-7 7" />),
-  grid: svg(<><rect x="4" y="4" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" /><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" /></>),
-  list: svg(<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" />),
+  search: svg(<><circle cx="10.5" cy="10.5" r="6.5" /><line x1="15" y1="15" x2="20" y2="20" /></>),
+  slashKey: svg(<><rect x="7.5" y="8.5" width="9" height="9" rx="1.5" /><line x1="10" y1="13" x2="14" y2="9" /></>),
+  clock: svg(<><circle cx="12" cy="12" r="8" /><line x1="12" y1="6.5" x2="12" y2="12" /><line x1="12" y1="12" x2="15" y2="14.5" /></>),
+  comment: svg(<path d="M5 5.5h14v10h-5.5L10 18v-2.5H5z" />),
+  calendar: svg(<><rect x="4.5" y="5.5" width="15" height="14" rx="1.5" /><path d="M4.5 10h15" /><line x1="8.5" y1="3" x2="8.5" y2="6" /><line x1="15.5" y1="3" x2="15.5" y2="6" /></>),
+  grid: svg(<><rect x="4.5" y="4.5" width="6" height="6" rx="1" /><rect x="13.5" y="4.5" width="6" height="6" rx="1" /><rect x="4.5" y="13.5" width="6" height="6" rx="1" /><rect x="13.5" y="13.5" width="6" height="6" rx="1" /></>),
+  list: svg(<><circle cx="4.5" cy="6" r="0.8" /><line x1="9.5" y1="6" x2="20" y2="6" /><circle cx="4.5" cy="12" r="0.8" /><line x1="9.5" y1="12" x2="20" y2="12" /><circle cx="4.5" cy="18" r="0.8" /><line x1="9.5" y1="18" x2="20" y2="18" /></>),
+  close: svg(<><line x1="8.5" y1="8.5" x2="15.5" y2="15.5" /><line x1="15.5" y1="8.5" x2="8.5" y2="15.5" /></>),
+  link: svg(<><ellipse cx="7.5" cy="9" rx="2.5" ry="3" /><ellipse cx="16.5" cy="14.5" rx="2.5" ry="3" /><line x1="10" y1="10.5" x2="14" y2="13.5" /></>),
+  check: svg(<path d="M8 12l2.5 2.5L17 8" />),
+  bolt: svg(<path d="M12 2 9 8h3l-4 10 7-8h-3l3-8Z" />),
+  accepted: svg(<><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 6-6" /></>),
+  users: svg(<><circle cx="8" cy="7.5" r="2" /><path d="M6 10a2 2 0 0 0 4 0" /><circle cx="14" cy="8.5" r="2" /><path d="M12 11.5a2 2 0 0 0 4 0" /></>),
+  gauge: svg(<><path d="M5 15a7 7 0 0 1 14 0" /><line x1="12" y1="10" x2="12" y2="15" /><circle cx="12" cy="15" r="0.6" /></>),
+  code: svg(<><path d="M8 6.5 4 12l4 5.5" /><path d="M16 6.5 20 12l-4 5.5" /></>),
 };
 
 function AuthorAvatar({ author }: { author: { name: string; profilePicUrl?: string } | null }) {
@@ -105,40 +94,85 @@ function AuthorAvatar({ author }: { author: { name: string; profilePicUrl?: stri
   return <span className={`${styles.avatar} ${styles.avatarFallback}`}>{(author?.name ?? "?").slice(0, 1).toUpperCase()}</span>;
 }
 
-function SolutionCard({ item }: { item: CommunityFeedItem }) {
+/* ------------------------------------------------------------------- card */
+
+function SolutionCard({ item, fastest }: { item: CommunityFeedItem; fastest: boolean }) {
+  const dialog = useDialog();
+  const [copied, setCopied] = useState(false);
   const difficulty = item.problem?.difficulty;
+  const tags = (item.problem?.tags ?? []).slice(0, TAG_LIMIT);
+  const title = item.problem?.title ?? "Deleted problem";
+  const author = item.author?.name ?? "Deleted user";
+
+  // The button lives inside the card, which is itself one big link through
+  // the stretched .cardLink — so this has to stop the click from following
+  // that link as well.
+  const copyLink = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/community/${item.id}`);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      dialog.toast({ title: "Could not copy the link", message: "Your browser blocked clipboard access.", tone: "warning" });
+    }
+  };
+
   return (
-    <Link href={`/community/${item.id}`} className={styles.card}>
-      <span className={styles.topic}>{topicIcon(item.problem?.tags)}</span>
-      <div className={styles.cardBody}>
-        <div className={styles.cardTop}>
-          <h3>{item.problem?.title ?? "Deleted problem"}</h3>
-          {difficulty && <span className={`${styles.level} ${styles[`level_${difficulty}`]}`}>{difficulty.toLowerCase()}</span>}
-        </div>
-        <div className={styles.who}>
-          <span className={styles.author}>
-            <AuthorAvatar author={item.author} />
-            {item.author?.name ?? "Deleted user"}
-          </span>
-          <span className={styles.lang}>
-            <LanguageMark language={item.language} />
-            {LANGUAGE_NAME[item.language] ?? item.language}
-          </span>
-        </div>
-        <div className={styles.meta}>
-          <span>
-            {ICON.clock} {item.runtimeMs} ms
-          </span>
-          <span>
-            {ICON.comment} {item.commentCount} {item.commentCount === 1 ? "comment" : "comments"}
-          </span>
-          <span>
-            {ICON.calendar} {formatSubmittedAt(item.createdAt)}
-          </span>
-        </div>
+    <article className={styles.card}>
+      <div className={styles.cardTop}>
+        {difficulty && <span className={`${styles.level} ${styles[`level_${difficulty}`]}`}>{difficulty.toLowerCase()}</span>}
+        <span className={styles.lang}>
+          <LanguageMark language={item.language} />
+          {LANGUAGE_NAME[item.language] ?? item.language}
+        </span>
+        <span className={styles.points}>{item.score} pts</span>
       </div>
-      <span className={styles.chevron}>{ICON.chevron}</span>
-    </Link>
+
+      <h3>
+        <Link className={styles.cardLink} href={`/community/${item.id}`}>
+          {title}
+        </Link>
+      </h3>
+
+      {tags.length > 0 && (
+        <div className={styles.tags}>
+          {tags.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+      )}
+
+      <div className={styles.cardFoot}>
+        <span className={styles.author}>
+          <AuthorAvatar author={item.author} />
+          <span>{author}</span>
+        </span>
+        <span className={styles.fact}>
+          {ICON.clock} {item.runtimeMs} ms
+        </span>
+        {fastest && (
+          <span className={styles.fastest}>
+            {ICON.bolt} fastest here
+          </span>
+        )}
+        <span className={styles.fact}>
+          {ICON.comment} {item.commentCount}
+        </span>
+        <span className={styles.fact}>
+          {ICON.calendar} {formatSubmittedAt(item.createdAt)}
+        </span>
+        <button
+          type="button"
+          className={`${styles.copy}${copied ? ` ${styles.copyDone}` : ""}`}
+          onClick={copyLink}
+          aria-label={copied ? "Link copied" : `Copy link to ${title} by ${author}`}
+        >
+          {copied ? ICON.check : ICON.link}
+        </button>
+      </div>
+    </article>
   );
 }
 
@@ -182,7 +216,10 @@ function CommunityContent() {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchText, setSearchText] = useState(query);
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [stuck, setStuck] = useState(false);
   const latestRequestRef = useRef(0);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   // The chosen layout is a per-viewer convenience; it may not be readable.
   useEffect(() => {
@@ -232,6 +269,34 @@ function CommunityContent() {
     return () => window.clearTimeout(timer);
   }, [searchText, query, updateUrl]);
 
+  // "/" jumps to the search box from anywhere on the page, the way the rest
+  // of the developer tools this audience uses behave. It must never steal a
+  // slash that is being typed into a field.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const typing = Boolean(target?.closest("input, textarea, select, [contenteditable='true']"));
+      if (event.key === "/" && !typing && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        event.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  // The toolbar draws a rule under itself only once it is actually stuck to
+  // the header, which a 1px sentinel above it reports without any scroll
+  // maths. The toolbar is not sticky on phones, where it would eat the view.
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setStuck(!entry.isIntersecting), { threshold: 1 });
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const requestId = ++latestRequestRef.current;
     setStatus("loading");
@@ -250,13 +315,39 @@ function CommunityContent() {
       })
       .catch((error) => {
         if (requestId !== latestRequestRef.current) return;
-        setErrorMessage(getErrorMessage(error, "Could not load the community feed."));
+        setErrorMessage(getErrorMessage(error, "Could not load solutions."));
         setStatus("error");
       });
   }, [page, query, difficulty, language, sort]);
 
-  const items = result?.items ?? [];
+  const items = useMemo(() => result?.items ?? [], [result]);
   const filtered = Boolean(query || difficulty || language);
+
+  // Everything here is counted off what is on screen, which is why the
+  // labels say so. The API returns no aggregates beyond the total.
+  const stats = useMemo(() => {
+    const runtimes = items.map((item) => item.runtimeMs).filter((ms) => Number.isFinite(ms));
+    return {
+      fastestMs: runtimes.length > 1 ? Math.min(...runtimes) : null,
+      solvers: new Set(items.map((item) => item.author?.id).filter(Boolean)).size,
+      languages: new Set(items.map((item) => item.language)).size,
+    };
+  }, [items]);
+
+  const clearFilters = () => {
+    writtenQueryRef.current = "";
+    setSearchText("");
+    updateUrl({ q: null, difficulty: null, language: null, page: null });
+  };
+
+  const activeChips = [
+    query ? { key: "q", label: "Search", value: `“${query}”` } : null,
+    difficulty ? { key: "difficulty", label: "Difficulty", value: DIFFICULTIES.find((d) => d.value === difficulty)?.label ?? difficulty } : null,
+    language ? { key: "language", label: "Language", value: LANGUAGE_NAME[language] ?? language } : null,
+  ].filter((chip): chip is { key: string; label: string; value: string } => chip !== null);
+
+  const total = result?.total ?? 0;
+  const sortLabel = SORTS.find((s) => s.value === sort)?.label ?? "Newest";
 
   return (
     <main className={styles.page}>
@@ -266,38 +357,69 @@ function CommunityContent() {
             <i aria-hidden="true" /> Community
           </p>
           <h1>
-            Accepted <span>solutions</span>
+            Public <span>solutions</span>
           </h1>
-          <p className={styles.lede}>
-            Every accepted submission from every solver, in one public feed — browse approaches, and discuss them.
-          </p>
+          <p className={styles.lede}>Browse and discuss every accepted solution from across the platform.</p>
         </div>
 
-        <svg className={styles.heroArt} viewBox="0 0 300 170" aria-hidden="true">
-          <path className={styles.artOrbit} d="M20 150 C 70 60, 230 30, 290 90" />
-          <rect x="30" y="40" width="58" height="52" rx="12" className={styles.artTile} />
-          <path d="m50 58-8 8 8 8M68 58l8 8-8 8" className={styles.artCode} />
-          <rect x="104" y="22" width="148" height="56" rx="12" className={styles.artCard} />
-          <circle cx="124" cy="42" r="5" className={styles.artDot} />
-          <path d="M138 42h70M122 60h96" className={styles.artLine} />
-          <rect x="120" y="92" width="130" height="56" rx="12" className={styles.artCard} />
-          <path d="M138 112h60M138 128h84" className={styles.artLine} />
-          <circle cx="252" cy="94" r="13" className={styles.artPlusBg} />
-          <path d="M252 88v12M246 94h12" className={styles.artPlus} />
-        </svg>
+        <div className={styles.heroStats}>
+          <div className={styles.heroStat}>
+            <span className={styles.statIcon}>{ICON.accepted}</span>
+            <div>
+              <b>{result ? total.toLocaleString() : "—"}</b>
+              <span>Accepted solutions</span>
+            </div>
+          </div>
+          <div className={styles.heroStat}>
+            <span className={styles.statIcon}>{ICON.gauge}</span>
+            <div>
+              <b>{stats.fastestMs === null ? "—" : `${stats.fastestMs} ms`}</b>
+              <span>Fastest on this page</span>
+            </div>
+          </div>
+          <div className={styles.heroStat}>
+            <span className={styles.statIcon}>{ICON.users}</span>
+            <div>
+              <b>{items.length ? stats.solvers : "—"}</b>
+              <span>Solvers on this page</span>
+            </div>
+          </div>
+          <div className={styles.heroStat}>
+            <span className={styles.statIcon}>{ICON.code}</span>
+            <div>
+              <b>
+                {items.length ? stats.languages : "—"}
+                {items.length ? <small className={styles.statOf}>/ {LANGUAGES.length}</small> : null}
+              </b>
+              <span>Languages used here</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <div className="section-shell">
-        <div className={styles.toolbar}>
+        <div ref={sentinelRef} className={styles.sentinel} aria-hidden="true" />
+        <div className={`${styles.toolbar}${stuck ? ` ${styles.stuck}` : ""}`}>
           <label className={styles.search}>
             <span className="sr-only">Search solutions</span>
             {ICON.search}
             <input
+              ref={searchRef}
               type="search"
               value={searchText}
               placeholder="Search problems or solvers…"
+              aria-keyshortcuts="/"
               onChange={(event) => setSearchText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape" && searchText) {
+                  event.preventDefault();
+                  setSearchText("");
+                }
+              }}
             />
+            <span className={styles.searchKey} title="Press / to search" aria-hidden="true">
+              {ICON.slashKey}
+            </span>
           </label>
           <Select
             label="Difficulty"
@@ -311,12 +433,19 @@ function CommunityContent() {
             options={[{ value: "" as const, label: "All languages" }, ...LANGUAGES.map((l) => ({ value: l, label: LANGUAGE_NAME[l] }))]}
             onChange={(value) => updateUrl({ language: value || null, page: null })}
           />
-          <Select
-            label="Sort"
-            value={sort}
-            options={SORTS.map((s) => ({ ...s, label: `Sort: ${s.label}` }))}
-            onChange={(value) => updateUrl({ sort: value && value !== "newest" ? value : null, page: null })}
-          />
+          <div className={styles.segment} role="group" aria-label="Sort">
+            {SORTS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                aria-pressed={sort === option.value}
+                className={sort === option.value ? styles.segmentOn : undefined}
+                onClick={() => updateUrl({ sort: option.value === "newest" ? null : option.value, page: null })}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           <div className={styles.viewToggle} role="group" aria-label="Layout">
             <button type="button" aria-pressed={view === "grid"} aria-label="Grid" className={view === "grid" ? styles.viewOn : undefined} onClick={() => chooseView("grid")}>
               {ICON.grid}
@@ -327,29 +456,71 @@ function CommunityContent() {
           </div>
         </div>
 
-        {status === "loading" && !result && <Loader label="Loading community feed…" />}
-        {status === "error" && <p className={styles.state}>{errorMessage}</p>}
+        {activeChips.length > 0 && (
+          <div className={styles.chips}>
+            {activeChips.map((chip) => (
+              <button
+                key={chip.key}
+                type="button"
+                className={styles.chip}
+                aria-label={`Remove ${chip.label.toLowerCase()} filter: ${chip.value}`}
+                onClick={() => {
+                  if (chip.key === "q") {
+                    writtenQueryRef.current = "";
+                    setSearchText("");
+                  }
+                  updateUrl({ [chip.key]: null, page: null });
+                }}
+              >
+                <em>{chip.label}:</em> {chip.value}
+                {ICON.close}
+              </button>
+            ))}
+            {activeChips.length > 1 && (
+              <button type="button" className={styles.chipClear} onClick={clearFilters}>
+                Clear all
+              </button>
+            )}
+          </div>
+        )}
+
+        {status === "error" ? (
+          <p className={styles.state}>{errorMessage}</p>
+        ) : (
+          <p className={styles.resultsHead}>
+            <span>
+              <b>{result ? total.toLocaleString() : "—"}</b> {total === 1 ? "solution" : "solutions"}
+              {query ? ` matching “${query}”` : ""}
+            </span>
+            <span>Sorted by {sortLabel.toLowerCase()}</span>
+          </p>
+        )}
+
+        {status === "loading" && !result && (
+          <div className={styles.grid} aria-busy="true" aria-live="polite">
+            <span className="sr-only">Loading solutions…</span>
+            {Array.from({ length: 6 }, (_, index) => (
+              <div key={index} className={styles.skeleton} aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </div>
+            ))}
+          </div>
+        )}
 
         {status !== "error" && result && items.length === 0 && (
           <div className={styles.empty}>
             {filtered ? (
               <>
-                <p>No accepted solutions match these filters.</p>
-                <button
-                  type="button"
-                  className="button-outline button-small"
-                  onClick={() => {
-                    writtenQueryRef.current = "";
-                    setSearchText("");
-                    updateUrl({ q: null, difficulty: null, language: null, page: null });
-                  }}
-                >
+                <p>No solutions match these filters.</p>
+                <button type="button" className="button-outline button-small" onClick={clearFilters}>
                   Clear filters
                 </button>
               </>
             ) : (
               <p>
-                No accepted solutions yet — <Link href="/problems">be the first to solve a problem</Link>.
+                No solutions yet — <Link href="/problems">solve a problem</Link> to open the feed.
               </p>
             )}
           </div>
@@ -361,7 +532,7 @@ function CommunityContent() {
             aria-busy={status === "loading"}
           >
             {items.map((item) => (
-              <SolutionCard key={item.id} item={item} />
+              <SolutionCard key={item.id} item={item} fastest={stats.fastestMs !== null && item.runtimeMs === stats.fastestMs} />
             ))}
           </div>
         )}
@@ -390,7 +561,7 @@ export default function CommunityPage() {
   return (
     <ProtectedRoute>
       <SiteHeader />
-      <Suspense fallback={<Loader label="Loading community feed…" />}>
+      <Suspense fallback={<Loader label="Loading solutions…" />}>
         <CommunityContent />
       </Suspense>
       <SiteFooter />
