@@ -24,7 +24,7 @@ export function VerifyEmailBanner() {
       return false;
     }
   });
-  const [sent, setSent] = useState(false);
+  const [state, setState] = useState<"idle" | "sent" | "failed">("idle");
   const [sending, setSending] = useState(false);
 
   if (isLoading || !user || user.emailVerifiedAt || hidden) return null;
@@ -41,12 +41,13 @@ export function VerifyEmailBanner() {
   const resend = async () => {
     setSending(true);
     try {
-      await resendVerification();
-      setSent(true);
+      // The endpoint says whether the message actually left; saying "check
+      // your inbox" when nothing was sent is how someone ends up waiting
+      // for mail that is never coming.
+      const result = await resendVerification();
+      setState(result?.sent ? "sent" : "failed");
     } catch {
-      // The endpoint answers the same way whatever happens, so there is
-      // nothing useful to report on a failure either.
-      setSent(true);
+      setState("failed");
     } finally {
       setSending(false);
     }
@@ -55,17 +56,21 @@ export function VerifyEmailBanner() {
   return (
     <div className={styles.banner} role="status">
       <p>
-        {sent ? (
-          <>Check <b>{user.email}</b> for the confirmation link.</>
+        {state === "sent" ? (
+          <>
+            Check <b>{user.email}</b> for the confirmation link.
+          </>
+        ) : state === "failed" ? (
+          <>Could not send it just now. It will be retried, or try again in a minute.</>
         ) : (
           <>
             Confirm <b>{user.email}</b> so a password reset can reach you.
           </>
         )}
       </p>
-      {!sent && (
+      {state !== "sent" && (
         <button type="button" onClick={resend} disabled={sending}>
-          {sending ? "Sending…" : "Send the link"}
+          {sending ? "Sending…" : state === "failed" ? "Try again" : "Send the link"}
         </button>
       )}
       <button type="button" className={styles.close} onClick={dismiss} aria-label="Dismiss">

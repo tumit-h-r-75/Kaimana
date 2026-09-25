@@ -54,4 +54,4 @@ export const updateEmailPreferences = (input: Partial<EmailPreferences>) =>
 export const verifyEmail = (token: string) =>
   apiRequest<{ email: string; verifiedAt: string }>("/api/auth/verify-email", { method: "POST", body: { token } });
 
-export const resendVerification = () => apiRequest<null>("/api/auth/resend-verification", { method: "POST" });
+export const resendVerification = () => apiRequest<{ sent: boolean }>("/api/auth/resend-verification", { method: "POST" });
