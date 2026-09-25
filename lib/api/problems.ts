@@ -52,3 +52,25 @@ export interface Recommendations {
 
 // Derived entirely from the caller's own history, so it needs a session.
 export const getRecommendations = () => apiRequest<Recommendations>("/api/problems/recommended");
+
+// The problem of the day, plus — for a signed-in reader — whether they have
+// solved it and how their streak stands.
+export interface DailyProblem {
+  date: string;
+  problem: {
+    id: string;
+    slug: string;
+    title: string;
+    difficulty: "EASY" | "MEDIUM" | "HARD";
+    tags: string[];
+    basePoints: number;
+    excerpt: string;
+    submissionCount: number;
+    acceptanceRate: number;
+  } | null;
+  solved: boolean;
+  solvedToday: boolean;
+  streakDays: number;
+}
+
+export const getDailyProblem = () => apiRequest<DailyProblem | null>("/api/problems/daily");
