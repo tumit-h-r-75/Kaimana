@@ -1,0 +1,48 @@
+/* The unconfirmed-address line (components/auth/VerifyEmailBanner.tsx). */
+
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  width: min(1280px, calc(100% - 56px));
+  margin: 10px auto 0;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--warn) 34%, var(--border));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--warn) 9%, var(--surface));
+}
+.banner p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.banner b {
+  color: var(--text);
+  font-weight: 600;
+}
+.banner button {
+  border: 1px solid color-mix(in srgb, var(--warn) 40%, var(--border));
+  border-radius: 8px;
+  background: transparent;
+  color: var(--warn);
+  font: 600 12.5px Inter, Arial, sans-serif;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.banner button:hover { background: color-mix(in srgb, var(--warn) 14%, transparent); }
+.banner button:disabled { opacity: .6; cursor: default; }
+
+.close {
+  padding: 4px 9px !important;
+  border-color: transparent !important;
+  color: var(--text-dim) !important;
+  font-size: 16px !important;
+  line-height: 1;
+}
+
+@media (max-width: 760px) {
+  .banner { width: min(100% - 36px, 1280px); }
+}
