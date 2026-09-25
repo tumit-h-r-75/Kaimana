@@ -76,6 +76,9 @@
 .auth-mode-toggle button.is-active{background:var(--accent-fill);color:var(--bg)}
 .auth-form{display:grid;gap:12px}.auth-form input{width:100%;border:1px solid var(--border);background:var(--bg);color:var(--text);padding:13px 14px;font:14px Inter;border-radius:7px;transition:border-color .15s,box-shadow .15s}.auth-form input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}.auth-form .button{border:0;cursor:pointer;margin-top:4px}
 .auth-form-anim{animation:kai-fade-up .35s ease both}
+.auth-help-link{justify-self:start;margin-top:2px;padding:6px 0;color:var(--text-dim);font-size:13px}
+.auth-help-link:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.link-button{border:0;padding:0;background:none;color:var(--accent);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .auth-divider{color:var(--text-dim);font:11px 'JetBrains Mono';margin:10px 0 14px}
 /* Visually hidden, still announced: the auth inputs are placeholder-only by
    design, so each one carries a real <label> parked off-screen. */

@@ -26,3 +26,14 @@ export const changePassword = async (input: { currentPassword: string; newPasswo
   if (result?.accessToken && result.refreshToken) setTokens(result.accessToken, result.refreshToken);
   return result;
 };
+
+// Password recovery. Both endpoints are public — the person who needs them
+// is by definition the one who cannot sign in.
+//
+// The request never reports whether the address has an account: a reply that
+// differed would turn this into a way to test which emails are registered.
+export const requestPasswordReset = (email: string) =>
+  apiRequest<null>("/api/auth/forgot-password", { method: "POST", body: { email } });
+
+export const resetPassword = (input: { token: string; newPassword: string }) =>
+  apiRequest<null>("/api/auth/reset-password", { method: "POST", body: input });
