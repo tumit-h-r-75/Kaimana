@@ -26,13 +26,3 @@
 @media (prefers-reduced-motion: reduce) {
   .toggle { transition: none; }
 }
-
-/* The language switch shares the toggle's shape but carries two or three
-   letters instead of an icon. */
-.wide {
-  width: auto;
-  min-width: 42px;
-  padding: 0 10px;
-  font: 700 12px 'JetBrains Mono', monospace;
-  letter-spacing: .4px;
-}
