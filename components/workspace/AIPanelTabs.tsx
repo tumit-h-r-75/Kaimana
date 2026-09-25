@@ -4,18 +4,20 @@ import { useEffect, useState } from "react";
 import VerdictPanel from "@/components/verdict/VerdictPanel";
 import AiLanguagePicker from "./AiLanguagePicker";
 import FollowUpPanel from "./FollowUpPanel";
+import CodeQualityPanel from "./CodeQualityPanel";
 import HintPanel from "@/components/hints/HintPanel";
 import ComplexityAuditorPanel from "@/components/complexity/ComplexityAuditorPanel";
 import RefactorPanel from "@/components/refactor/RefactorPanel";
 import SolutionPanel from "@/components/solution/SolutionPanel";
 import type { ProblemDetail, Submission } from "@/types/api";
 
-type TabKey = "results" | "hint" | "bigO" | "refactor" | "interview" | "solution";
+type TabKey = "results" | "hint" | "bigO" | "style" | "refactor" | "interview" | "solution";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "results", label: "Results" },
   { key: "hint", label: "Hint" },
   { key: "bigO", label: "Big-O" },
+  { key: "style", label: "Style" },
   { key: "refactor", label: "Refactor" },
   { key: "interview", label: "Interview" },
   { key: "solution", label: "Solution" },
@@ -117,6 +119,17 @@ export default function AIPanelTabs({
             <div className="ai-tab-empty">
               <div className="ic">✷</div>
               Submit your code to unlock a time/space complexity estimate.
+            </div>
+          )}
+        </div>
+
+        <div role="tabpanel" hidden={activeTab !== "style"}>
+          {submission && submission.verdict === "ACCEPTED" ? (
+            <CodeQualityPanel key={submission.id} submissionId={submission.id} />
+          ) : (
+            <div className="ai-tab-empty">
+              <div className="ic">✷</div>
+              How the code reads is worth asking once it works — this unlocks with an Accepted submission.
             </div>
           )}
         </div>
