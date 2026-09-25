@@ -13,6 +13,8 @@ import {
 } from "@/lib/kids/puzzleEngine";
 import type { PuzzleLevel as PuzzleLevelData, World } from "@/lib/kids/types";
 import { Mascot, type MascotMood } from "../Mascot";
+import { AskBolt } from "../AskBolt";
+import { blockLabel } from "./blockMeta";
 import { RichText } from "../StarRow";
 import { PuzzleBoard, type BoardEffect } from "./PuzzleBoard";
 import { ProgramEditor } from "./ProgramEditor";
@@ -34,6 +36,27 @@ interface PuzzleLevelProps {
 const FACING = { N: "up", E: "right", S: "down", W: "left" } as const;
 // A never-ending loop can produce hundreds of steps; show just enough to see it spin.
 const MAX_ANIMATED_STEPS_WHEN_TOO_LONG = 48;
+
+const programInWords = (blocks: Block[], depth = 0): string =>
+  blocks
+    .map((block) => {
+      const line = `${"  ".repeat(depth)}${blockLabel(block)}`;
+      if (block.type === "repeat" || block.type === "repeatUntil") {
+        return [line, programInWords(block.body, depth + 1)].filter(Boolean).join("\n");
+      }
+      if (block.type === "if") {
+        return [
+          line,
+          programInWords(block.then, depth + 1),
+          block.else.length ? `${"  ".repeat(depth)}Otherwise` : "",
+          programInWords(block.else, depth + 1),
+        ]
+          .filter(Boolean)
+          .join("\n");
+      }
+      return line;
+    })
+    .join("\n");
 
 function describeResult(result: ExecutionResult, blocksUsed: number, optimal: number): { good: boolean; title: string; detail: string; mood: MascotMood } {
   const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -173,6 +196,16 @@ export function PuzzleLevel({ level, world, onSolved, replayToken }: PuzzleLevel
               <>
                 <b>{feedback.title}</b>
                 <p>{feedback.detail}</p>
+                {!feedback.good && (
+                  <AskBolt
+                    levelTitle={level.title}
+                    goal={level.goal}
+                    kind="puzzle"
+                    program={programInWords(program)}
+                    expected="Bolt reaches the flag, collecting every gem on the way."
+                    actual={feedback.detail}
+                  />
+                )}
               </>
             ) : running ? (
               <b>Bolt is following your program…</b>
