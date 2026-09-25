@@ -121,3 +121,28 @@ export const reviewProposalDraft = (payload: {
   testCases: { input: string; expectedOutput: string; isSample?: boolean }[];
   language?: string;
 }) => apiRequest<DraftReview>("/api/ai/review-draft", { method: "POST", body: payload });
+
+// How the accepted code reads — four marks out of 25, kept so the trend is
+// visible. The algorithm is out of scope; it already passed.
+export interface CodeQualityScore {
+  total: number;
+  naming: number;
+  structure: number;
+  clarity: number;
+  robustness: number;
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  scoredAt: string;
+}
+
+export interface CodeQualityPoint {
+  total: number;
+  scoredAt: string;
+  problem: { title: string; slug?: string } | null;
+}
+
+export const scoreCodeQuality = (submissionId: string, language?: string) =>
+  apiRequest<CodeQualityScore>("/api/ai/code-quality", { method: "POST", body: { submissionId, language } });
+
+export const getCodeQualityHistory = () => apiRequest<CodeQualityPoint[]>("/api/ai/code-quality/history");
