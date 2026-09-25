@@ -37,3 +37,14 @@ export const requestPasswordReset = (email: string) =>
 
 export const resetPassword = (input: { token: string; newPassword: string }) =>
   apiRequest<null>("/api/auth/reset-password", { method: "POST", body: input });
+
+// Which optional emails reach this account. The ones that answer something
+// the user just did (a reset link, a password change) are not listed and
+// always send.
+export interface EmailPreferences {
+  contestReminders: boolean;
+  weeklyDigest: boolean;
+}
+
+export const updateEmailPreferences = (input: Partial<EmailPreferences>) =>
+  apiRequest<{ emailPrefs: EmailPreferences }>("/api/auth/me/email-preferences", { method: "PATCH", body: input });
