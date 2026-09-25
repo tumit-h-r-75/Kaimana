@@ -337,6 +337,11 @@ export default function SignInPage() {
                 placeholder="Password (8+ characters)"
               />
               <button className="button" disabled={isSubmitting} type="submit">{isSubmitting ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}</button>
+              {mode === "login" && (
+                <Link className="auth-help-link" href="/forgot-password">
+                  Forgot your password?
+                </Link>
+              )}
             </form>
             <p className="auth-divider">or continue with Google</p><div className="google-button" ref={googleButton} />
             {isLoading && <p className="auth-status"><Spinner size="sm" /> Preparing Google sign-in…</p>}
