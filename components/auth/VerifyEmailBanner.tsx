@@ -24,7 +24,7 @@ export function VerifyEmailBanner() {
       return false;
     }
   });
-  const [state, setState] = useState<"idle" | "sent" | "failed">("idle");
+  const [state, setState] = useState<"idle" | "sent" | "recent" | "failed">("idle");
   const [sending, setSending] = useState(false);
 
   if (isLoading || !user || user.emailVerifiedAt || hidden) return null;
@@ -45,7 +45,9 @@ export function VerifyEmailBanner() {
       // your inbox" when nothing was sent is how someone ends up waiting
       // for mail that is never coming.
       const result = await resendVerification();
-      setState(result?.sent ? "sent" : "failed");
+      // "Already sent one" is the outcome most people hit on a second press,
+      // and telling them that is not the same as telling them it failed.
+      setState(result?.sent ? "sent" : result?.reason === "recent" ? "recent" : "failed");
     } catch {
       setState("failed");
     } finally {
@@ -60,6 +62,10 @@ export function VerifyEmailBanner() {
           <>
             Check <b>{user.email}</b> for the confirmation link.
           </>
+        ) : state === "recent" ? (
+          <>
+            A link went to <b>{user.email}</b> a moment ago — check your inbox, and your spam folder.
+          </>
         ) : state === "failed" ? (
           <>Could not send it just now. It will be retried, or try again in a minute.</>
         ) : (
@@ -68,7 +74,7 @@ export function VerifyEmailBanner() {
           </>
         )}
       </p>
-      {state !== "sent" && (
+      {state !== "sent" && state !== "recent" && (
         <button type="button" onClick={resend} disabled={sending}>
           {sending ? "Sending…" : state === "failed" ? "Try again" : "Send the link"}
         </button>
