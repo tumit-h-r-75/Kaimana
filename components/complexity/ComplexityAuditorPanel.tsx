@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { runComplexityAudit } from "@/lib/api/ai";
+import { useAiLanguage } from "@/hooks/useAiLanguage";
 import { ApiError } from "@/lib/api/client";
 import type { ComplexityReport, ScalingDataPoint } from "@/types/api";
 
@@ -74,6 +75,7 @@ function ScalingChart({
 }
 
 export default function ComplexityAuditorPanel({ submissionId, initialReport }: { submissionId: string; initialReport?: ComplexityReport }) {
+  const { language } = useAiLanguage();
   const [report, setReport] = useState<ComplexityReport | null>(initialReport ?? null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +84,7 @@ export default function ComplexityAuditorPanel({ submissionId, initialReport }: 
     setIsLoading(true);
     setError(null);
     try {
-      const result = await runComplexityAudit(submissionId);
+      const result = await runComplexityAudit(submissionId, language);
       setReport(result);
     } catch (requestError) {
       setError(requestError instanceof ApiError ? requestError.message : "Could not run the complexity audit right now.");

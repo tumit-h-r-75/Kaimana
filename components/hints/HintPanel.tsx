@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getHint, HINT_TIER_COSTS, type HintResult } from "@/lib/api/ai";
+import { useAiLanguage } from "@/hooks/useAiLanguage";
 import { ApiError } from "@/lib/api/client";
 
 export default function HintPanel({
@@ -17,6 +18,7 @@ export default function HintPanel({
   /** Their hint penalty on this problem so far, as a percentage. */
   initialHintPenaltyPercent?: number;
 }) {
+  const { language } = useAiLanguage();
   const [hints, setHints] = useState<HintResult[]>([]);
   // Seeded from the problem payload, so tiers already paid for on an earlier
   // visit are never offered again as if they cost a fresh penalty — then kept
@@ -44,7 +46,7 @@ export default function HintPanel({
     setIsLoading(true);
     setError(null);
     try {
-      const result = await getHint({ problemId, level, code });
+      const result = await getHint({ problemId, level, code, language });
       setHints((previous) => [...previous.filter((item) => item.level !== result.level), result].sort((a, b) => a.level - b.level));
       setUnlockedTier((previous) => Math.max(previous, result.level));
       setTotalPenalty(result.penaltyPercent);
