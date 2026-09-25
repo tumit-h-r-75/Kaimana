@@ -183,6 +183,11 @@ export function AdminShell({ eyebrow, title, description, actions, notice, child
   const navItems = NAV_ITEMS.filter((item) => item.roles.includes(role));
   const pending = usePendingReviews(isAdmin);
   const [railOpen, setRailOpen] = useState(false);
+  const [today, setToday] = useState("");
+
+  useEffect(() => {
+    setToday(new Intl.DateTimeFormat(undefined, { weekday: "long", day: "numeric", month: "long" }).format(new Date()));
+  }, []);
 
   // The rail is a drawer on narrow screens: shut it on navigation and on
   // Escape, and keep the page behind it from scrolling while it is open.
@@ -231,9 +236,10 @@ export function AdminShell({ eyebrow, title, description, actions, notice, child
 
         <div className={styles.welcome}>
           <p className={styles.welcomeTitle}>Welcome back{firstName ? `, ${firstName}` : ""}!</p>
-          <p className={styles.welcomeSub}>
-            {isAdmin ? "Your platform. Your people. All in one place." : "Your contests, all in one place."}
-          </p>
+          {/* A control room says what day it is, not what the product is for.
+              Formatted after mount, because the server and the browser do not
+              always agree on a locale. */}
+          <p className={styles.welcomeSub}>{today || (isAdmin ? "Control room" : "Host panel")}</p>
         </div>
 
         <div className={styles.tools}>
