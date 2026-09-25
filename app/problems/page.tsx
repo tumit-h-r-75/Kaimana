@@ -9,6 +9,7 @@ import type { Difficulty, ProblemListResult, ProblemSummary, ProblemTopics } fro
 import { getErrorMessage } from "@/lib/api/client";
 import { compactCount, topicName } from "@/lib/problemFormat";
 import NextUpCard from "@/components/problems/NextUpCard";
+import { DailyProblemCard } from "@/components/problems/DailyProblemCard";
 import { Loader } from "@/components/ui/Loader";
 import { Pagination } from "@/components/ui/Pagination";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -242,6 +243,8 @@ function ProblemsContent() {
             </div>
           ))}
         </section>
+
+        <DailyProblemCard />
 
         {user && <NextUpCard recommendations={reco === undefined ? null : reco} />}
 
