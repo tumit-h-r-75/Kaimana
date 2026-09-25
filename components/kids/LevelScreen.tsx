@@ -172,7 +172,7 @@ export function LevelScreen({ worldId, levelSlug }: { worldId: string; levelSlug
       </nav>
 
       <header className={styles.header}>
-        <Mascot mood="happy" size={96} className={styles.headerMascot} />
+        <Mascot mood="happy" size={96} className={styles.headerMascot} animated={false} />
         <div className={styles.headerText}>
           <h1>{level.title}</h1>
           <p className={ui.bubble}>{level.story}</p>

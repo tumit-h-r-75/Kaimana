@@ -38,20 +38,20 @@
 .dots i {
   width: 12px;
   height: 12px;
-  border: 2px solid #9aa3bb;
+  border: 2px solid var(--kq-ink-faint);
   border-radius: 999px;
-  background: #dfe4ee;
+  background: var(--kq-line);
   transition: width 0.25s ease;
 }
 
 .dots .dotDone {
-  border-color: var(--world-deep, #0b6fa4);
-  background: var(--world-deep, #0b6fa4);
+  border-color: var(--world-deep, var(--kq-accent-deep));
+  background: var(--world-deep, var(--kq-accent-deep));
 }
 
 .dots .dotHere {
   width: 26px;
-  border-color: #1b2240;
+  border-color: var(--kq-line-strong);
   background: #ffc83d;
 }
 
@@ -66,9 +66,9 @@
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  border: 3px solid var(--world, #2aa3e0);
+  border: 3px solid var(--world, var(--kq-accent));
   border-radius: 28px;
-  background: linear-gradient(135deg, var(--world-soft, #eef4ff) 0%, #ffffff 70%);
+  background: linear-gradient(135deg, var(--world-soft, var(--kq-surface-hi)) 0%, var(--kq-surface) 70%);
   box-shadow: var(--kq-shadow);
 }
 

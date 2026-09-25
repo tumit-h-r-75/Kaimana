@@ -211,10 +211,6 @@ export function KidsHome() {
               />
             </svg>
             <Mascot mood={started ? "cheer" : "happy"} size={230} title="Bolt the robot" className={styles.heroMascot} />
-            <svg className={styles.hill} viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-              <path d="M0 62 Q90 18 200 40 T400 34 V90 H0 Z" fill="#9be07a" />
-              <path d="M0 74 Q120 44 230 62 T400 58 V90 H0 Z" fill="#6fcf4f" />
-            </svg>
           </div>
         </div>
       </section>

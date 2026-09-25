@@ -1,36 +1,46 @@
-/* Code Quest shared look: design tokens, chunky buttons, cards, speech
-   bubbles, stars and world colours. Scoped to the kids section — the site
-   header and footer keep the global dark theme. */
+/* Code Quest's shared look: tokens, buttons, cards, speech bubbles, stars and
+   world colours.
+ *
+ * This used to be a separate light world — sky gradient, drifting clouds,
+ * thick black outlines — sitting between Kaimana's own dark header and
+ * footer, and it read as a different website bolted on. It is now built from
+ * the site's own tokens.
+ *
+ * What carries the playfulness instead of the sky: the five world colours,
+ * now tuned to glow on black rather than print on white; a rounded display
+ * face; targets and type a size up from the main site, because the hands
+ * using this are smaller; the mascot; and motion that only ever plays once.
+ */
 
 .shell {
-  --kq-ink: #1b2240;
-  --kq-ink-soft: #465072;
-  --kq-card: #ffffff;
-  --kq-line: rgba(27, 34, 64, 0.12);
-  --kq-sun: #ffc83d;
-  --kq-sun-hover: #ffd766;
-  --kq-go: #22c55e;
-  --kq-go-hover: #3bd673;
-  --kq-good: #15803d;
-  --kq-bad: #b4233f;
-  --kq-warn: #9a5b00;
-  --kq-radius: 24px;
-  /* Float: anything that just sits there — cards, world panels, badges. */
-  --kq-shadow: 0 14px 28px -18px rgba(27, 34, 64, 0.45), 0 3px 8px -4px rgba(27, 34, 64, 0.12);
-  /* Glow: the one "you are here" marker on screen, never two at once. */
-  --kq-glow: 0 5px 0 var(--kq-ink), 0 0 0 8px rgba(255, 200, 61, 0.35), 0 10px 24px -8px rgba(255, 176, 0, 0.55);
-  /* 3.6:1 on white — large bold text and icons only, never body copy. */
-  --kq-ink-faint: #7d86a1;
-  --kq-card-soft: #f7f9ff;
-  --kq-line-strong: rgba(27, 34, 64, 0.22);
-  --kq-display: var(--font-kids-display, "Fredoka"), "Baloo 2", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
-  --kq-body: var(--font-kids-body, "Nunito"), "Segoe UI", "Trebuchet MS", system-ui, -apple-system, sans-serif;
+  /* The site's palette, under the names the kids components already use. */
+  --kq-bg: #0a0b0d;
+  --kq-surface: #121417;
+  --kq-surface-hi: #1a1d22;
+  --kq-line: #242830;
+  --kq-line-strong: #2f343e;
+  --kq-ink: #e8eaed;
+  --kq-ink-soft: #9aa1ac;
+  --kq-ink-faint: #6b727e;
+  --kq-accent: #4ff0c5;
+  --kq-accent-deep: #1e6b58;
+  --kq-sun: #ffb84d;
+  --kq-sun-hover: #ffc873;
+  --kq-go: #4ff0c5;
+  --kq-go-hover: #7ff6d8;
+  --kq-good: #4ff0c5;
+  --kq-bad: #ff5c7a;
+  --kq-warn: #ffb84d;
+  --kq-radius: 20px;
+  /* Soft and layered, never a hard offset line. */
+  --kq-shadow: 0 18px 32px -24px rgb(0 0 0 / 0.9), 0 2px 6px -3px rgb(0 0 0 / 0.6);
+  /* The site's own faces, one size up: a child's screen, not a child's font. */
+  --kq-display: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --kq-body: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
   --kq-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace;
 
   position: relative;
   isolation: isolate;
-  /* clip (not hidden) so the drifting clouds are cut off without turning this
-     into a scroll container — that would break the sticky puzzle board. */
   overflow: hidden;
   overflow: clip;
   min-height: calc(100vh - 78px);
@@ -38,10 +48,22 @@
   color: var(--kq-ink);
   font-family: var(--kq-body);
   font-size: 17px;
-  line-height: 1.5;
+  line-height: 1.55;
+  background: var(--kq-bg);
+}
+
+/* One quiet wash of colour behind the whole section — the night sky over the
+   worlds, in place of the daylight one. It does not move. */
+.shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
-    radial-gradient(circle at 88% 6%, rgba(255, 236, 153, 0.9) 0 90px, rgba(255, 236, 153, 0) 220px),
-    linear-gradient(180deg, #7fcdfd 0%, #bfe8ff 34%, #e9f7ff 62%, #fff6d9 100%);
+    radial-gradient(900px 420px at 82% -8%, rgb(79 240 197 / 0.09), transparent 70%),
+    radial-gradient(700px 380px at 6% 12%, rgb(169 139 255 / 0.08), transparent 72%),
+    radial-gradient(800px 500px at 50% 108%, rgb(73 200 255 / 0.06), transparent 70%);
 }
 
 .shell h1,
@@ -55,61 +77,57 @@
 }
 
 .shell :focus-visible {
-  outline: 4px solid #1d4ed8;
+  outline: 3px solid var(--kq-accent);
   outline-offset: 3px;
 }
 
 .shell ::selection {
-  background: #ffe28a;
+  background: color-mix(in srgb, var(--kq-accent) 30%, transparent);
   color: var(--kq-ink);
 }
 
+/* Stars in the background, for the space the clouds used to take. They fade
+   in once and then hold still. */
 .clouds {
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
 }
-
 .clouds span {
   position: absolute;
-  height: 46px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 34px -18px 0 6px rgba(255, 255, 255, 0.85), 74px 0 0 -4px rgba(255, 255, 255, 0.85);
-  animation: driftIn 3.5s cubic-bezier(.16, 1, .3, 1) 1 both;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  animation: sparkIn 1.4s ease forwards;
 }
-
 .clouds span:nth-child(1) {
-  top: 70px;
-  left: -8%;
-  width: 120px;
+  top: 12%;
+  left: 16%;
+  width: 3px;
+  height: 3px;
+  box-shadow: 120px 60px 0 -0.5px #fff, 320px -20px 0 -1px #fff, 520px 140px 0 -0.5px #fff, 760px 40px 0 -1px #fff;
+  animation-delay: 0.1s;
 }
-
 .clouds span:nth-child(2) {
-  top: 240px;
+  top: 36%;
   left: 62%;
-  width: 90px;
-  opacity: 0.7;
-  animation-duration: 4.2s;
-  animation-delay: .2s;
+  width: 2px;
+  height: 2px;
+  box-shadow: -180px 80px 0 0 #fff, 90px 180px 0 -0.5px #fff, 240px -40px 0 0 #fff;
+  animation-delay: 0.35s;
 }
-
 .clouds span:nth-child(3) {
-  top: 520px;
-  left: 18%;
-  width: 70px;
-  opacity: 0.6;
-  animation-duration: 4.8s;
-  animation-delay: .4s;
+  top: 68%;
+  left: 24%;
+  width: 2px;
+  height: 2px;
+  box-shadow: 420px 60px 0 -0.5px #fff, 700px -80px 0 0 #fff;
+  animation-delay: 0.6s;
 }
-
-@keyframes driftIn {
-  from {
-    transform: translateX(-6vw);
-  }
+@keyframes sparkIn {
   to {
-    transform: translateX(0);
+    opacity: 0.45;
   }
 }
 
@@ -122,6 +140,9 @@
 
 /* ---------- Buttons ---------- */
 
+/* Still big, still round — a child's target, not an adult's — but pressed
+   through colour and lift rather than a black outline with a shadow under
+   it, which is the sticker look this section is leaving behind. */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -129,76 +150,72 @@
   gap: 10px;
   min-height: 52px;
   padding: 10px 24px;
-  border: 3px solid var(--kq-ink);
+  border: 1px solid var(--kq-line-strong);
   border-radius: 999px;
-  background: #fff;
+  background: var(--kq-surface-hi);
   color: var(--kq-ink);
   font: 600 18px/1.1 var(--kq-display);
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 5px 0 var(--kq-ink);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 7px 0 var(--kq-ink);
+  border-color: color-mix(in srgb, var(--kq-accent) 45%, var(--kq-line-strong));
+  box-shadow: 0 10px 20px -14px rgb(0 0 0 / 0.9);
 }
 
 .btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 var(--kq-ink);
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .btn:disabled,
 .btn[aria-disabled="true"] {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.45;
   transform: none;
-  box-shadow: 0 5px 0 var(--kq-ink);
+  box-shadow: none;
 }
 
 .btnPrimary {
+  border-color: transparent;
   background: var(--kq-sun);
+  color: #2a1a00;
+  font-weight: 700;
 }
-
 .btnPrimary:hover {
+  border-color: transparent;
   background: var(--kq-sun-hover);
+  box-shadow: 0 12px 26px -16px var(--kq-sun);
 }
 
 .btnGo {
+  border-color: transparent;
   background: var(--kq-go);
+  color: #04221a;
+  font-weight: 700;
 }
-
 .btnGo:hover {
+  border-color: transparent;
   background: var(--kq-go-hover);
+  box-shadow: 0 12px 26px -16px var(--kq-go);
 }
 
 .btnSoft {
-  background: #eaf2ff;
+  background: var(--kq-surface);
 }
-
 .btnSoft:hover {
-  background: #f3f7ff;
+  background: var(--kq-surface-hi);
 }
 
 .btnSmall {
   min-height: 44px;
   padding: 6px 16px;
-  border-width: 2.5px;
   font-size: 16px;
-  box-shadow: 0 4px 0 var(--kq-ink);
-}
-
-.btnSmall:hover {
-  box-shadow: 0 5px 0 var(--kq-ink);
-}
-
-.btnSmall:disabled,
-.btnSmall[aria-disabled="true"] {
-  box-shadow: 0 4px 0 var(--kq-ink);
 }
 
 .btnIcon {
@@ -209,36 +226,37 @@
 /* ---------- Surfaces ---------- */
 
 .card {
-  background: var(--kq-card);
-  border: 2px solid var(--kq-line);
-  border-radius: var(--kq-radius);
-  box-shadow: var(--kq-shadow);
   padding: 22px;
+  border: 1px solid var(--kq-line);
+  border-radius: var(--kq-radius);
+  background: var(--kq-surface);
+  box-shadow: var(--kq-shadow);
 }
 
 .bubble {
   position: relative;
-  background: #fff;
-  border: 3px solid var(--kq-ink);
-  border-radius: 22px;
   padding: 12px 18px;
-  font-weight: 700;
+  border: 1px solid var(--kq-line-strong);
+  border-radius: 20px;
+  background: var(--kq-surface-hi);
+  color: var(--kq-ink);
+  font-weight: 600;
   font-size: 17px;
-  line-height: 1.4;
-  box-shadow: 0 4px 0 var(--kq-ink);
+  line-height: 1.45;
+  box-shadow: var(--kq-shadow);
 }
 
 /* Tail pointing left, toward the mascot. */
 .bubble::after {
   content: "";
   position: absolute;
-  left: -12px;
+  left: -9px;
   top: 22px;
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border-left: 3px solid var(--kq-ink);
-  border-bottom: 3px solid var(--kq-ink);
+  width: 16px;
+  height: 16px;
+  border-left: 1px solid var(--kq-line-strong);
+  border-bottom: 1px solid var(--kq-line-strong);
+  background: var(--kq-surface-hi);
   transform: rotate(45deg);
 }
 
@@ -246,9 +264,10 @@
 .bubbleDown::after {
   left: 44px;
   top: auto;
-  bottom: -12px;
+  bottom: -9px;
   border-left: 0;
-  border-right: 3px solid var(--kq-ink);
+  border-bottom: 1px solid var(--kq-line-strong);
+  border-right: 1px solid var(--kq-line-strong);
 }
 
 .chip {
@@ -256,18 +275,19 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
+  border: 1px solid color-mix(in srgb, var(--world, var(--kq-accent)) 32%, var(--kq-line));
   border-radius: 999px;
-  background: var(--world-soft, #eaf2ff);
-  color: var(--world-deep, var(--kq-ink));
+  background: color-mix(in srgb, var(--world, var(--kq-accent)) 14%, var(--kq-surface));
+  color: var(--world, var(--kq-accent));
   font: 600 14px/1.3 var(--kq-display);
 }
 
 .inlineCode {
   padding: 1px 6px;
+  border: 1px solid var(--kq-line-strong);
   border-radius: 7px;
-  background: #eef1fb;
-  border: 1px solid #d9def0;
-  color: #3b2a8c;
+  background: var(--kq-surface-hi);
+  color: var(--kq-accent);
   font: 0.9em/1.4 var(--kq-mono);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -279,10 +299,10 @@
   align-items: center;
   gap: 10px 16px;
   padding: 12px 16px;
-  border-radius: 18px;
-  border: 2px solid #f0c36a;
-  background: #fff4d6;
-  color: #5c3b00;
+  border: 1px solid color-mix(in srgb, var(--kq-warn) 38%, var(--kq-line));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--kq-warn) 10%, var(--kq-surface));
+  color: var(--kq-warn);
   font-weight: 700;
 }
 
@@ -310,7 +330,7 @@
 .star {
   width: 22px;
   height: 22px;
-  stroke-width: 1.6;
+  stroke-width: 1.4;
   stroke-linejoin: round;
 }
 
@@ -324,99 +344,101 @@
   height: 52px;
 }
 
+/* Earned stars glow; the rest are holes in the dark, not grey plastic. */
 .starOn {
   fill: #ffc83d;
-  stroke: #a86a00;
+  stroke: #ffe3a3;
+  filter: drop-shadow(0 0 6px rgb(255 200 61 / 0.45));
 }
 
 .starOff {
-  fill: #e3e8f3;
-  stroke: #a9b3ca;
+  fill: none;
+  stroke: var(--kq-line-strong);
+  stroke-width: 2;
 }
 
-/* ---------- World colours ---------- */
+/* ---------- World colours ----------
+   Re-tuned for a black ground: each one is bright enough to carry text on
+   --kq-bg (6:1 or better) and to read as a light in the dark rather than a
+   printed colour. --world-soft is the tinted surface, --world-locked the
+   same hue drained of most of its life. */
 
 .theme_meadow {
-  --world: #3fb950;
-  --world-deep: #1d7a36;
-  --world-soft: #e3f8e1;
-  --world-locked: #D5E3E0;
-  --world-locked-deep: #487768;
+  --world: #5ee38f;
+  --world-deep: #b4f3cd;
+  --world-soft: #0f2a1c;
+  --world-locked: #333a38;
 }
 
 .theme_lagoon {
-  --world: #2aa3e0;
-  --world-deep: #0b6fa4;
-  --world-soft: #ddf2fc;
-  --world-locked: #D2E0ED;
-  --world-locked-deep: #407299;
+  --world: #38bdf8;
+  --world-deep: #b6e7ff;
+  --world-soft: #0c2634;
+  --world-locked: #333c44;
 }
 
 .theme_caves {
-  --world: #8b5cf6;
-  --world-deep: #6533d6;
-  --world-soft: #efe8ff;
-  --world-locked: #DBDBEF;
-  --world-locked-deep: #6857B0;
+  --world: #b18cff;
+  --world-deep: #ddd0ff;
+  --world-soft: #1a1533;
+  --world-locked: #383545;
 }
 
 .theme_island {
-  --world: #ff9f43;
-  --world-deep: #a64b00;
-  --world-soft: #ffefd9;
-  --world-locked: #E3DFDC;
-  --world-locked-deep: #86624F;
+  --world: #ff8f6b;
+  --world-deep: #ffc7b4;
+  --world-soft: #2e1710;
+  --world-locked: #443a36;
 }
 
 .theme_station {
-  --world: #ec4899;
-  --world-deep: #b8175a;
-  --world-soft: #fde6f2;
-  --world-locked: #E2DAE8;
-  --world-locked-deep: #8E4A78;
+  --world: #f472b6;
+  --world-deep: #ffc4e2;
+  --world-soft: #2e1024;
+  --world-locked: #43353e;
 }
+
+/* ---------- Responsive ---------- */
 
 @media (max-width: 640px) {
   .shell {
-    font-size: 16px;
     padding-block: 18px 64px;
+    font-size: 16px;
   }
-
+  .container {
+    padding-inline: 14px;
+  }
+  .btn {
+    min-height: 48px;
+    font-size: 17px;
+  }
   .card {
     padding: 16px;
-    border-radius: 20px;
-  }
-
-  .btn {
-    padding-inline: 18px;
+    border-radius: 16px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .clouds span {
-    animation: none;
-  }
-
-  .btn {
-    transition: none;
-  }
-
+  .btn,
   .btn:hover,
   .btn:active {
+    transition: none;
     transform: none;
+  }
+  .clouds span {
+    animation: none;
+    opacity: 0.45;
   }
 }
 
-/* Glass, for panels that sit over the sky or the hill rather than on a flat
-   surface. Browsers without backdrop-filter get a near-opaque white instead,
-   which keeps the text contrast rather than the effect. */
+/* Glass, for the few panels that float over the mascot's stage. */
 .frosted {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  background: rgb(26 29 34 / 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 @supports not (backdrop-filter: blur(1px)) {
   .frosted {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgb(26 29 34 / 0.94);
   }
 }

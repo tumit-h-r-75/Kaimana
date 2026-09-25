@@ -4,33 +4,33 @@
 }
 
 .tone_move {
-  --tone: #16a34a;
-  --tone-bg: #dcfce7;
-  --tone-ink: #14532d;
+  --tone: #5ee38f;
+  --tone-bg: color-mix(in srgb, #5ee38f 14%, var(--kq-surface));
+  --tone-ink: var(--kq-ink);
 }
 
 .tone_turn {
-  --tone: #2563eb;
-  --tone-bg: #dbeafe;
-  --tone-ink: #1e3a8a;
+  --tone: #38bdf8;
+  --tone-bg: color-mix(in srgb, #38bdf8 14%, var(--kq-surface));
+  --tone-ink: var(--kq-ink);
 }
 
 .tone_gem {
-  --tone: #db2777;
-  --tone-bg: #fce7f3;
-  --tone-ink: #831843;
+  --tone: #f472b6;
+  --tone-bg: color-mix(in srgb, #f472b6 14%, var(--kq-surface));
+  --tone-ink: var(--kq-ink);
 }
 
 .tone_loop {
-  --tone: #ea580c;
-  --tone-bg: #ffedd5;
-  --tone-ink: #7c2d12;
+  --tone: #ff8f6b;
+  --tone-bg: color-mix(in srgb, #ff8f6b 14%, var(--kq-surface));
+  --tone-ink: var(--kq-ink);
 }
 
 .tone_logic {
-  --tone: #7c3aed;
-  --tone-bg: #ede9fe;
-  --tone-ink: #4c1d95;
+  --tone: #b18cff;
+  --tone-bg: color-mix(in srgb, #b18cff 14%, var(--kq-surface));
+  --tone-ink: var(--kq-ink);
 }
 
 /* ---------- Palette ---------- */
@@ -108,7 +108,7 @@
   height: 34px;
   border-radius: 10px;
   background: var(--tone);
-  color: #fff;
+  color: var(--kq-surface);
 }
 
 .newTag {
@@ -116,10 +116,10 @@
   top: -10px;
   right: 8px;
   padding: 1px 8px;
-  border: 2px solid #1b2240;
+  border: 2px solid var(--kq-line-strong);
   border-radius: 999px;
-  background: #c9184a;
-  color: #fff;
+  background: var(--kq-bad);
+  color: var(--kq-surface);
   font: 700 12px/1.4 var(--kq-display);
   font-style: normal;
   letter-spacing: 0.5px;
@@ -136,8 +136,8 @@
 .count {
   padding: 2px 12px;
   border-radius: 999px;
-  background: #1b2240;
-  color: #fff;
+  background: var(--kq-line-strong);
+  color: var(--kq-surface);
   font: 600 15px/1.6 var(--kq-display);
 }
 
@@ -155,7 +155,7 @@
   padding: 10px;
   border: 2.5px dashed rgba(27, 34, 64, 0.22);
   border-radius: 18px;
-  background: #f7f9ff;
+  background: var(--kq-surface);
 }
 
 .emptyProgram {
@@ -199,13 +199,13 @@
 }
 
 .active {
-  box-shadow: 0 0 0 4px #ffc83d, 0 0 0 7px #1b2240;
+  box-shadow: 0 0 0 4px #ffc83d, 0 0 0 7px var(--kq-line-strong);
   transform: scale(1.015);
 }
 
 .failed {
-  background: #ffe1e6;
-  box-shadow: 0 0 0 4px #ff6b81;
+  background: color-mix(in srgb, var(--kq-bad) 14%, var(--kq-surface));
+  box-shadow: 0 0 0 4px var(--kq-bad);
 }
 
 .stepper {
@@ -215,7 +215,7 @@
   padding: 2px;
   border: 2px solid var(--tone);
   border-radius: 999px;
-  background: #fff;
+  background: var(--kq-surface);
 }
 
 .stepButton {
@@ -248,13 +248,13 @@
 .sensed {
   padding: 2px 10px;
   border-radius: 999px;
-  background: #1b2240;
-  color: #fff;
+  background: var(--kq-line-strong);
+  color: var(--kq-surface);
   font: 600 14px/1.5 var(--kq-display);
 }
 
 .sensedYes {
-  background: #15803d;
+  background: #5ee38f;
 }
 
 .tools {
@@ -270,14 +270,14 @@
   height: 40px;
   border: 2px solid rgba(27, 34, 64, 0.2);
   border-radius: 12px;
-  background: #fff;
-  color: #1b2240;
+  background: var(--kq-surface);
+  color: var(--kq-line-strong);
   font: 700 18px/1 var(--kq-body);
   cursor: pointer;
 }
 
 .tool:hover:not(:disabled) {
-  border-color: #1b2240;
+  border-color: var(--kq-line-strong);
 }
 
 .tool:disabled {
@@ -286,9 +286,9 @@
 }
 
 .toolDelete:hover:not(:disabled) {
-  border-color: #b4233f;
-  background: #ffe4e8;
-  color: #b4233f;
+  border-color: var(--kq-bad);
+  background: color-mix(in srgb, var(--kq-bad) 14%, var(--kq-surface));
+  color: var(--kq-bad);
 }
 
 .branch {
@@ -309,8 +309,8 @@
 
 .branchSelected {
   border-style: solid;
-  border-color: #1d4ed8;
-  background: #fff;
+  border-color: var(--kq-accent);
+  background: var(--kq-surface);
 }
 
 .slot {
@@ -320,21 +320,21 @@
   border: 2px dashed rgba(27, 34, 64, 0.3);
   border-radius: 12px;
   background: transparent;
-  color: #28325a;
+  color: var(--kq-ink-soft);
   font: 600 15px var(--kq-display);
   cursor: pointer;
 }
 
 .slot:hover:not(:disabled) {
-  border-color: #1d4ed8;
-  color: #1d3ea8;
+  border-color: var(--kq-accent);
+  color: #38bdf8;
 }
 
 .slot[aria-pressed="true"] {
   border-style: solid;
-  border-color: #1d4ed8;
-  background: #e8f0ff;
-  color: #1d3ea8;
+  border-color: var(--kq-accent);
+  background: var(--kq-surface-hi);
+  color: #38bdf8;
 }
 
 .slot:disabled {
