@@ -257,6 +257,8 @@ export interface CurrentUser {
    *  which has nothing to check a "change password" form against. Only
    *  present on the /api/auth/me response. */
   hasPassword?: boolean;
+  /** Set once the address has been confirmed from a link sent to it. */
+  emailVerifiedAt?: string;
   /** Missing means "not set yet", which is the same as on. */
   emailPrefs?: { contestReminders?: boolean; weeklyDigest?: boolean };
   /** Reward currency shown in the header — earned once per problem on

@@ -48,3 +48,10 @@ export interface EmailPreferences {
 
 export const updateEmailPreferences = (input: Partial<EmailPreferences>) =>
   apiRequest<{ emailPrefs: EmailPreferences }>("/api/auth/me/email-preferences", { method: "PATCH", body: input });
+
+// Confirming the address on an account. Nothing is gated on it yet — it
+// makes a reset link worth sending, which is reason enough.
+export const verifyEmail = (token: string) =>
+  apiRequest<{ email: string; verifiedAt: string }>("/api/auth/verify-email", { method: "POST", body: { token } });
+
+export const resendVerification = () => apiRequest<null>("/api/auth/resend-verification", { method: "POST" });
