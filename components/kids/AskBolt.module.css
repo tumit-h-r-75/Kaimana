@@ -1,0 +1,32 @@
+/* "Bolt, why?" (AskBolt.tsx) */
+
+.ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.answer {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+}
+.answer svg { flex: none; }
+
+/* The tail points left, at the robot doing the talking. */
+.bubble {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  white-space: pre-wrap;
+}
+
+.failure {
+  margin: 0;
+  color: var(--kq-bad);
+  font-size: 14px;
+  font-weight: 600;
+}
