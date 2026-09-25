@@ -453,3 +453,373 @@
 @media (prefers-reduced-motion: reduce) {
   .barFill { animation: none; }
 }
+
+/* =====================================================================
+   The submission-backed charts (advanced.tsx). Same palette as above:
+   the series hue for magnitude, the status scale only where a value
+   genuinely means good or bad.
+   ===================================================================== */
+
+/* Two panels in a row, where three would squeeze a chart. */
+.panelPair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.panelPair .panel { margin-top: 0; }
+
+/* ------------------------------------------------------- series legend */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.legendChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-hi);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  transition: opacity .15s, border-color .15s;
+}
+.legendChip i {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+}
+.legendChip:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.legendChip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* A series that is off says so by going quiet, not by vanishing. */
+.legendOff {
+  opacity: .45;
+}
+.legendOff i { filter: grayscale(1); }
+
+.tooltip span {
+  display: block;
+  color: var(--text-dim);
+}
+
+/* The multi-series tooltip is anchored inside the plot, so it reads down
+   from its own top edge instead of hanging above the card's heading. */
+.tooltipInline {
+  transform: translate(-50%, 0);
+}
+
+/* ------------------------------------------------------------ heatmap */
+
+.heatScroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.heatGrid {
+  display: grid;
+  /* Capped, not stretched: at full width each hour became a 47px tile and
+     the week read as a mosaic rather than a heat map. */
+  grid-template-columns: 34px repeat(24, minmax(12px, 20px));
+  gap: 3px;
+  justify-content: start;
+  min-width: 400px;
+  align-items: center;
+}
+
+.heatHour,
+.heatDay {
+  color: var(--text-dim);
+  font: 10px "JetBrains Mono", monospace;
+}
+.heatHour {
+  padding-bottom: 4px;
+  text-align: left;
+}
+.heatDay { padding-right: 6px; }
+
+.heatCell {
+  aspect-ratio: 1;
+  min-height: 13px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: var(--surface-hi);
+  cursor: pointer;
+  transition: transform .12s, outline-color .12s;
+}
+.heatCell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.heatCellOn {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+  transform: scale(1.18);
+}
+
+.heatRead {
+  min-height: 20px;
+  margin: 14px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.heatRead b { color: var(--text); }
+
+.heatZone {
+  margin: 4px 0 0;
+  color: var(--text-dim);
+  font-size: 11.5px;
+  opacity: .8;
+}
+
+/* -------------------------------------------------------------- radar */
+
+.radarWrap {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.radar {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  overflow: visible;
+}
+
+.radarRing {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.radarSpoke {
+  stroke: var(--border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: .7;
+}
+
+.radarShape {
+  fill: color-mix(in srgb, var(--accent) 18%, transparent);
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.radarDot {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: r .12s;
+}
+.radarDotOn { fill: var(--accent); }
+
+.radarLabel {
+  fill: var(--text-dim);
+  font: 10.5px "JetBrains Mono", monospace;
+  cursor: pointer;
+}
+
+.radarRead {
+  min-height: 20px;
+  margin: 8px 0 0;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  text-align: center;
+}
+.radarRead b { color: var(--text); }
+
+/* -------------------------------------------------------------- donut */
+
+.donutWrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+}
+
+.donutFigure {
+  position: relative;
+  flex: none;
+  width: 180px;
+}
+
+.donut {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.donutArc {
+  cursor: pointer;
+  transition: stroke-width .15s, opacity .15s;
+}
+.donutArcDim { opacity: .35; }
+
+.donutHole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  gap: 2px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.donutHole b {
+  color: var(--text);
+  font: 700 26px "JetBrains Mono", monospace;
+  letter-spacing: -1px;
+}
+.donutHole span {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.donutKeys {
+  display: grid;
+  flex: 1;
+  gap: 10px;
+  min-width: 160px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.donutKeys li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: default;
+  transition: background-color .15s;
+}
+.donutKeyOn { background: var(--surface-hi); }
+.donutKeys i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.donutKeys span {
+  color: var(--text);
+  font-size: 13px;
+}
+.donutKeys b {
+  color: var(--text);
+  font: 700 13px "JetBrains Mono", monospace;
+}
+.donutKeys small {
+  grid-column: 2 / -1;
+  color: var(--text-dim);
+  font-size: 11.5px;
+}
+
+/* ---------------------------------------------------------- histogram */
+
+.histogram {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.histBar {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.histBar:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.histBar b {
+  color: var(--text);
+  font: 700 14px "JetBrains Mono", monospace;
+}
+.histBar small {
+  color: var(--text-dim);
+  font-size: 11.5px;
+}
+
+.histTrack {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 110px;
+  border-bottom: 1px solid var(--border);
+}
+
+.histFill,
+.histFillOn {
+  display: block;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  transition: height .35s ease, background-color .15s;
+}
+.histFill { background: color-mix(in srgb, var(--accent) 45%, var(--surface-hi)); }
+.histFillOn { background: var(--accent); }
+
+.histShare {
+  position: absolute;
+  top: -6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--surface-hi);
+  color: var(--text);
+  font: 600 11px "JetBrains Mono", monospace;
+  font-style: normal;
+}
+
+.histRead {
+  margin: 16px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.histRead b { color: var(--text); }
+
+/* --------------------------------------------------------- responsive */
+
+@media (max-width: 900px) {
+  .panelPair { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .donutWrap { justify-content: center; }
+  .histTrack { height: 84px; }
+  .heatGrid { gap: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heatCell,
+  .histFill,
+  .histFillOn,
+  .donutArc,
+  .radarDot { transition: none; }
+  .heatCellOn { transform: none; }
+}
