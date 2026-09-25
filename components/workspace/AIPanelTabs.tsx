@@ -3,19 +3,21 @@
 import { useEffect, useState } from "react";
 import VerdictPanel from "@/components/verdict/VerdictPanel";
 import AiLanguagePicker from "./AiLanguagePicker";
+import FollowUpPanel from "./FollowUpPanel";
 import HintPanel from "@/components/hints/HintPanel";
 import ComplexityAuditorPanel from "@/components/complexity/ComplexityAuditorPanel";
 import RefactorPanel from "@/components/refactor/RefactorPanel";
 import SolutionPanel from "@/components/solution/SolutionPanel";
 import type { ProblemDetail, Submission } from "@/types/api";
 
-type TabKey = "results" | "hint" | "bigO" | "refactor" | "solution";
+type TabKey = "results" | "hint" | "bigO" | "refactor" | "interview" | "solution";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "results", label: "Results" },
   { key: "hint", label: "Hint" },
   { key: "bigO", label: "Big-O" },
   { key: "refactor", label: "Refactor" },
+  { key: "interview", label: "Interview" },
   { key: "solution", label: "Solution" },
 ];
 
@@ -133,6 +135,17 @@ export default function AIPanelTabs({
             <div className="ai-tab-empty">
               <div className="ic">✷</div>
               Refactor suggestions unlock once you have an Accepted submission on this problem.
+            </div>
+          )}
+        </div>
+
+        <div role="tabpanel" hidden={activeTab !== "interview"}>
+          {submission && submission.verdict === "ACCEPTED" ? (
+            <FollowUpPanel key={submission.id} submissionId={submission.id} />
+          ) : (
+            <div className="ai-tab-empty">
+              <div className="ic">✷</div>
+              The interview questions come after an Accepted submission — they are about the code that passed.
             </div>
           )}
         </div>

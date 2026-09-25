@@ -70,3 +70,20 @@ export interface GenerateTestsResult {
 
 export const generateTestCases = (problemId: string) =>
   apiRequest<GenerateTestsResult>("/api/ai/generate-tests", { method: "POST", body: { problemId } });
+
+// The questions an interviewer asks once the code passes, and the marking
+// of one answer. Both work only on your own accepted submission.
+export interface FollowUpQuestions {
+  questions: string[];
+}
+
+export interface FollowUpMark {
+  verdict: "strong" | "partial" | "off";
+  feedback: string;
+}
+
+export const askFollowUps = (submissionId: string, language?: string) =>
+  apiRequest<FollowUpQuestions>("/api/ai/follow-ups", { method: "POST", body: { submissionId, language } });
+
+export const markFollowUp = (payload: { submissionId: string; question: string; answer: string; language?: string }) =>
+  apiRequest<FollowUpMark>("/api/ai/follow-ups/answer", { method: "POST", body: payload });
