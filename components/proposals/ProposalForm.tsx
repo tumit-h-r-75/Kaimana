@@ -9,6 +9,7 @@ import { useId, useRef, useState } from "react";
 import type { Difficulty, Language } from "@/types/api";
 import { PROPOSAL_LIMITS as LIMITS, type ProposalDetail, type ProposalInput } from "@/lib/api/proposals";
 import styles from "./ProposalForm.module.css";
+import { DraftReview } from "./DraftReview";
 
 const LANGUAGES: { value: Language; label: string }[] = [
   { value: "python", label: "Python" },
@@ -477,6 +478,20 @@ export function ProposalForm({ initial, submitLabel, submittingLabel, cancelHref
         />
         {fieldError("noteToReviewer")}
       </label>
+
+      <DraftReview
+        draft={{
+          title: values.title,
+          statement: values.statement,
+          constraints: values.constraints,
+          difficulty: values.difficulty,
+          testCases: values.testCases.map((testCase) => ({
+            input: testCase.input,
+            expectedOutput: testCase.expectedOutput,
+            isSample: testCase.isSample,
+          })),
+        }}
+      />
 
       <div className={styles.actions}>
         <button type="submit" className="button button-small" disabled={isSubmitting}>
