@@ -11,12 +11,14 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 }
 
 .headText h2 {
   margin: 0;
   color: var(--text);
-  font: 700 19px 'JetBrains Mono', monospace;
+  font: 700 17px 'JetBrains Mono', monospace;
   letter-spacing: -.4px;
 }
 .headText p {
@@ -30,7 +32,8 @@
 }
 .headText b {
   color: var(--text);
-  font: 700 15px 'JetBrains Mono', monospace;
+  font: 700 22px 'JetBrains Mono', monospace;
+  letter-spacing: -.5px;
 }
 
 .up,
@@ -109,6 +112,18 @@
   height: 1px;
   background: var(--border);
   opacity: .55;
+}
+
+/* A chart of nothing is still a chart; it just says so. */
+.blank {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  transform: translate(-50%, -50%);
 }
 
 .peak {
@@ -229,6 +244,7 @@
   display: inline-block;
   width: 10px;
   height: 10px;
+  border: 1px solid var(--border);
   border-radius: 3px;
 }
 .keyPassed { background: var(--accent); }
