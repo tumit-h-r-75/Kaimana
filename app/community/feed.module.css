@@ -640,3 +640,18 @@
   .select select { transition: none; }
   .skeleton i { animation: none; }
 }
+
+/* The solver's name is a link to their page, and has to sit above the card's
+   stretched link or that would take every click on the card. */
+.authorLink {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.authorLink:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

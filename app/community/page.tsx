@@ -146,7 +146,14 @@ function SolutionCard({ item, fastest }: { item: CommunityFeedItem; fastest: boo
       <div className={styles.cardFoot}>
         <span className={styles.author}>
           <AuthorAvatar author={item.author} />
-          <span>{author}</span>
+          {item.author?.id ? (
+            // Above the card's stretched link, which otherwise swallows it.
+            <Link className={styles.authorLink} href={`/u/${item.author.id}`} onClick={(event) => event.stopPropagation()}>
+              {author}
+            </Link>
+          ) : (
+            <span>{author}</span>
+          )}
         </span>
         <span className={styles.fact}>
           {ICON.clock} {item.runtimeMs} ms

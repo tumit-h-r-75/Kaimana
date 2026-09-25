@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { CurrentUser, LeaderboardEntry, MyRank } from "@/types/api";
 import { CountUp } from "@/components/ui/CountUp";
 import styles from "./leaderboard.module.css";
@@ -82,7 +83,7 @@ export function LeaderboardBoard({
             <span className={styles.solver}>
               <Avatar name={entry.name} src={entry.profilePicUrl} className={styles.avatar} />
               <span className={styles.name}>
-                {entry.name}
+                <Link href={`/u/${entry.userId}`}>{entry.name}</Link>
                 {isMe && <span className={styles.youTag}>You</span>}
               </span>
             </span>
