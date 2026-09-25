@@ -8,6 +8,7 @@ import { BrandLogo } from "@/components/layout/BrandLogo";
 import { AccountMenu } from "./AccountMenu";
 import { NotificationBell } from "./NotificationBell";
 import { IconGem } from "./icons";
+import { CommandPalette } from "@/components/search/CommandPalette";
 import styles from "./siteHeader.module.css";
 
 const Arrow = () => <span aria-hidden="true">→</span>;
@@ -125,6 +126,7 @@ export function SiteHeader() {
         </nav>
 
         <div className={styles.actions}>
+          <CommandPalette />
           {signedIn && user ? (
             <>
               {typeof user.gems === "number" && (
