@@ -1,419 +1,178 @@
-/* Admin overview (app/admin/page.tsx). */
+/* Admin overview (app/admin/page.tsx).
 
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 24px;
-  align-items: start;
-}
-
-/* An explicit minmax(0, 1fr) column, and children allowed to shrink: the
-   implicit `auto` column took the tab row's full width — five tabs that
-   never wrap — as its minimum, and on a phone that pushed the tiles and
-   the panel off the right edge of the screen. */
-.primary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
-  min-width: 0;
-}
-.primary > * { min-width: 0; }
-
-.side {
-  display: grid;
-  gap: 18px;
-  min-width: 0;
-}
+   Everything here is a reading instrument: a number, a share, a series. The
+   page is dense on purpose — an admin opens it to find out what changed,
+   not to be introduced to the product. */
 
 /* ------------------------------------------------------------------ tiles */
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
+  margin-bottom: 24px;
 }
 
 .tile {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
-  padding: 16px 18px;
+  padding: 15px 16px 16px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--surface);
+  transition: border-color .15s, background-color .15s, transform .15s;
+}
+
+/* Only the tiles that lead somewhere lift. */
+a.tile:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: var(--surface-hi);
+  transform: translateY(-2px);
+}
+a.tile:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Something is waiting: the one tile on the strip that is allowed to shout. */
+.tileUrgent {
+  border-color: color-mix(in srgb, var(--warn) 45%, var(--border));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--warn) 10%, var(--surface)), var(--surface) 70%);
+}
+.tileUrgent .tileIcon {
+  background: color-mix(in srgb, var(--warn) 16%, var(--surface-hi));
+  color: var(--warn);
+}
+.tileUrgent b { color: var(--warn); }
+a.tileUrgent:hover { border-color: var(--warn); }
+
+.tileTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .tileIcon {
   display: grid;
   flex: none;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
   background: color-mix(in srgb, var(--accent) 12%, var(--surface-hi));
   color: var(--accent);
 }
-.tileIcon svg { width: 20px; height: 20px; }
+.tileIcon svg { width: 17px; height: 17px; }
 
-.tile > div { min-width: 0; }
-.tile b {
+.tileSpark {
   display: block;
-  color: var(--text);
-  font: 700 24px/1.1 'JetBrains Mono', monospace;
-  letter-spacing: -.5px;
+  flex: 1;
+  min-width: 0;
+  margin-left: auto;
+  opacity: .9;
 }
-.tile > div > span:not(.tileSkeleton) {
+.tileSpark svg {
   display: block;
-  margin-top: 3px;
+  width: 100%;
+  height: 22px;
+  margin-left: auto;
+}
+
+.tileGo {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  color: var(--text-dim);
+  opacity: 0;
+  transition: opacity .15s, transform .15s;
+}
+.tileSpark + .tileGo { margin-left: 4px; }
+a.tile:hover .tileGo {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.tile b {
+  display: flex;
+  align-items: baseline;
+  color: var(--text);
+  font: 700 27px/1.05 'JetBrains Mono', monospace;
+  letter-spacing: -1px;
+}
+.tile b i {
+  color: var(--text-dim);
+  font: 500 14px Inter, Arial, sans-serif;
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+.tileLabel {
+  margin-top: 5px;
+  overflow: hidden;
   color: var(--text);
   font-size: 12.5px;
   font-weight: 500;
-}
-.tile small {
-  display: block;
-  margin-top: 2px;
-  overflow: hidden;
-  color: var(--text-dim);
-  font: 11.5px 'JetBrains Mono', monospace;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.tile small {
+  overflow: hidden;
+  color: var(--text-dim);
+  font: 11px 'JetBrains Mono', monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .tileSkeleton {
   display: block;
-  width: 56px;
-  height: 26px;
+  width: 54px;
+  height: 27px;
   border-radius: 6px;
 }
 
-/* ------------------------------------------------------------ folder tabs */
+/* ----------------------------------------------------------------- layout */
 
-.tabList {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  padding: 0 18px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.tabList::-webkit-scrollbar { display: none; }
-
-/* Folder tabs: the chosen one stands taller and runs into the panel below
-   it; the others sit a step lower, on the panel's edge. */
-.tab {
-  position: relative;
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: -1px;
-  padding: 11px 18px 10px;
-  border: 1px solid var(--border);
-  border-bottom: 0;
-  border-radius: 12px 12px 0 0;
-  background: var(--surface);
-  color: var(--text-dim);
-  font: 500 13px Inter, Arial, sans-serif;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: color .15s, background-color .15s, padding .2s;
-}
-.tab:hover { color: var(--text); }
-.tab:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -3px;
-}
-
-.tabActive {
-  padding-top: 17px;
-  padding-bottom: 13px;
-  background: var(--surface-hi);
-  color: var(--text);
-  font-weight: 600;
-}
-.tabActive::before {
-  content: "";
-  position: absolute;
-  top: 7px;
-  right: 18px;
-  left: 18px;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--accent);
-}
-
-.tabCount {
-  padding: 1px 7px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--bg);
-  font: 700 11.5px/1.5 'JetBrains Mono', monospace;
-  font-style: normal;
-}
-
-.panel {
-  position: relative;
+/* Twelve columns, and every card says how many it takes. A dashboard has
+   cards of very different shapes — a chart, a queue, a five-row table — and
+   a two-column split makes the short side run out of page. */
+.grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 5%, var(--surface-hi)) 0%, var(--surface-hi) 55%);
-  box-shadow: 0 30px 60px -40px rgba(0, 0, 0, .8);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
 }
+.grid > * { min-width: 0; }
 
-.panelMain {
-  padding: 36px 38px 38px;
-  border-right: 1px solid var(--border);
-}
-
-.panelIcon {
-  display: grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface);
-  color: var(--accent);
-}
-.panelIcon svg { width: 26px; height: 26px; }
-
-.panelMain h2 {
-  margin: 22px 0 12px;
-  color: var(--text);
-  font: 700 clamp(26px, 2.6vw, 34px)/1.1 'JetBrains Mono', monospace;
-  letter-spacing: -1.2px;
-}
-
-.panelBody {
-  max-width: 470px;
-  margin: 0;
-  color: var(--text-dim);
-  font-size: 15px;
-  line-height: 1.65;
-}
-
-.panelFigure {
-  display: inline-block;
-  margin: 16px 0 0;
-  padding: 5px 11px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  color: var(--accent);
-  font: 600 11.5px 'JetBrains Mono', monospace;
-}
-
-.panelActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 26px;
-}
-.panelActions svg { width: 16px; height: 16px; }
-
-.panelSide { padding: 60px 38px 38px; }
-.panelSide h3 {
-  margin: 0 0 18px;
-  color: var(--text);
-  font: 700 17px 'JetBrains Mono', monospace;
-}
-
-.canList {
-  display: grid;
-  gap: 14px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.canList li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.5;
-}
-.canList svg {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  color: var(--accent);
-}
-
-/* A comment in the margin, where the portal this layout follows puts its
-   handwritten slogan. */
-.marginNote {
-  position: absolute;
-  top: 20px;
-  right: 28px;
-  margin: 0;
-  color: color-mix(in srgb, var(--accent) 80%, var(--text));
-  font: 600 13px 'JetBrains Mono', monospace;
-  transform: rotate(-4deg);
-  transform-origin: right center;
-  pointer-events: none;
-}
-.marginNote svg {
-  display: block;
-  width: 100%;
-  height: 10px;
-  margin-top: 3px;
-}
-.marginNote path {
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-width: 2;
-  opacity: .7;
-  vector-effect: non-scaling-stroke;
-}
+.spanChart { grid-column: span 8; }
+.spanQueue { grid-column: span 4; }
+.spanThird { grid-column: span 4; }
+.spanStuck { grid-column: span 7; }
+.spanFeed { grid-column: span 5; }
 
 /* ------------------------------------------------------------------ cards */
 
 .card {
   min-width: 0;
-  padding: 22px 24px;
+  padding: 20px 22px 22px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--surface);
 }
 
-.sideTitle {
-  margin: 0;
-  color: var(--text);
-  font: 700 18px/1.2 'JetBrains Mono', monospace;
-  letter-spacing: -.4px;
+.chartCard {
+  padding: 22px 24px 20px;
+  background: linear-gradient(170deg, color-mix(in srgb, var(--accent) 4%, var(--surface)), var(--surface) 60%);
 }
 
-.sideText {
-  margin: 8px 0 0;
-  color: var(--text-dim);
-  font-size: 13.5px;
-  line-height: 1.6;
-}
-
-.queue {
-  display: grid;
-  gap: 6px;
-  margin: 14px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.queue li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 12px;
-  border-radius: 10px;
-  background: var(--surface-hi);
-  color: var(--text);
-  font-size: 13px;
-}
-.queue b {
-  color: var(--accent);
-  font: 700 13px 'JetBrains Mono', monospace;
-}
-
-.outlineButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 18px;
-  padding: 12px 16px;
-  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--border));
-  border-radius: 999px;
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
-  transition: background-color .15s, border-color .15s;
-}
-.outlineButton:hover {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-}
-
-.sideRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-.sideRow > div {
-  flex: 1;
-  min-width: 0;
-}
-
-.sideIcon {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface-hi);
-  color: var(--accent);
-}
-.sideIcon svg { width: 20px; height: 20px; }
-
-.bigFigure {
-  margin: 10px 0 0;
-  color: var(--text);
-  font: 700 30px/1 'JetBrains Mono', monospace;
-  letter-spacing: -1px;
-}
-.bigFigure small {
-  margin-left: 6px;
-  color: var(--text-dim);
-  font: 500 12px Inter, Arial, sans-serif;
-  letter-spacing: 0;
-}
-
-.meter {
-  height: 6px;
-  margin-top: 12px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--surface-hi);
-}
-.meter span {
+.chartSkeleton {
   display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-dim), var(--accent));
-}
-
-.textLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 14px;
-  color: var(--text);
-  font-size: 13.5px;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
-  text-underline-offset: 4px;
-  transition: color .15s;
-}
-.textLink:hover { color: var(--accent); }
-
-.tipCard {
-  border-color: color-mix(in srgb, var(--accent) 16%, var(--border));
-  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
-}
-
-/* ------------------------------------------------- activity + quick links */
-
-.lower {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
-  margin-top: 28px;
+  height: 250px;
+  border-radius: 12px;
 }
 
 .cardHead {
@@ -427,49 +186,259 @@
 .cardHead h2 {
   margin: 0;
   color: var(--text);
-  font: 700 19px 'JetBrains Mono', monospace;
+  font: 700 17px 'JetBrains Mono', monospace;
   letter-spacing: -.4px;
 }
-.cardHead .textLink {
-  margin-top: 0;
-  text-decoration: none;
-}
 
-.feed,
-.links {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.feed li + li,
-.links li + li { border-top: 1px solid var(--border); }
-
-.feedRow,
-.linkRow {
-  display: flex;
+.textLink {
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
-  margin: 0 -8px;
-  padding: 14px 8px;
-  border-radius: 10px;
-  transition: background-color .15s;
+  gap: 6px;
+  color: var(--text-dim);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: color .15s;
 }
-.feedRow:hover,
-.linkRow:hover { background: var(--surface-hi); }
+.textLink:hover { color: var(--accent); }
 
-.feedIcon {
+.inlineLink {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  text-underline-offset: 3px;
+}
+.inlineLink:hover { color: var(--accent); }
+
+.footnote {
+  margin: 14px 0 0;
+  color: var(--text-dim);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.sideText {
+  margin: 12px 0 0;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.sideTitle {
+  margin: 0;
+  color: var(--text);
+  font: 700 17px/1.2 'JetBrains Mono', monospace;
+  letter-spacing: -.4px;
+}
+
+.sideRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.sideRow > div {
+  flex: 1;
+  min-width: 0;
+}
+.sideRow .sideText { margin-top: 7px; }
+
+.sideIcon {
   display: grid;
   flex: none;
   place-items: center;
   width: 36px;
   height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-hi);
+  color: var(--accent);
+}
+.sideIcon svg { width: 19px; height: 19px; }
+
+.tipCard {
+  border-color: color-mix(in srgb, var(--accent) 16%, var(--border));
+  background: color-mix(in srgb, var(--accent) 4%, var(--surface));
+}
+
+.rowsLoading {
+  display: grid;
+  gap: 10px;
+  padding-top: 16px;
+}
+.rowsLoading span {
+  display: block;
+  height: 38px;
+  border-radius: 9px;
+}
+
+/* ----------------------------------------------------------- verdict mix */
+
+.verdicts {
+  display: grid;
+  gap: 11px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.verdicts li {
+  display: grid;
+  grid-template-columns: minmax(96px, 128px) minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 12px;
+}
+.verdictLabel {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.verdictBar {
+  display: block;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-hi);
+}
+.verdictBar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width .4s ease;
+}
+.barGood > span { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 60%, var(--bg)), var(--accent)); }
+.barBad > span { background: linear-gradient(90deg, color-mix(in srgb, var(--warn) 55%, var(--bg)), var(--warn)); }
+.verdicts b {
+  color: var(--text);
+  font: 600 12.5px 'JetBrains Mono', monospace;
+  text-align: right;
+}
+
+/* ------------------------------------------------------------ library mix */
+
+.bands {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.bands li {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.bandBar {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 54px;
+  height: 92px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--surface-hi);
+}
+.bandBar > span {
+  display: block;
+  width: 100%;
+  min-height: 4px;
+  border-radius: 7px;
+  transition: height .4s ease;
+}
+.bandEasy { background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--bg))); }
+.bandMedium { background: linear-gradient(180deg, var(--warn), color-mix(in srgb, var(--warn) 60%, var(--bg))); }
+.bandHard { background: linear-gradient(180deg, var(--error), color-mix(in srgb, var(--error) 60%, var(--bg))); }
+.bands b {
+  margin-top: 4px;
+  color: var(--text);
+  font: 700 17px 'JetBrains Mono', monospace;
+}
+.bands small {
+  color: var(--text-dim);
+  font-size: 11.5px;
+}
+
+/* -------------------------------------------------------- where people get stuck */
+
+.stuck,
+.feed,
+.links,
+.queue {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stuck li + li,
+.feed li + li,
+.links li + li { border-top: 1px solid var(--border); }
+
+.stuckRow,
+.feedRow,
+.linkRow,
+.queueRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 -8px;
+  padding: 13px 8px;
+  border-radius: 10px;
+  transition: background-color .15s;
+}
+.stuckRow:hover,
+.feedRow:hover,
+.linkRow:hover,
+.queueRow:hover { background: var(--surface-hi); }
+
+.stuckRate {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  width: 122px;
+}
+.rateMeter {
+  display: block;
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-hi);
+}
+.stuckRow:hover .rateMeter { background: var(--bg); }
+.rateMeter > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  /* Low is the interesting end here, so the scale runs the other way: a
+     problem almost nobody solves shows red, not an empty bar. */
+  background: linear-gradient(90deg, var(--error), var(--warn));
+}
+.stuckRate b {
+  flex: none;
+  width: 34px;
+  color: var(--text);
+  font: 600 12.5px 'JetBrains Mono', monospace;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------- feed + links */
+
+.feedIcon,
+.queueIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
   border-radius: 10px;
   background: var(--surface-hi);
   color: var(--accent);
 }
 .feedRow:hover .feedIcon,
-.linkRow:hover .feedIcon { background: var(--bg); }
-.feedIcon svg { width: 18px; height: 18px; }
+.linkRow:hover .feedIcon,
+.queueRow:hover .queueIcon { background: var(--bg); }
+.feedIcon svg,
+.queueIcon svg { width: 17px; height: 17px; }
 
 .feedText {
   display: flex;
@@ -479,14 +448,17 @@
   min-width: 0;
 }
 .feedText b {
+  overflow: hidden;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.feedText span {
+.feedText > span {
   overflow: hidden;
   color: var(--text-dim);
-  font-size: 12.5px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -498,82 +470,107 @@
   align-items: flex-end;
   gap: 3px;
   color: var(--text);
-  font: 500 12px 'JetBrains Mono', monospace;
+  font: 500 11.5px 'JetBrains Mono', monospace;
 }
 .feedTime small {
   color: var(--text-dim);
-  font-size: 11px;
+  font-size: 10.5px;
 }
 
 .chevron {
   flex: none;
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   color: var(--text-dim);
   transition: transform .15s, color .15s;
 }
-.linkRow:hover .chevron {
+.linkRow:hover .chevron,
+.queueRow:hover .chevron {
   color: var(--accent);
   transform: translateX(3px);
 }
 
-.feedLoading {
-  display: grid;
-  gap: 12px;
-  padding-top: 16px;
+/* ------------------------------------------------------------ the queue */
+
+.queueCard {
+  border-color: color-mix(in srgb, var(--warn) 30%, var(--border));
+  background: linear-gradient(170deg, color-mix(in srgb, var(--warn) 6%, var(--surface)), var(--surface) 55%);
 }
-.feedLoading span {
-  display: block;
-  height: 44px;
-  border-radius: 10px;
+.queueCard .queueIcon { color: var(--warn); }
+
+.queue { margin-top: 6px; }
+.queue li + li { border-top: 1px solid var(--border); }
+
+.clear {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 0 4px;
+}
+.clear svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+}
+.clear p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.outlineButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 11px 16px;
+  border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--border));
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: background-color .15s, border-color .15s;
+}
+.outlineButton:hover {
+  border-color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 10%, transparent);
 }
 
 /* ------------------------------------------------------------- responsive */
 
-@media (max-width: 1320px) {
-  .layout { grid-template-columns: minmax(0, 1fr) 290px; }
-  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 1400px) {
+  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-/* The side cards move under the panel and sit three across. */
-@media (max-width: 1120px) {
-  .layout { grid-template-columns: minmax(0, 1fr); }
-  .side { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .lower { grid-template-columns: minmax(0, 1fr); }
+/* Below this the twelve columns become six: two cards a row, whatever
+   they were before. */
+@media (max-width: 1240px) {
+  .spanChart,
+  .spanQueue,
+  .spanStuck,
+  .spanFeed { grid-column: span 12; }
+  .spanThird { grid-column: span 4; }
 }
 
 @media (max-width: 860px) {
-  .panel { grid-template-columns: minmax(0, 1fr); }
-  .panelMain {
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .panelSide { padding-top: 30px; }
-  .marginNote { display: none; }
-  .side { grid-template-columns: minmax(0, 1fr); }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .spanThird { grid-column: span 12; }
 }
 
 @media (max-width: 560px) {
-  .tiles { gap: 10px; }
-  .tile {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 14px;
-  }
-  .panelMain,
-  .panelSide { padding: 26px 20px; }
-  .panelActions > * {
-    justify-content: center;
-    width: 100%;
-  }
   .card { padding: 18px; }
+  .tile { padding: 14px; }
+  .stuckRate { width: 80px; }
+  .verdicts li { grid-template-columns: minmax(84px, 108px) minmax(0, 1fr) 34px; }
 
   /* A feed row keeps the whole width for its text; the date moves under
      it instead of taking a column. */
   .feedRow {
     display: grid;
-    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-columns: 34px minmax(0, 1fr);
     align-items: start;
     gap: 4px 12px;
   }
@@ -584,43 +581,17 @@
     justify-self: start;
     gap: 6px;
     color: var(--text-dim);
-    font-size: 11.5px;
+    font-size: 11px;
   }
-}
-
-/* On a phone the folder tabs become a grid of buttons above the panel:
-   every section in view at once, instead of a strip that scrolls sideways
-   with most of it off screen. */
-@media (max-width: 640px) {
-  .tabList {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-bottom: 12px;
-    padding: 0;
-    overflow: visible;
-  }
-  .tab,
-  .tabActive {
-    justify-content: center;
-    margin: 0;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    white-space: normal;
-    text-align: center;
-  }
-  .tab:last-child:nth-child(odd) { grid-column: 1 / -1; }
-  .tabActive {
-    border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
-    background: color-mix(in srgb, var(--accent) 10%, var(--surface-hi));
-  }
-  .tabActive::before { display: none; }
-  .panel { border-radius: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tab,
-  .chevron { transition: none; }
-  .linkRow:hover .chevron { transform: none; }
+  .tile,
+  .tileGo,
+  .chevron,
+  .verdictBar > span,
+  .bandBar > span { transition: none; }
+  a.tile:hover { transform: none; }
+  .linkRow:hover .chevron,
+  .queueRow:hover .chevron { transform: none; }
 }
