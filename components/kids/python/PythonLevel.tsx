@@ -5,6 +5,7 @@ import { runCode } from "@/lib/api/submissions";
 import { explainCase, explainRunFailure, starsForPython, type PythonFeedback } from "@/lib/kids/pythonFeedback";
 import type { PythonLevel as PythonLevelData } from "@/lib/kids/types";
 import { Mascot } from "../Mascot";
+import { AskBolt } from "../AskBolt";
 import { RichText } from "../StarRow";
 import { CodeBlock, KidsCodeEditor } from "./KidsCodeEditor";
 import ui from "../kidsUi.module.css";
@@ -242,6 +243,14 @@ export function PythonLevel({ level, onSolved }: PythonLevelProps) {
                     <OutputLines text={feedback.actual} highlight={feedback.diffLine} tone="bad" />
                   </div>
                 </div>
+                <AskBolt
+                  levelTitle={level.title}
+                  goal={level.task}
+                  kind="python"
+                  program={code}
+                  expected={feedback.expected}
+                  actual={feedback.actual}
+                />
               </div>
             </div>
           ) : feedback?.kind === "error" ? (
@@ -259,6 +268,7 @@ export function PythonLevel({ level, onSolved }: PythonLevelProps) {
                     <pre>{feedback.details}</pre>
                   </details>
                 )}
+                <AskBolt levelTitle={level.title} goal={level.task} kind="python" program={code} error={feedback.details ?? feedback.title} />
               </div>
             </div>
           ) : feedback?.kind === "unavailable" ? (
