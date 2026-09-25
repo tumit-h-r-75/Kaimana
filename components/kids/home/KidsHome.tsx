@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { MAX_STARS, TOTAL_LEVELS, WORLDS, levelHref } from "@/lib/kids/curriculum";
 import {
   completedLevelCount,
@@ -17,6 +17,7 @@ import { Mascot } from "../Mascot";
 import { StarIcon, StarRow } from "../StarRow";
 import { BlockIcon } from "../puzzle/blockMeta";
 import { useKidsProgress } from "../useKidsProgress";
+import { BADGE_ICON, CheckIcon, FlagIcon, LockIcon, MapIcon, MedalIcon, PlayIcon, SparkleIcon, StarFilledIcon, WORLD_ICON } from "../icons";
 import ui from "../kidsUi.module.css";
 import styles from "./KidsHome.module.css";
 
@@ -27,8 +28,11 @@ import styles from "./KidsHome.module.css";
  * shape of a course. The numbers below are the geometry the stylesheet
  * uses for that row (.stop and .trail); change one, change both.
  */
-const NODE = 68; // node diameter
-const DROP = 48; // how much lower every second stop sits
+const NODE = 72; // node diameter
+const DROP = 56; // how much lower every second stop sits
+
+const RING_RADIUS = 88;
+const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
 function trailPath(count: number) {
   const y = (i: number) => NODE / 2 + (i % 2 ? DROP : 0);
@@ -39,6 +43,41 @@ function trailPath(count: number) {
     d += ` C ${x0 + 50} ${y(i - 1)}, ${x1 - 50} ${y(i)}, ${x1} ${y(i)}`;
   }
   return d;
+}
+
+/**
+ * Reveals each world and each badge as it scrolls into view.
+ *
+ * The hidden starting state is added by this hook rather than sitting in the
+ * markup, so a browser that never runs it — or a reader with reduced motion,
+ * which the stylesheet honours — sees the page fully, not a blank column.
+ */
+function useRevealOnScroll(enabled: boolean) {
+  const container = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const root = container.current;
+    if (!root || !enabled || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
+    const targets = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
+    for (const target of targets) target.classList.add(styles.reveal);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add(styles.revealed);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.2 },
+    );
+    for (const target of targets) observer.observe(target);
+    return () => observer.disconnect();
+  }, [enabled]);
+
+  return container;
 }
 
 export function KidsHome() {
@@ -55,11 +94,40 @@ export function KidsHome() {
     if (id) document.getElementById(id)?.scrollIntoView({ block: "start" });
   }, [ready]);
 
+  const revealRoot = useRevealOnScroll(ready);
   const stars = totalStars(progress);
   const done = completedLevelCount(progress);
   const badges = earnedBadges(progress);
   const next = nextLevelToPlay(progress);
   const started = done > 0;
+
+  // Badges earned during this visit get a one-off flourish; the ones that
+  // were already there when the page opened stay still.
+  const baseline = useRef<Set<string> | null>(null);
+  const earnedIds = badges.map((world) => world.id).join(",");
+  const [justEarned, setJustEarned] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (!ready) return;
+    const ids = new Set(earnedIds ? earnedIds.split(",") : []);
+    if (baseline.current === null) {
+      baseline.current = ids;
+      return;
+    }
+    const fresh = [...ids].filter((id) => !baseline.current?.has(id));
+    baseline.current = ids;
+    if (fresh.length) setJustEarned(new Set(fresh));
+  }, [ready, earnedIds]);
+
+  // Every world's share of the whole journey, for the segmented bar under the
+  // statistics. Each segment is as wide as that world has levels.
+  const worldProgress = useMemo(
+    () =>
+      WORLDS.map((world) => {
+        const done = world.levels.filter((level) => levelStatus(progress, level.id) === "completed").length;
+        return { world, done, fraction: done / world.levels.length };
+      }),
+    [progress],
+  );
 
   const ctaHref = next ? levelHref(next.world.id, next.level.slug) : "#map";
   const ctaLabel = !next ? "Replay a level" : started ? "Continue your adventure" : "Start your adventure";
@@ -72,11 +140,11 @@ export function KidsHome() {
         : "You finished every level. You're a real coder!";
 
   return (
-    <div className={styles.home}>
+    <div className={styles.home} ref={revealRoot}>
       <section className={styles.hero} aria-labelledby="kq-hero-title">
         <div className={styles.heroText}>
           <p className={styles.kicker}>
-            <span aria-hidden="true">✨</span> Kaimana Kids · ages 8–14
+            <SparkleIcon size={18} /> Kaimana Kids · ages 8–14
           </p>
           <h1 id="kq-hero-title" className={styles.title}>
             Code <span>Quest</span>
@@ -86,8 +154,19 @@ export function KidsHome() {
             <Link href={ctaHref} className={`${ui.btn} ${ui.btnPrimary} ${styles.cta}`}>
               {ctaLabel} <span aria-hidden="true">→</span>
             </Link>
-            <a href="#map" className={`${ui.btn} ${ui.btnSoft}`}>
-              <span aria-hidden="true">🗺️</span> See the map
+            <a
+              href={next ? `#level-${next.level.id}` : "#map"}
+              className={`${ui.btn} ${ui.btnSoft}`}
+              onClick={(event) => {
+                if (!next) return;
+                const target = document.getElementById(`level-${next.level.id}`);
+                if (!target) return;
+                event.preventDefault();
+                target.scrollIntoView({ block: "center" });
+                target.focus({ preventScroll: true });
+              }}
+            >
+              <MapIcon size={20} /> See the map
             </a>
           </div>
           <ul className={styles.heroFacts}>
@@ -111,6 +190,26 @@ export function KidsHome() {
             <span className={`${styles.sticker} ${styles.stickerLogic}`} aria-hidden="true">
               <BlockIcon name="if" /> If wall ahead
             </span>
+            {/* How far through Code Quest, drawn around the mascot. The dash
+                offset is the part of the circle left to go. */}
+            <svg className={styles.ring} viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="kqRingGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#ffc83d" />
+                  <stop offset="1" stopColor="#22c55e" />
+                </linearGradient>
+              </defs>
+              <circle className={styles.ringTrack} cx="100" cy="100" r={RING_RADIUS} />
+              <circle
+                className={styles.ringFill}
+                cx="100"
+                cy="100"
+                r={RING_RADIUS}
+                transform="rotate(-90 100 100)"
+                strokeDasharray={RING_LENGTH}
+                strokeDashoffset={RING_LENGTH * (1 - (ready ? done / TOTAL_LEVELS : 0))}
+              />
+            </svg>
             <Mascot mood={started ? "cheer" : "happy"} size={230} title="Bolt the robot" className={styles.heroMascot} />
             <svg className={styles.hill} viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
               <path d="M0 62 Q90 18 200 40 T400 34 V90 H0 Z" fill="#9be07a" />
@@ -133,9 +232,7 @@ export function KidsHome() {
             </div>
           </div>
           <div className={styles.stat}>
-            <span className={styles.statEmoji} aria-hidden="true">
-              🏁
-            </span>
+            <FlagIcon className={styles.statIcon} size={42} />
             <div>
               <b>
                 {done}
@@ -145,9 +242,7 @@ export function KidsHome() {
             </div>
           </div>
           <div className={styles.stat}>
-            <span className={styles.statEmoji} aria-hidden="true">
-              🏅
-            </span>
+            <MedalIcon className={styles.statIcon} size={42} />
             <div>
               <b>
                 {badges.length}
@@ -157,8 +252,20 @@ export function KidsHome() {
             </div>
           </div>
         </div>
+        {/* One segment per world, in the world's own colour, and each one is
+            a way into that part of the map. */}
         <div className={styles.journey} role="progressbar" aria-label="Levels completed" aria-valuemin={0} aria-valuemax={TOTAL_LEVELS} aria-valuenow={done}>
-          <span style={{ width: `${Math.round((done / TOTAL_LEVELS) * 100)}%` }} />
+          {worldProgress.map(({ world, done: worldDone, fraction }) => (
+            <a
+              key={world.id}
+              className={`${styles.pip} ${ui[`theme_${world.id}`]}`}
+              href={`#world-${world.id}`}
+              style={{ flex: world.levels.length }}
+              aria-label={`${world.name}: ${worldDone} of ${world.levels.length} levels done`}
+            >
+              <span className={styles.pipFill} style={{ width: `${Math.round(fraction * 100)}%` }} />
+            </a>
+          ))}
         </div>
       </section>
 
@@ -188,13 +295,14 @@ export function KidsHome() {
               const unlocked = isWorldUnlocked(progress, world);
               const complete = isWorldComplete(progress, world);
               const count = world.levels.length;
+              const WorldIcon = WORLD_ICON[world.id] ?? WORLD_ICON.meadow;
               return (
-                <li key={world.id} id={`world-${world.id}`} className={`${styles.world} ${ui[`theme_${world.id}`]} ${unlocked ? "" : styles.worldLocked}`}>
+                <li key={world.id} id={`world-${world.id}`} data-reveal="" className={`${styles.world} ${ui[`theme_${world.id}`]} ${unlocked ? "" : styles.worldLocked}`}>
                   {/* A unit header in the Duolingo sense: the world's colour,
                       its number and idea, and how far into it you are. */}
                   <div className={styles.banner}>
                     <span className={styles.worldEmoji} aria-hidden="true">
-                      {unlocked ? world.emoji : "🔒"}
+                      {unlocked ? <WorldIcon size={34} /> : <LockIcon size={30} />}
                     </span>
                     <div className={styles.worldTitle}>
                       <p className={styles.worldKicker}>
@@ -221,7 +329,7 @@ export function KidsHome() {
 
                   {!unlocked && worldIndex > 0 && (
                     <p className={styles.lockNote}>
-                      Finish {WORLDS[worldIndex - 1].name} to unlock this world.
+                      <LockIcon size={20} /> Finish {WORLDS[worldIndex - 1].name} to unlock this world.
                     </p>
                   )}
 
@@ -233,7 +341,8 @@ export function KidsHome() {
                       aria-hidden="true"
                       focusable="false"
                     >
-                      <path d={trailPath(count)} vectorEffect="non-scaling-stroke" />
+                      <path className={styles.trailBed} d={trailPath(count)} vectorEffect="non-scaling-stroke" />
+                      <path className={styles.trailStep} d={trailPath(count)} vectorEffect="non-scaling-stroke" />
                     </svg>
                     <ol className={styles.path} style={{ "--count": count } as CSSProperties}>
                       {world.levels.map((level, index) => {
@@ -250,15 +359,21 @@ export function KidsHome() {
                             )}
                             {state === "locked" ? (
                               <span className={nodeClass} aria-hidden="true">
-                                🔒
+                                <LockIcon size={22} />
                               </span>
                             ) : (
                               <Link
+                                id={`level-${level.id}`}
                                 href={levelHref(world.id, level.slug)}
                                 className={nodeClass}
                                 aria-label={`Level ${index + 1}: ${level.title}. ${state === "completed" ? `${levelStars} of 3 stars.` : "Ready to play!"}`}
                               >
-                                {state === "completed" && levelStars === 3 ? "★" : index + 1}
+                                {state === "completed" ? levelStars === 3 ? <StarFilledIcon size={30} /> : <CheckIcon size={28} /> : index + 1}
+                                {isNext && (
+                                  <span className={styles.nodeBadge} aria-hidden="true">
+                                    <PlayIcon size={14} />
+                                  </span>
+                                )}
                               </Link>
                             )}
                             <span className={styles.stopName}>
@@ -290,10 +405,18 @@ export function KidsHome() {
         <ul className={styles.badgeGrid}>
           {WORLDS.map((world) => {
             const earned = isWorldComplete(progress, world);
+            const BadgeIcon = BADGE_ICON[world.id] ?? BADGE_ICON.meadow;
             return (
-              <li key={world.id} className={`${styles.badge} ${ui[`theme_${world.id}`]} ${earned ? styles.badgeEarned : styles.badgeLocked}`}>
+              <li
+                key={world.id}
+                data-reveal=""
+                tabIndex={0}
+                role="group"
+                aria-label={`${world.badge.name}: ${earned ? "earned" : `finish ${world.name}`}`}
+                className={`${styles.badge} ${ui[`theme_${world.id}`]} ${earned ? styles.badgeEarned : styles.badgeLocked} ${justEarned.has(world.id) ? styles.justEarned : ""}`}
+              >
                 <span className={styles.medal} aria-hidden="true">
-                  {earned ? world.badge.emoji : "?"}
+                  {earned ? <BadgeIcon size={44} /> : <LockIcon size={34} />}
                 </span>
                 <b>{world.badge.name}</b>
                 <span className={styles.badgeState}>{earned ? "Earned!" : `Finish ${world.name}`}</span>
@@ -310,10 +433,12 @@ export function KidsHome() {
           <p>Code Quest takes kids from their very first instruction to small Python programs, one idea at a time.</p>
         </div>
         <div className={styles.parentGrid}>
-          {WORLDS.map((world) => (
+          {WORLDS.map((world) => {
+            const WorldIcon = WORLD_ICON[world.id] ?? WORLD_ICON.meadow;
+            return (
             <article key={world.id} className={`${styles.parentCard} ${ui[`theme_${world.id}`]}`}>
               <p className={styles.worldKicker}>
-                <span aria-hidden="true">{world.emoji}</span> World {world.number} · {world.concept}
+                <WorldIcon size={20} /> World {world.number} · {world.concept}
               </p>
               <h3>{world.name}</h3>
               <p>{world.parents.summary}</p>
@@ -323,7 +448,8 @@ export function KidsHome() {
                 ))}
               </ul>
             </article>
-          ))}
+            );
+          })}
         </div>
         <ul className={styles.howList}>
           <li>
