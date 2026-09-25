@@ -8,6 +8,7 @@ import { setTokens } from "@/lib/auth-storage";
 import { Spinner } from "@/components/ui/Loader";
 import { CountUp } from "@/components/ui/CountUp";
 import { BrandLogo } from "@/components/layout/BrandLogo";
+import { PasswordField } from "@/components/auth/PasswordField";
 import { IconCheck } from "@/app/_components/home/icons";
 
 declare global {
@@ -326,15 +327,12 @@ export default function SignInPage() {
               )}
               <label className="sr-only" htmlFor="auth-email">Email address</label>
               <input id="auth-email" name="email" type="email" required autoComplete="email" placeholder="Email address" />
-              <label className="sr-only" htmlFor="auth-password">Password</label>
-              <input
+              <PasswordField
                 id="auth-password"
-                name="password"
-                type="password"
-                required
-                minLength={8}
+                label="Password"
+                placeholder={mode === "login" ? "Password" : "Password (8+ characters)"}
                 autoComplete={mode === "login" ? "current-password" : "new-password"}
-                placeholder="Password (8+ characters)"
+                showStrength={mode === "register"}
               />
               <button className="button" disabled={isSubmitting} type="submit">{isSubmitting ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}</button>
               {mode === "login" && (

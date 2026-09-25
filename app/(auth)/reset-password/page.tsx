@@ -15,6 +15,7 @@ import { BrandLogo } from "@/components/layout/BrandLogo";
 import { resetPassword } from "@/lib/api/auth";
 import { getErrorMessage } from "@/lib/api/client";
 import { PageLoader } from "@/components/ui/Loader";
+import { PasswordField } from "@/components/auth/PasswordField";
 
 const MIN_LENGTH = 8;
 
@@ -88,30 +89,26 @@ function ResetPasswordForm() {
           <h1>Set a new password.</h1>
           <p className="auth-copy">Choose something you have not used here before. At least {MIN_LENGTH} characters.</p>
           <form className="auth-form auth-form-anim" onSubmit={submit}>
-            <label className="sr-only" htmlFor="new-password">
-              New password
-            </label>
-            <input
+            <PasswordField
               id="new-password"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={MIN_LENGTH}
+              name="newPassword"
+              label="New password"
               placeholder="New password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-            <label className="sr-only" htmlFor="confirm-password">
-              Repeat the new password
-            </label>
-            <input
-              id="confirm-password"
-              type="password"
               autoComplete="new-password"
-              required
+              minLength={MIN_LENGTH}
+              showStrength
+              value={password}
+              onValueChange={setPassword}
+            />
+            <PasswordField
+              id="confirm-password"
+              name="confirmPassword"
+              label="Repeat the new password"
               placeholder="Repeat it"
+              autoComplete="new-password"
+              minLength={MIN_LENGTH}
               value={confirmation}
-              onChange={(event) => setConfirmation(event.target.value)}
+              onValueChange={setConfirmation}
             />
             {error && <p className="form-error">{error}</p>}
             <button type="submit" className="button" disabled={status === "saving"}>
