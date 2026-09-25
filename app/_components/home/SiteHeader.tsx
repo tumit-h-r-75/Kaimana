@@ -9,7 +9,6 @@ import { AccountMenu } from "./AccountMenu";
 import { NotificationBell } from "./NotificationBell";
 import { IconGem } from "./icons";
 import { CommandPalette } from "@/components/search/CommandPalette";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import styles from "./siteHeader.module.css";
 
 const Arrow = () => <span aria-hidden="true">→</span>;
@@ -128,7 +127,6 @@ export function SiteHeader() {
 
         <div className={styles.actions}>
           <CommandPalette />
-          <ThemeToggle />
           {signedIn && user ? (
             <>
               {typeof user.gems === "number" && (

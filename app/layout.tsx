@@ -45,18 +45,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     // data-scroll-behavior tells Next this page opts into the smooth scrolling
     // declared in globals.css, instead of Next silently disabling it during
     // route transitions (and warning that it will stop doing so).
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth">
       <body>
-        {/* Before anything paints: the saved theme, or the system's. Any
-            later than this and a reader who chose light gets a black flash
-            on the way in. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var c=localStorage.getItem('kai-theme');var d=c?c==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();",
-          }}
-        />
-
         {/* Scroll-reveal sections (hooks/useReveal.ts) start hidden and fade
             in via JS. If JavaScript never runs, this forces them visible
             instead of leaving real content permanently invisible. */}

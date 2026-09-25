@@ -13,7 +13,6 @@
    accepted submission is the brand moment, so it gets the brand colour.
    Components reference these names, never the raw values. */
 :root {
-  color-scheme: dark;
   --bg: #0A0B0D;
   --surface: #121417;
   --surface-hi: #1A1D22;
@@ -50,37 +49,6 @@
   --line: var(--border);
 }
 
-/* Light mode. Applied by the script in app/layout.tsx before the first
-   paint, from the reader's saved choice or their system setting.
-
-   The tokens keep their meanings; only their values change. The accent is
-   the one that could not simply be reused — mint on white reads at 1.4:1,
-   so it goes down to a deep teal of the same hue, measured at 5:1 against
-   the page and 4.6:1 against a raised surface. */
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg: #F7F8FA;
-  --surface: #FFFFFF;
-  --surface-hi: #EFF1F5;
-  --border: #DCE0E7;
-  --text: #13161B;
-  --text-dim: #59616E;
-  --accent: #0B7A5E;
-  --accent-dim: #CDEFE3;
-  --success: #0B7A5E;
-  --error: #C21C43;
-  --warn: #8A5200;
-
-  --accent-fill: var(--accent);
-  --accent-fill-hover: #096A51;
-}
-
-/* Two places assume a dark page rather than a token: a white glow, and a
-   shadow tuned for black. Light mode softens both. */
-:root[data-theme="light"] .auth-visual-glow::before,
-:root[data-theme="light"] .auth-visual-glow::after {
-  opacity: .16;
-}
 
 
 .workspace{padding-block:70px 100px}.workspace h1{font:700 48px 'JetBrains Mono';letter-spacing:-2px;margin:0 0 12px}.workspace>section>p:last-child{color:var(--text-dim);max-width:600px}.runner-grid{display:grid;grid-template-columns:minmax(0, 1.3fr) minmax(0, .7fr);gap:18px;margin-top:35px}.runner-panel{border:1px solid var(--border);background:var(--surface);padding:16px}.runner-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.runner-panel select{background:var(--bg);border:1px solid var(--border);color:white;padding:9px}.runner-panel textarea{display:block;width:100%;min-height:330px;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:16px;font:13px/1.6 'JetBrains Mono';resize:vertical}.runner-panel label{display:block;color:var(--text-dim);font-size:12px;margin-bottom:16px}.runner-panel label textarea{min-height:110px;margin-top:8px}.runner-panel pre{min-height:170px;margin:8px 0 0;padding:13px;white-space:pre-wrap;background:var(--bg);color:var(--accent);font:12px/1.6 'JetBrains Mono'}
