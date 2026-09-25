@@ -1125,3 +1125,10 @@ a.nodeDone:focus-visible + .stopName {
     animation: none;
   }
 }
+
+/* The world's name leads to the world's own page. */
+.world .banner h3 a:hover {
+  color: var(--world);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

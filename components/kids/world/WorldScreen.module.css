@@ -1,0 +1,250 @@
+/* One world's own page (components/kids/world/WorldScreen.tsx). */
+
+.page { display: grid; gap: 18px; }
+
+.crumbs {
+  margin: 0;
+  color: var(--kq-ink-soft);
+  font-size: 14px;
+}
+.crumbs a:hover { color: var(--kq-accent); }
+.crumbs span { margin: 0 6px; opacity: .5; }
+
+/* ------------------------------------------------------------------ head */
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 22px;
+  border: 1px solid color-mix(in srgb, var(--world) 34%, var(--kq-line));
+  border-radius: var(--kq-radius);
+  background: linear-gradient(160deg, var(--world-soft) 0%, var(--kq-surface) 62%);
+}
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1px solid color-mix(in srgb, var(--world) 45%, var(--kq-line));
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--world) 16%, var(--kq-surface-hi));
+  color: var(--world);
+}
+.headText { flex: 1 1 260px; min-width: 0; }
+.kicker {
+  margin: 0 0 4px;
+  color: var(--world);
+  font: 700 11px var(--kq-mono);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.head h1 {
+  margin: 0;
+  font: 700 clamp(26px, 4vw, 36px)/1.1 var(--kq-display);
+  letter-spacing: -1px;
+}
+.tagline {
+  margin: 6px 0 0;
+  color: var(--kq-ink-soft);
+}
+.headStats {
+  display: flex;
+  flex: none;
+  gap: 10px;
+}
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--kq-line-strong);
+  border-radius: 999px;
+  background: rgb(10 11 13 / 0.5);
+  color: var(--kq-ink);
+  font: 700 16px var(--kq-mono);
+}
+.stat small { color: var(--kq-ink-soft); font-size: 13px; }
+.stat svg { color: var(--kq-sun); }
+
+.locked { margin: 0; }
+
+/* --------------------------------------------------------------- levels */
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.levels h2,
+.side h2 {
+  margin: 0 0 12px;
+  font: 700 20px var(--kq-display);
+}
+
+.levelList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.level {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--kq-line);
+  border-radius: 16px;
+  background: var(--kq-surface);
+  color: var(--kq-ink);
+  transition: transform .14s ease, border-color .14s ease, background-color .14s ease;
+}
+a.level:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--world) 45%, var(--kq-line));
+  background: color-mix(in srgb, var(--world) 6%, var(--kq-surface));
+}
+/* The one to play next carries the same amber as the map's current node. */
+.levelNext {
+  border-color: color-mix(in srgb, var(--kq-sun) 50%, var(--kq-line));
+  background: color-mix(in srgb, var(--kq-sun) 7%, var(--kq-surface));
+}
+
+.levelNumber {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid color-mix(in srgb, var(--world) 36%, var(--kq-line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--world) 14%, var(--kq-surface-hi));
+  color: var(--world);
+  font: 700 17px var(--kq-mono);
+}
+.levelText { flex: 1; min-width: 0; }
+.levelText b {
+  display: block;
+  font: 600 17px var(--kq-display);
+}
+.levelText small {
+  display: block;
+  margin-top: 2px;
+  color: var(--kq-ink-soft);
+  font-size: 13.5px;
+}
+.level svg { flex: none; color: var(--kq-ink-soft); }
+
+.levelLocked .level {
+  border-style: dashed;
+  background: transparent;
+  color: var(--kq-ink-faint);
+}
+.levelLocked .levelNumber {
+  border-color: var(--kq-line-strong);
+  background: var(--kq-surface);
+  color: var(--kq-ink-faint);
+}
+.levelLocked .levelText b { color: var(--kq-ink-soft); }
+
+/* ----------------------------------------------------------------- side */
+
+.side { display: grid; gap: 14px; }
+
+.badgeCard {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.badgeCard p {
+  margin: 0;
+  color: var(--kq-ink-soft);
+  font-size: 14.5px;
+}
+.medal {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border: 2px dashed var(--kq-line-strong);
+  border-radius: 50%;
+  background: var(--kq-surface-hi);
+  color: var(--kq-ink-faint);
+}
+.medalEarned {
+  border: 2px solid color-mix(in srgb, var(--world) 60%, transparent);
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--world) 34%, var(--kq-surface-hi)) 0%, var(--kq-surface) 76%);
+  box-shadow: 0 0 30px -8px color-mix(in srgb, var(--world) 60%, transparent);
+  color: var(--world);
+}
+
+.polish ul,
+.learn ul {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0 0 0 2px;
+  list-style: none;
+  color: var(--kq-ink-soft);
+  font-size: 14.5px;
+}
+.polish li a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--kq-line);
+  border-radius: 12px;
+  background: var(--kq-surface-hi);
+  color: var(--kq-ink);
+  font-size: 15px;
+}
+.polish li a:hover { border-color: color-mix(in srgb, var(--kq-sun) 45%, var(--kq-line)); }
+.polish p,
+.learn p {
+  margin: 0;
+  color: var(--kq-ink-soft);
+  font-size: 14.5px;
+}
+
+.learn ul { list-style: disc; padding-left: 20px; }
+.learnKicker {
+  margin: 0 0 4px;
+  color: var(--kq-accent);
+  font: 700 11px var(--kq-mono);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- empty */
+
+.missing {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .columns { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .head { padding: 16px; }
+  .headStats { width: 100%; }
+  .stat { flex: 1; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .level { transition: none; }
+  a.level:hover { transform: none; }
+}
