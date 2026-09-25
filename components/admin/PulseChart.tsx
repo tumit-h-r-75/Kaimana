@@ -90,14 +90,17 @@ export default function PulseChart({ days }: { days: PulseDay[] }) {
       </div>
 
       <div className={styles.plot} onMouseLeave={() => setHovered(null)}>
+        {total === 0 && <p className={styles.blank}>Nothing in these {range} days.</p>}
         <div className={styles.grid} aria-hidden="true">
           <span />
           <span />
           <span />
         </div>
-        <b className={styles.peak} aria-hidden="true">
-          {peak}
-        </b>
+        {total > 0 && (
+          <b className={styles.peak} aria-hidden="true">
+            {peak}
+          </b>
+        )}
 
         <ul className={styles.bars}>
           {shown.map((day, index) => {
@@ -120,7 +123,10 @@ export default function PulseChart({ days }: { days: PulseDay[] }) {
                     {passed > 0 && <span className={styles.barPassed} style={{ height: `${(day.accepted / Math.max(day.submissions, 1)) * 100}%` }} />}
                   </span>
                 </button>
-                <span className={styles.tick}>{dayLabel.format(date).slice(0, 2)}</span>
+                {/* Two weeks of weekday letters repeat — Sa Su Mo … Sa Su Mo — and
+                    nothing tells the two Saturdays apart. Over a fortnight the day
+                    of the month does. */}
+                <span className={styles.tick}>{range === 7 ? dayLabel.format(date).slice(0, 2) : String(date.getUTCDate())}</span>
               </li>
             );
           })}

@@ -88,7 +88,7 @@ a.tileUrgent:hover { border-color: var(--warn); }
   height: 16px;
   margin-left: auto;
   color: var(--text-dim);
-  opacity: 0;
+  opacity: .4;
   transition: opacity .15s, transform .15s;
 }
 .tileSpark + .tileGo { margin-left: 4px; }
@@ -144,19 +144,24 @@ a.tile:hover .tileGo {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 20px;
-  align-items: start;
+  /* Stretch, not start: a short card that stops halfway up its row leaves a
+     band of bare background, and the rows stop reading as rows. */
+  align-items: stretch;
 }
 .grid > * { min-width: 0; }
 
 .spanChart { grid-column: span 8; }
 .spanQueue { grid-column: span 4; }
 .spanThird { grid-column: span 4; }
+.spanTip { grid-column: span 4; }
 .spanStuck { grid-column: span 7; }
 .spanFeed { grid-column: span 5; }
 
 /* ------------------------------------------------------------------ cards */
 
 .card {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   padding: 20px 22px 22px;
   border: 1px solid var(--border);
@@ -209,8 +214,11 @@ a.tile:hover .tileGo {
 }
 .inlineLink:hover { color: var(--accent); }
 
+/* The last line of a card, and with the rows stretched to match their
+   neighbours, the bottom of it. */
 .footnote {
-  margin: 14px 0 0;
+  margin: auto 0 0;
+  padding-top: 14px;
   color: var(--text-dim);
   font-size: 11.5px;
   line-height: 1.5;
@@ -258,6 +266,7 @@ a.tile:hover .tileGo {
   border-color: color-mix(in srgb, var(--accent) 16%, var(--border));
   background: color-mix(in srgb, var(--accent) 4%, var(--surface));
 }
+.tipCard .sideRow { margin: auto 0; }
 
 .rowsLoading {
   display: grid;
@@ -334,15 +343,13 @@ a.tile:hover .tileGo {
   width: 100%;
   max-width: 54px;
   height: 92px;
-  padding: 3px;
-  border-radius: 10px;
-  background: var(--surface-hi);
+  border-bottom: 1px solid var(--border);
 }
 .bandBar > span {
   display: block;
   width: 100%;
   min-height: 4px;
-  border-radius: 7px;
+  border-radius: 5px 5px 0 0;
   transition: height .4s ease;
 }
 .bandEasy { background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--bg))); }
@@ -505,7 +512,10 @@ a.tile:hover .tileGo {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 18px 0 4px;
+  /* Nothing to review: the message sits in the middle of whatever height
+     the row gave this card, rather than clinging to the heading. */
+  margin: auto 0;
+  padding: 18px 0;
 }
 .clear svg {
   flex: none;
@@ -525,7 +535,9 @@ a.tile:hover .tileGo {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-top: 16px;
+  /* The floor of the card, wherever that has ended up. */
+  margin-top: auto;
+  margin-bottom: 0;
   padding: 11px 16px;
   border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--border));
   border-radius: 999px;
@@ -553,11 +565,25 @@ a.tile:hover .tileGo {
   .spanStuck,
   .spanFeed { grid-column: span 12; }
   .spanThird { grid-column: span 4; }
+.spanTip { grid-column: span 4; }
 }
 
 @media (max-width: 860px) {
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .spanThird { grid-column: span 12; }
+}
+
+/* The label, then the bar and its number under it: at this width the three
+   of them in a row left the longest verdict truncated. */
+@media (max-width: 520px) {
+  .verdicts li {
+    grid-template-columns: minmax(0, 1fr) 38px;
+    gap: 5px 10px;
+  }
+  .verdictLabel {
+    grid-column: 1 / -1;
+    white-space: normal;
+  }
 }
 
 @media (max-width: 560px) {

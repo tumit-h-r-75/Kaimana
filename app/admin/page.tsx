@@ -407,11 +407,13 @@ function AdminDashboardContent() {
     },
     {
       key: "accepted",
+      // A site with no submissions has no acceptance rate, but it does have
+      // a tile: zero, rather than a skeleton that never resolves.
+      value: stats ? (acceptance ?? 0) : null,
       icon: IconCheckCircle,
-      value: acceptance,
       suffix: "%",
       label: "Accepted",
-      note: stats ? `${stats.acceptedSubmissions} of ${stats.totalSubmissions}` : "",
+      note: stats && stats.totalSubmissions > 0 ? `${stats.acceptedSubmissions} of ${stats.totalSubmissions}` : "nothing judged yet",
       spark: days.map((day) => day.accepted),
     },
     {
@@ -547,7 +549,7 @@ function AdminDashboardContent() {
         <VerdictMix pulse={pulse} className={styles.spanThird} />
         <LibraryMix pulse={pulse} className={styles.spanThird} />
 
-        <Card className={`${styles.tipCard} ${styles.spanThird}`}>
+        <Card className={`${styles.tipCard} ${styles.spanTip}`}>
           <div className={styles.sideRow}>
             <span className={styles.sideIcon}>
               <IconBulb />
