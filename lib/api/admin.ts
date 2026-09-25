@@ -17,6 +17,37 @@ export const listAdminUsers = (params: { page?: number; limit?: number; search?:
 export const updateAdminUser = (id: string, payload: { role?: UserRole; status?: AdminUser["status"] }) =>
   apiRequest<AdminUser>(`/api/admin/users/${id}`, { method: "PATCH", body: payload });
 
+/* --------------------------------------------------------------- the pulse */
+
+/** One UTC day of the platform. The series always covers every day, quiet ones included. */
+export interface PulseDay {
+  date: string;
+  submissions: number;
+  accepted: number;
+  users: number;
+}
+
+export interface PulseHardProblem {
+  id: string;
+  title: string;
+  slug: string;
+  difficulty: Difficulty;
+  attempts: number;
+  tried: number;
+  solved: number;
+  /** Of the people who tried it, the percentage who got it accepted. */
+  solveRate: number;
+}
+
+export interface AdminPulse {
+  days: PulseDay[];
+  verdicts: { verdict: string; count: number }[];
+  library: { total: number; published: number; drafts: number; easy: number; medium: number; hard: number };
+  hardest: PulseHardProblem[];
+}
+
+export const getAdminPulse = () => apiRequest<AdminPulse>("/api/admin/stats/pulse");
+
 export interface AdminProblemSummary {
   id: string;
   slug: string;
