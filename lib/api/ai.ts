@@ -97,3 +97,27 @@ export interface SolutionExplanation {
 
 export const explainSolution = (submissionId: string, language?: string) =>
   apiRequest<SolutionExplanation>("/api/ai/explain-solution", { method: "POST", body: { submissionId, language } });
+
+// A reading of a problem draft before it is sent — what a reviewer would
+// ask about, and cases worth adding. Runs on the form, not on a saved
+// proposal.
+export interface DraftReviewNote {
+  kind: string;
+  severity: "blocker" | "worth-fixing";
+  note: string;
+}
+
+export interface DraftReview {
+  verdict: "ready" | "needs-work";
+  notes: DraftReviewNote[];
+  missingCases: string[];
+}
+
+export const reviewProposalDraft = (payload: {
+  title: string;
+  statement: string;
+  constraints: string;
+  difficulty: string;
+  testCases: { input: string; expectedOutput: string; isSample?: boolean }[];
+  language?: string;
+}) => apiRequest<DraftReview>("/api/ai/review-draft", { method: "POST", body: payload });
