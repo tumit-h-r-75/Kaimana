@@ -9,9 +9,9 @@ import { getMyRank } from "@/lib/api/leaderboard";
 import { getRecommendations, type Recommendations } from "@/lib/api/problems";
 import { getMyAnalytics, getMyAnalyticsHistory, type AnalyticsHistoryEntry, type AnalyticsResult } from "@/lib/api/analytics";
 import { PROPOSAL_COST_GEMS } from "@/lib/api/proposals";
-import { updateProfile, changePassword } from "@/lib/api/auth";
+import { updateProfile, changePassword, updateEmailPreferences } from "@/lib/api/auth";
 import { getErrorMessage } from "@/lib/api/client";
-import type { MyRank } from "@/types/api";
+import type { CurrentUser, MyRank } from "@/types/api";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { MyProposalsPanel } from "@/components/proposals/MyProposalsPanel";
 import {
@@ -210,6 +210,75 @@ const TABS: { key: Tab; label: string; icon: typeof IconHome }[] = [
    Small pictures of real numbers, drawn only when there is something to
    draw. None of them is decoration: a line with no data behind it would be
    a claim the page cannot back up. */
+
+/**
+ * The optional mail, and the switches for it.
+ *
+ * Transactional mail — a reset link, a notice that the password changed — is
+ * deliberately absent: it answers something the account holder just did, and
+ * an account you cannot be told about is not safer, it is only quieter.
+ */
+function EmailPreferencesPanel({ user }: { user: CurrentUser }) {
+  const [prefs, setPrefs] = useState({
+    contestReminders: user.emailPrefs?.contestReminders !== false,
+    weeklyDigest: user.emailPrefs?.weeklyDigest !== false,
+  });
+  const [saving, setSaving] = useState<string | null>(null);
+  const [error, setError] = useState("");
+
+  const toggle = async (key: "contestReminders" | "weeklyDigest") => {
+    const next = !prefs[key];
+    // Flipped straight away: a switch that waits for the network feels
+    // broken. It goes back if the save fails.
+    setPrefs((previous) => ({ ...previous, [key]: next }));
+    setSaving(key);
+    setError("");
+    try {
+      await updateEmailPreferences({ [key]: next });
+    } catch (saveError) {
+      setPrefs((previous) => ({ ...previous, [key]: !next }));
+      setError(getErrorMessage(saveError, "Could not save that. Try again."));
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const rows: { key: "contestReminders" | "weeklyDigest"; label: string; hint: string }[] = [
+    { key: "contestReminders", label: "Contest mail", hint: "A reminder before one you registered for, and the standings when it ends." },
+    { key: "weeklyDigest", label: "Weekly summary", hint: "Mondays: what you solved, your streak, new problems and what is coming." },
+  ];
+
+  return (
+    <article className={styles.panel}>
+      <p className={styles.kicker}>
+        <i aria-hidden="true" /> Email
+      </p>
+      {rows.map((row) => (
+        <div key={row.key} className={styles.prefRow}>
+          <div>
+            <b>{row.label}</b>
+            <span>{row.hint}</span>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={prefs[row.key]}
+            aria-label={row.label}
+            className={`${styles.switch}${prefs[row.key] ? ` ${styles.switchOn}` : ""}`}
+            disabled={saving === row.key}
+            onClick={() => toggle(row.key)}
+          >
+            <i />
+          </button>
+        </div>
+      ))}
+      {error && <p className="form-error">{error}</p>}
+      <p className={styles.empty} style={{ marginTop: 6 }}>
+        Password resets and security notices always send.
+      </p>
+    </article>
+  );
+}
 
 function Sparkline({ values, label }: { values: number[]; label: string }) {
   if (values.length < 2 || values.every((v) => v === values[0])) return null;
@@ -653,6 +722,8 @@ function ProfileContent() {
               </>
             )}
           </article>
+
+          <EmailPreferencesPanel user={user} />
         </section>
       )}
 
