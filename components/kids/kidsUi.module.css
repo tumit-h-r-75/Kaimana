@@ -15,7 +15,14 @@
   --kq-bad: #b4233f;
   --kq-warn: #9a5b00;
   --kq-radius: 24px;
-  --kq-shadow: 0 16px 34px -20px rgba(27, 34, 64, 0.55), 0 4px 0 rgba(27, 34, 64, 0.08);
+  /* Float: anything that just sits there — cards, world panels, badges. */
+  --kq-shadow: 0 14px 28px -18px rgba(27, 34, 64, 0.45), 0 3px 8px -4px rgba(27, 34, 64, 0.12);
+  /* Glow: the one "you are here" marker on screen, never two at once. */
+  --kq-glow: 0 5px 0 var(--kq-ink), 0 0 0 8px rgba(255, 200, 61, 0.35), 0 10px 24px -8px rgba(255, 176, 0, 0.55);
+  /* 3.6:1 on white — large bold text and icons only, never body copy. */
+  --kq-ink-faint: #7d86a1;
+  --kq-card-soft: #f7f9ff;
+  --kq-line-strong: rgba(27, 34, 64, 0.22);
   --kq-display: var(--font-kids-display, "Fredoka"), "Baloo 2", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
   --kq-body: var(--font-kids-body, "Nunito"), "Segoe UI", "Trebuchet MS", system-ui, -apple-system, sans-serif;
   --kq-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace;
@@ -70,7 +77,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.85);
   box-shadow: 34px -18px 0 6px rgba(255, 255, 255, 0.85), 74px 0 0 -4px rgba(255, 255, 255, 0.85);
-  animation: drift 60s linear infinite;
+  animation: driftIn 3.5s cubic-bezier(.16, 1, .3, 1) 1 both;
 }
 
 .clouds span:nth-child(1) {
@@ -84,8 +91,8 @@
   left: 62%;
   width: 90px;
   opacity: 0.7;
-  animation-duration: 80s;
-  animation-delay: -30s;
+  animation-duration: 4.2s;
+  animation-delay: .2s;
 }
 
 .clouds span:nth-child(3) {
@@ -93,16 +100,16 @@
   left: 18%;
   width: 70px;
   opacity: 0.6;
-  animation-duration: 95s;
-  animation-delay: -50s;
+  animation-duration: 4.8s;
+  animation-delay: .4s;
 }
 
-@keyframes drift {
+@keyframes driftIn {
   from {
-    transform: translateX(0);
+    transform: translateX(-6vw);
   }
   to {
-    transform: translateX(60vw);
+    transform: translateX(0);
   }
 }
 
@@ -333,30 +340,40 @@
   --world: #3fb950;
   --world-deep: #1d7a36;
   --world-soft: #e3f8e1;
+  --world-locked: #D5E3E0;
+  --world-locked-deep: #487768;
 }
 
 .theme_lagoon {
   --world: #2aa3e0;
   --world-deep: #0b6fa4;
   --world-soft: #ddf2fc;
+  --world-locked: #D2E0ED;
+  --world-locked-deep: #407299;
 }
 
 .theme_caves {
   --world: #8b5cf6;
   --world-deep: #6533d6;
   --world-soft: #efe8ff;
+  --world-locked: #DBDBEF;
+  --world-locked-deep: #6857B0;
 }
 
 .theme_island {
   --world: #ff9f43;
   --world-deep: #a64b00;
   --world-soft: #ffefd9;
+  --world-locked: #E3DFDC;
+  --world-locked-deep: #86624F;
 }
 
 .theme_station {
   --world: #ec4899;
   --world-deep: #b8175a;
   --world-soft: #fde6f2;
+  --world-locked: #E2DAE8;
+  --world-locked-deep: #8E4A78;
 }
 
 @media (max-width: 640px) {
@@ -387,5 +404,19 @@
   .btn:hover,
   .btn:active {
     transform: none;
+  }
+}
+
+/* Glass, for panels that sit over the sky or the hill rather than on a flat
+   surface. Browsers without backdrop-filter get a near-opaque white instead,
+   which keeps the text contrast rather than the effect. */
+.frosted {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .frosted {
+    background: rgba(255, 255, 255, 0.92);
   }
 }

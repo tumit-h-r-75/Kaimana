@@ -29,7 +29,7 @@
   font-size: clamp(56px, 11vw, 100px);
   font-weight: 700;
   line-height: 0.95;
-  text-shadow: 0 5px 0 #fff;
+  text-shadow: 0 5px 0 #fff, 0 10px 18px rgba(27, 34, 64, 0.25);
 }
 
 .title span {
@@ -110,6 +110,32 @@
   height: auto;
 }
 
+/* How far through all 27 levels, drawn around the mascot. Decorative: the
+   number itself is announced by the pips below, which keep the progressbar
+   role. */
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: min(300px, 82%);
+  height: auto;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+.ringTrack {
+  fill: none;
+  stroke: rgba(27, 34, 64, 0.1);
+  stroke-width: 8;
+}
+.ringFill {
+  fill: none;
+  stroke: url(#kqRingGradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .hill {
   position: absolute;
   bottom: -6px;
@@ -121,7 +147,7 @@
 
 .sticker {
   --tone: #16a34a;
-  --tone-bg: #dcfce7;
+  --tone-bg: rgba(255, 255, 255, 0.72);
   --tone-ink: #14532d;
 
   position: absolute;
@@ -216,7 +242,7 @@
   font-weight: 600;
 }
 
-.stat span:not(.statEmoji) {
+.stat span:not(.statIcon) {
   color: var(--kq-ink-soft);
   font-weight: 700;
 }
@@ -227,37 +253,44 @@
   height: 42px;
 }
 
-.statEmoji {
+/* Drawn, and the same 42px as the star beside it — an emoji glyph next to a
+   real icon in the same row is what made this look half-finished. */
+.statIcon {
   flex: none;
-  font-size: 34px;
-  line-height: 1;
+  width: 42px;
+  height: 42px;
+  color: var(--world, var(--kq-ink));
 }
 
 .journey {
-  height: 20px;
+  display: flex;
+  gap: 4px;
   margin-top: 14px;
-  overflow: hidden;
-  border: 3px solid #1b2240;
-  border-radius: 999px;
-  background: #fff;
 }
 
-/* The stripes march, slowly: a bar that moves reads as a journey under way.
-   The tile is 24px·√2 square — exactly one period of a 45° stripe each way —
-   so it repeats without a seam. */
-.journey span {
+/* One segment per world, as wide as that world has levels. The empty part is
+   the world's own locked tint, so a page at zero still shows five coloured
+   slivers instead of one blank tube. */
+.pip {
+  position: relative;
   display: block;
-  height: 100%;
-  background: repeating-linear-gradient(45deg, #ffc83d 0 12px, #ffb000 12px 24px);
-  background-size: 33.94px 33.94px;
-  animation: march 1.4s linear infinite;
-  transition: width 0.6s ease;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--world) 26%, #fff);
+  box-shadow: inset 0 2px 4px rgba(27, 34, 64, 0.16);
+  transition: transform 0.15s ease;
 }
-
-@keyframes march {
-  to {
-    background-position: 33.94px 0;
-  }
+.pip:hover,
+.pip:focus-visible {
+  transform: translateY(-2px);
+}
+.pipFill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--world), var(--world-deep));
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ---------- Section heads ---------- */
@@ -322,9 +355,10 @@
   gap: 12px 16px;
   padding: 14px 16px;
   border-radius: 21px;
-  background: var(--world-deep);
+  background-color: var(--world-deep);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 45%);
   color: #fff;
-  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: var(--kq-shadow);
 }
 
 .worldEmoji {
@@ -335,9 +369,14 @@
   height: 60px;
   border: 3px solid #fff;
   border-radius: 18px;
-  background: var(--world);
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25);
-  font-size: 32px;
+  background-color: var(--world);
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 55%);
+  color: #fff;
+  box-shadow: 0 10px 18px -12px rgba(27, 34, 64, 0.8);
+}
+.worldEmoji svg {
+  width: 34px;
+  height: 34px;
 }
 
 .worldTitle {
@@ -399,22 +438,41 @@
 
 .worldLocked {
   border-style: dashed;
-  border-color: #b5bdd1;
-  background: linear-gradient(160deg, #eef1f7 0%, #fbfcff 65%);
+  border-color: var(--world-deep);
+  background: linear-gradient(160deg, var(--world-locked) 0%, #fbfcff 70%);
 }
 
 .worldLocked .banner {
-  background: #646d88;
+  background-color: var(--world-locked-deep);
 }
 
 .worldLocked .worldEmoji {
-  background: #9aa3bb;
+  background-color: var(--world-locked-deep);
 }
 
 .lockNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
   margin: 14px 12px 0;
-  color: #3a4466;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  color: var(--kq-ink-soft);
   font-weight: 700;
+}
+.lockNote svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .lockNote {
+    background: rgba(255, 255, 255, 0.92);
+  }
 }
 
 /* The trail. Stops alternate high and low (--lift); the SVG curve behind
@@ -430,21 +488,29 @@
   top: 44px;
   left: 8px;
   width: calc(100% - 16px);
-  height: 116px;
+  height: 128px;
   overflow: visible;
 }
 
 .trail path {
   fill: none;
-  stroke: var(--world);
-  stroke-width: 6;
   stroke-linecap: round;
-  stroke-dasharray: 0.1 15;
-  opacity: 0.7;
 }
-
-.worldLocked .trail path {
-  stroke: #b5bdd1;
+.trailBed {
+  stroke: var(--world-soft);
+  stroke-width: 14;
+}
+.trailStep {
+  stroke: var(--world);
+  stroke-width: 5;
+  stroke-dasharray: 1 15;
+  opacity: 0.85;
+}
+.worldLocked .trailBed {
+  stroke: var(--world-locked);
+}
+.worldLocked .trailStep {
+  stroke: var(--kq-ink-faint);
 }
 
 .path {
@@ -468,7 +534,7 @@
 }
 
 .stop:nth-child(even) {
-  --lift: 48px;
+  --lift: 56px;
 }
 
 .node {
@@ -477,57 +543,111 @@
   flex: none;
   display: grid;
   place-items: center;
-  width: 68px;
-  height: 68px;
-  border: 4px solid #1b2240;
+  width: 72px;
+  height: 72px;
+  border: 4px solid var(--world);
   border-radius: 50%;
+  background: linear-gradient(160deg, #fff 0%, var(--world-soft) 100%);
+  color: var(--world-deep);
   font: 700 26px var(--kq-display);
   text-decoration: none;
-  box-shadow: 0 5px 0 #1b2240;
+  box-shadow: 0 5px 0 var(--world-deep);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 a.node:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 0 #1b2240;
+  box-shadow: 0 8px 0 var(--world-deep), 0 0 0 4px var(--world-soft);
 }
 
 a.node:active {
   transform: translateY(3px);
-  box-shadow: 0 2px 0 #1b2240;
+  box-shadow: 0 2px 0 var(--world-deep);
 }
 
+.node svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Finished: filled in with the world's own deep colour. */
 .nodeDone {
+  border-color: var(--world-deep);
   background: var(--world-deep);
   color: #fff;
 }
+.nodeDone svg {
+  width: 30px;
+  height: 30px;
+}
 
 .nodeOpen {
-  background: #ffc83d;
-  color: #1b2240;
+  border-color: var(--world);
 }
 
+/* Not yet: smaller than everything else, flat on the page, dashed. */
 .nodeLocked {
-  border-color: #9aa3bb;
-  background: #dfe4ee;
-  color: #6a7392;
-  font-size: 22px;
-  box-shadow: 0 5px 0 #9aa3bb;
+  width: 64px;
+  height: 64px;
+  border: 3px dashed var(--kq-ink-soft);
+  background: var(--world-locked);
+  color: var(--kq-ink-soft);
+  box-shadow: none;
+}
+.nodeLocked svg {
+  width: 22px;
+  height: 22px;
 }
 
+/* The one place to start. Biggest thing in the row, the only Glow on screen,
+   and it keeps a static ring after the pulse stops so the cue survives. */
 .nodeNext {
-  animation: pulse 1.6s ease-out infinite;
+  width: 84px;
+  height: 84px;
+  border-color: var(--kq-ink);
+  background: radial-gradient(circle at 34% 30%, var(--kq-sun-hover), var(--kq-sun) 70%);
+  color: var(--kq-ink);
+  box-shadow: var(--kq-glow);
+  animation: pulse 1.6s ease-out 3;
+}
+a.nodeNext:hover {
+  box-shadow: var(--kq-glow);
+  transform: translateY(-3px);
+}
+.nodeNext svg {
+  width: 32px;
+  height: 32px;
+}
+
+/* A play mark pinned to the corner, so "start here" is a shape as well as a
+   colour and a wobbling label. */
+.nodeBadge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px -1px rgba(27, 34, 64, 0.5);
+  color: var(--kq-ink);
+}
+.nodeBadge svg {
+  width: 14px;
+  height: 14px;
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 5px 0 #1b2240, 0 0 0 0 rgba(255, 176, 0, 0.75);
+    box-shadow: var(--kq-glow), 0 0 0 0 rgba(255, 176, 0, 0.75);
   }
   70% {
-    box-shadow: 0 5px 0 #1b2240, 0 0 0 18px rgba(255, 176, 0, 0);
+    box-shadow: var(--kq-glow), 0 0 0 18px rgba(255, 176, 0, 0);
   }
   100% {
-    box-shadow: 0 5px 0 #1b2240, 0 0 0 0 rgba(255, 176, 0, 0);
+    box-shadow: var(--kq-glow), 0 0 0 0 rgba(255, 176, 0, 0);
   }
 }
 
@@ -550,7 +670,7 @@ a.node:active {
   font: 600 14px/1.4 var(--kq-display);
   white-space: nowrap;
   translate: -50% 0;
-  animation: bob 1.8s ease-in-out infinite;
+  animation: bob 1.8s ease-in-out 3;
 }
 
 .playTag::after {
@@ -598,7 +718,10 @@ a.node:active {
   left: -8px;
   height: 16px;
   border-radius: 10px;
-  background: linear-gradient(180deg, #dca06a 0%, #b8763c 100%);
+  background-color: #c98a51;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(90, 50, 15, 0.22) 0 1px, rgba(90, 50, 15, 0) 1px 96px),
+    linear-gradient(180deg, #dca06a 0%, #b8763c 100%);
   box-shadow: 0 5px 0 #8a5222, 0 16px 24px -16px rgba(27, 34, 64, 0.6);
 }
 
@@ -632,33 +755,39 @@ a.node:active {
   border: 4px solid #1b2240;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #fff6c9 0%, var(--world) 72%);
-  box-shadow: 0 5px 0 #1b2240;
-  font-size: 38px;
+  box-shadow: 0 5px 0 var(--world-deep);
+  color: var(--kq-ink);
+}
+.medal svg {
+  width: 44px;
+  height: 44px;
 }
 
-.badgeEarned .medal {
-  animation: wiggle 4s ease-in-out infinite;
+.justEarned .medal {
+  animation: wiggle 0.7s ease-in-out 1;
 }
 
 .badgeLocked .medal {
   border-style: dashed;
-  border-color: #9aa3bb;
-  background: #eceff6;
-  color: #7d86a1;
+  border-color: var(--kq-ink-soft);
+  background: var(--world-locked);
+  color: var(--kq-ink-soft);
   box-shadow: none;
-  font: 700 34px var(--kq-display);
+}
+.badgeLocked .medal svg {
+  width: 34px;
+  height: 34px;
 }
 
 @keyframes wiggle {
   0%,
-  90%,
   100% {
     transform: rotate(0);
   }
-  94% {
+  30% {
     transform: rotate(-10deg);
   }
-  97% {
+  65% {
     transform: rotate(10deg);
   }
 }
@@ -878,8 +1007,9 @@ a.node:active {
     height: 32px;
   }
 
-  .statEmoji {
-    font-size: 28px;
+  .statIcon {
+    width: 32px;
+    height: 32px;
   }
 
   .cta {
@@ -930,8 +1060,8 @@ a.node:active {
   }
 
   .node {
-    width: 58px;
-    height: 58px;
+    width: 62px;
+    height: 62px;
     font-size: 22px;
   }
 
@@ -947,14 +1077,14 @@ a.node:active {
 
 @media (prefers-reduced-motion: reduce) {
   .nodeNext,
-  .badgeEarned .medal,
+  .justEarned .medal,
   .sticker,
   .playTag,
-  .journey span {
+  .clouds span {
     animation: none;
   }
 
-  .journey span,
+  .pipFill,
   .node {
     transition: none;
   }
@@ -962,5 +1092,40 @@ a.node:active {
   a.node:hover,
   a.node:active {
     transform: none;
+  }
+}
+
+/* Each world and each badge arrives as it comes into view — see the observer
+   in KidsHome.tsx. The starting state is only applied once the observer is
+   running, so without JavaScript nothing is ever left invisible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Finished levels invite a replay rather than announcing one. */
+a.nodeDone:hover + .stopName,
+a.nodeDone:focus-visible + .stopName {
+  color: var(--kq-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring .ringFill,
+  .pipFill,
+  .reveal {
+    transition: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .nodeNext,
+  .justEarned .medal {
+    animation: none;
   }
 }
