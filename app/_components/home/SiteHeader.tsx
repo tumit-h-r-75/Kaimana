@@ -10,6 +10,8 @@ import { NotificationBell } from "./NotificationBell";
 import { IconGem } from "./icons";
 import { CommandPalette } from "@/components/search/CommandPalette";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { useLanguage } from "@/providers/LanguageProvider";
 import styles from "./siteHeader.module.css";
 
 const Arrow = () => <span aria-hidden="true">→</span>;
@@ -22,7 +24,7 @@ const icon = (children: ReactNode) => (
 
 interface NavLink {
   href: string;
-  label: string;
+  label: keyof ReturnType<typeof useLanguage>["t"]["nav"];
   icon: ReactNode;
 }
 
@@ -32,10 +34,10 @@ interface NavLink {
  * rather than a decoration: code for problems, a trophy for contests.
  */
 const PRIMARY_LINKS: NavLink[] = [
-  { href: "/problems", label: "Problems", icon: icon(<path d="m8 7-5 5 5 5M16 7l5 5-5 5" />) },
+  { href: "/problems", label: "problems", icon: icon(<path d="m8 7-5 5 5 5M16 7l5 5-5 5" />) },
   {
     href: "/contest",
-    label: "Contests",
+    label: "contests",
     icon: icon(
       <>
         <path d="M7 4h10v5a5 5 0 0 1-10 0z" />
@@ -43,10 +45,10 @@ const PRIMARY_LINKS: NavLink[] = [
       </>,
     ),
   },
-  { href: "/leaderboard", label: "Leaderboard", icon: icon(<path d="M4 20h16M7 20v-7M12 20V5M17 20v-10" />) },
+  { href: "/leaderboard", label: "leaderboard", icon: icon(<path d="M4 20h16M7 20v-7M12 20V5M17 20v-10" />) },
   {
     href: "/community",
-    label: "Community",
+    label: "community",
     icon: icon(
       <>
         <circle cx="9" cy="8" r="3.4" />
@@ -56,7 +58,7 @@ const PRIMARY_LINKS: NavLink[] = [
   },
   {
     href: "/interview",
-    label: "Interview",
+    label: "interview",
     icon: icon(
       <>
         <rect x="9" y="3" width="6" height="11" rx="3" />
@@ -64,13 +66,14 @@ const PRIMARY_LINKS: NavLink[] = [
       </>,
     ),
   },
-  { href: "/kids", label: "Kids", icon: icon(<path d="M2 9.5 12 5l10 4.5-10 4.5zM6 11.3V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.7M22 9.5V15" />) },
+  { href: "/kids", label: "kids", icon: icon(<path d="M2 9.5 12 5l10 4.5-10 4.5zM6 11.3V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.7M22 9.5V15" />) },
 ];
 
 export function SiteHeader() {
   const { user, isLoading, logout } = useAuth();
   const pathname = usePathname();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -121,7 +124,7 @@ export function SiteHeader() {
               aria-current={isActive(link.href) ? "page" : undefined}
             >
               {link.icon}
-              {link.label}
+              {t.nav[link.label]}
             </Link>
           ))}
         </nav>
@@ -129,6 +132,7 @@ export function SiteHeader() {
         <div className={styles.actions}>
           <CommandPalette />
           <ThemeToggle />
+          <LanguageToggle />
           {signedIn && user ? (
             <>
               {typeof user.gems === "number" && (
@@ -185,7 +189,7 @@ export function SiteHeader() {
                 aria-current={isActive(link.href) ? "page" : undefined}
               >
                 {link.icon}
-                {link.label}
+                {t.nav[link.label]}
               </Link>
             ))}
           </nav>
