@@ -1,8 +1,21 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { WORLDS } from "@/lib/kids/curriculum";
+import { KidsShell } from "@/components/kids/KidsShell";
+import { WorldScreen } from "@/components/kids/world/WorldScreen";
 
-// /kids/[worldId] has no page of its own — send it to that world on the map.
+// One world's own page. It used to redirect to /kids#world-x, which meant a
+// world had no address worth sharing and nowhere to say what it teaches.
 export default async function KidsWorldPage({ params }: { params: Promise<{ worldId: string }> }) {
   const { worldId } = await params;
-  redirect(WORLDS.some((world) => world.id === worldId) ? `/kids#world-${worldId}` : "/kids");
+  if (!WORLDS.some((world) => world.id === worldId)) notFound();
+
+  return (
+    <KidsShell>
+      <WorldScreen worldId={worldId} />
+    </KidsShell>
+  );
+}
+
+export function generateStaticParams() {
+  return WORLDS.map((world) => ({ worldId: world.id }));
 }

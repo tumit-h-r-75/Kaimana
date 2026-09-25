@@ -304,7 +304,9 @@ export function KidsHome() {
                       <p className={styles.worldKicker}>
                         World {world.number} · {world.concept}
                       </p>
-                      <h3>{world.name}</h3>
+                      <h3>
+                        <Link href={`/kids/${world.id}`}>{world.name}</Link>
+                      </h3>
                       <p className={styles.worldTagline}>{world.tagline}</p>
                     </div>
                     <div className={styles.worldMeta}>
