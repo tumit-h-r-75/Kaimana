@@ -6,11 +6,11 @@ import { SiteHeader } from "../_components/home/SiteHeader";
 import { SiteFooter } from "../_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { Loader } from "@/components/ui/Loader";
-import { getMyAnalytics, getMyAnalyticsHistory } from "@/lib/api/analytics";
-import type { AnalyticsResult, AnalyticsHistoryEntry } from "@/lib/api/analytics";
+import { getMyAnalytics, getMyAnalyticsHistory, getMyInsights } from "@/lib/api/analytics";
+import type { AnalyticsResult, AnalyticsHistoryEntry, AnalyticsInsights } from "@/lib/api/analytics";
 import { getErrorMessage } from "@/lib/api/client";
+import { AttemptsHistogram, LanguageDonut, SeriesChart, TagRadar, WeekHeatmap } from "./insightCharts";
 import {
-  ActivityCalendar,
   BarBreakdown,
   StatTile,
   STATUS,
@@ -60,6 +60,27 @@ const DIFFICULTY_COLOR: Record<string, string> = {
 
 const DIFFICULTY_ORDER = ["EASY", "MEDIUM", "HARD"];
 
+const WINDOWS = [14, 30, 90] as const;
+
+/** Which slice of the past the submission-backed charts cover. */
+function WindowSwitch({ days, onChange }: { days: number; onChange: (next: number) => void }) {
+  return (
+    <div className={styles.segmented} role="group" aria-label="Choose a window">
+      {WINDOWS.map((value) => (
+        <button
+          key={value}
+          type="button"
+          aria-pressed={days === value}
+          className={`${styles.segmentedButton}${days === value ? ` ${styles.segmentedActive}` : ""}`}
+          onClick={() => onChange(value)}
+        >
+          {value} days
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Panel({
   title,
   subtitle,
@@ -103,6 +124,8 @@ function AnalyticsContent() {
   const [errorMessage, setErrorMessage] = useState("");
   const [history, setHistory] = useState<AnalyticsHistoryEntry[]>([]);
   const [metric, setMetric] = useState<TrendMetric>("problemsSolved");
+  const [insights, setInsights] = useState<AnalyticsInsights | null>(null);
+  const [windowDays, setWindowDays] = useState(30);
 
   useEffect(() => {
     let cancelled = false;
@@ -134,6 +157,23 @@ function AnalyticsContent() {
       cancelled = true;
     };
   }, []);
+
+  // Its own effect, because changing the window refetches these charts and
+  // nothing else on the page.
+  useEffect(() => {
+    let cancelled = false;
+    getMyInsights(windowDays)
+      .then((result) => {
+        if (!cancelled) setInsights(result);
+      })
+      .catch(() => {
+        // The panels below say so themselves; the live numbers still stand.
+        if (!cancelled) setInsights(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [windowDays]);
 
   const verdictRows: BarRow[] =
     analytics?.verdictBreakdown.map((entry) => ({
@@ -228,17 +268,35 @@ function AnalyticsContent() {
                 <TrendChart history={history} metric={metric} />
               </Panel>
 
-              <Panel title="Last 30 days" subtitle="Daily submission activity — darker means a busier day.">
-                <ActivityCalendar activity={analytics.activity} />
+              <Panel
+                title="Day by day"
+                subtitle="Every run you have made in the window, not just the days you opened this page. Scrub across it."
+                action={<WindowSwitch days={windowDays} onChange={setWindowDays} />}
+              >
+                {insights ? <SeriesChart daily={insights.daily} /> : <p className={styles.emptyState}>Loading the last {windowDays} days…</p>}
               </Panel>
+
+              <Panel title="Your week" subtitle="When you submit, and when it lands. Hover any hour.">
+                {insights ? <WeekHeatmap cells={insights.heatmap} timeZone={insights.timeZone} /> : <p className={styles.emptyState}>Loading…</p>}
+              </Panel>
+
+              <div className={styles.panelPair}>
+                <Panel title="Topics" subtitle="The share you solve, per tag.">
+                  {insights ? <TagRadar tags={insights.tags} /> : <p className={styles.emptyState}>Loading…</p>}
+                </Panel>
+
+                <Panel title="Tries per solve" subtitle="How many submissions a solved problem cost you.">
+                  {insights ? <AttemptsHistogram attempts={insights.attempts} /> : <p className={styles.emptyState}>Loading…</p>}
+                </Panel>
+              </div>
 
               <div className={styles.panelRow}>
                 <Panel title="Verdicts" subtitle="How every attempt resolved.">
                   <BarBreakdown rows={verdictRows} totalForPercent={analytics.totalSubmissions} />
                 </Panel>
 
-                <Panel title="Languages" subtitle="What you submit in most often.">
-                  <BarBreakdown rows={languageRows} />
+                <Panel title="Languages" subtitle="What you write in, and how each one does.">
+                  {insights && insights.languages.length > 0 ? <LanguageDonut languages={insights.languages} /> : <BarBreakdown rows={languageRows} />}
                 </Panel>
 
                 <Panel title="Difficulty" subtitle="Distinct problems solved.">
