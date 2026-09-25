@@ -245,7 +245,7 @@
 .filterCount {
   padding: 1px 7px;
   border-radius: 100px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--surface-hi);
   font: 11px "JetBrains Mono", monospace;
 }
 
