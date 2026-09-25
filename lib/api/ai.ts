@@ -87,3 +87,13 @@ export const askFollowUps = (submissionId: string, language?: string) =>
 
 export const markFollowUp = (payload: { submissionId: string; question: string; answer: string; language?: string }) =>
   apiRequest<FollowUpMark>("/api/ai/follow-ups/answer", { method: "POST", body: payload });
+
+// A walkthrough of somebody else's accepted solution, compared with your own
+// when you have one on the same problem.
+export interface SolutionExplanation {
+  explanation: string;
+  comparedWithYours: boolean;
+}
+
+export const explainSolution = (submissionId: string, language?: string) =>
+  apiRequest<SolutionExplanation>("/api/ai/explain-solution", { method: "POST", body: { submissionId, language } });

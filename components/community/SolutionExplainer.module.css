@@ -1,0 +1,49 @@
+/* The "explain this" panel under a community solution. */
+
+.panel {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.head h4 {
+  margin: 0 0 4px;
+  color: var(--text);
+  font: 700 14px Inter, Arial, sans-serif;
+}
+.head p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.lang select {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-hi);
+  color: var(--text-dim);
+  font: 500 12.5px Inter, Arial, sans-serif;
+  cursor: pointer;
+}
+.lang select:hover { color: var(--text); }
+.lang option { background: var(--surface); color: var(--text); }
+
+.body p {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.body p:last-child { margin-bottom: 0; }
