@@ -1,0 +1,248 @@
+/* The fourteen-day chart on the admin overview (PulseChart.tsx). */
+
+.wrap {
+  display: grid;
+  gap: 18px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.headText h2 {
+  margin: 0;
+  color: var(--text);
+  font: 700 19px 'JetBrains Mono', monospace;
+  letter-spacing: -.4px;
+}
+.headText p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 7px 0 0;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.headText b {
+  color: var(--text);
+  font: 700 15px 'JetBrains Mono', monospace;
+}
+
+.up,
+.down {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font: 600 11.5px 'JetBrains Mono', monospace;
+}
+.up {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+}
+.down {
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+  color: var(--warn);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.segment,
+.segmentOn {
+  padding: 6px 11px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-dim);
+  font: 500 12px Inter, Arial, sans-serif;
+  cursor: pointer;
+  transition: background-color .15s, color .15s;
+}
+.segment:hover { color: var(--text); }
+.segmentOn {
+  background: var(--surface-hi);
+  color: var(--text);
+  font-weight: 600;
+}
+.segment:focus-visible,
+.segmentOn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------------- plot */
+
+.plot {
+  position: relative;
+  height: 190px;
+  padding-top: 8px;
+}
+
+/* Three faint rules, so a bar can be read against something. */
+.grid {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  bottom: 26px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.grid span {
+  height: 1px;
+  background: var(--border);
+  opacity: .55;
+}
+
+.peak {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--text-dim);
+  font: 500 10.5px 'JetBrains Mono', monospace;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.column,
+.columnOn {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+}
+
+.hit {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+.hit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 2px;
+  border-radius: 5px 5px 2px 2px;
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface-hi));
+  transition: background-color .15s, transform .15s;
+}
+.columnOn .bar {
+  background: color-mix(in srgb, var(--accent) 34%, var(--surface-hi));
+  transform: scaleX(1.06);
+}
+
+/* The accepted share, drawn inside the attempted bar rather than beside it:
+   the eye compares two ends of one column faster than two columns. */
+.barPassed {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  border-radius: inherit;
+  background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--bg)));
+}
+
+.tick {
+  padding-top: 8px;
+  overflow: hidden;
+  color: var(--text-dim);
+  font: 500 10.5px 'JetBrains Mono', monospace;
+  text-align: center;
+  white-space: nowrap;
+}
+.columnOn .tick { color: var(--text); }
+
+.tip {
+  position: absolute;
+  top: -6px;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow: 0 16px 34px -18px rgba(0, 0, 0, .9);
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.tip b {
+  color: var(--text);
+  font: 700 12px 'JetBrains Mono', monospace;
+}
+.tip span {
+  color: var(--text-dim);
+  font-size: 11.5px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin: -4px 0 0;
+  color: var(--text-dim);
+  font-size: 11.5px;
+}
+.legend i + i { margin-left: 10px; }
+
+.keyPassed,
+.keyTotal {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.keyPassed { background: var(--accent); }
+.keyTotal { background: color-mix(in srgb, var(--accent) 22%, var(--surface-hi)); }
+
+@media (max-width: 560px) {
+  .plot { height: 160px; }
+  .controls { width: 100%; }
+  .tick { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .segment,
+  .segmentOn { transition: none; }
+  .columnOn .bar { transform: none; }
+}
