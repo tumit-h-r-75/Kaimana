@@ -2,8 +2,8 @@ import styles from "./Mascot.module.css";
 
 export type MascotMood = "happy" | "cheer" | "think" | "oops";
 
-const INK = "#1b2240";
-const GLOW = "#6ff7e8";
+const INK = "#0a0b0d";
+const GLOW = "#4ff0c5";
 const ORANGE = "#ff8c42";
 const STEEL = "#5b6b8c";
 

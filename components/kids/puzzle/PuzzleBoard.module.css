@@ -1,30 +1,30 @@
 .frame {
-  --board-bg: #7fcf5a;
-  --floor: #c9f29b;
-  --floor-alt: #b8e986;
-  --wall-bg: #9ad96b;
+  --board-bg: color-mix(in srgb, var(--world, #5ee38f) 10%, var(--kq-surface));
+  --floor: color-mix(in srgb, var(--world, #5ee38f) 34%, var(--kq-surface-hi));
+  --floor-alt: color-mix(in srgb, var(--world, #5ee38f) 26%, var(--kq-surface-hi));
+  --wall-bg: color-mix(in srgb, var(--world, #5ee38f) 16%, var(--kq-surface));
 
   width: 100%;
   margin-inline: auto;
   padding: 10px;
-  border: 4px solid #1b2240;
+  border: 4px solid var(--kq-line-strong);
   border-radius: 26px;
   background: var(--board-bg);
-  box-shadow: 0 8px 0 #1b2240, 0 24px 40px -24px rgba(27, 34, 64, 0.6);
+  box-shadow: 0 8px 0 var(--kq-line-strong), 0 24px 40px -24px rgba(27, 34, 64, 0.6);
 }
 
 .world_lagoon {
-  --board-bg: #1f8fd0;
-  --floor: #f7dcaa;
-  --floor-alt: #efcd92;
-  --wall-bg: #4cb8ee;
+  --board-bg: color-mix(in srgb, #38bdf8 12%, var(--kq-surface));
+  --floor: color-mix(in srgb, #ff8f6b 26%, var(--kq-surface-hi));
+  --floor-alt: color-mix(in srgb, #ff8f6b 16%, var(--kq-surface));
+  --wall-bg: color-mix(in srgb, #38bdf8 22%, var(--kq-surface-hi));
 }
 
 .world_caves {
-  --board-bg: #3f3170;
-  --floor: #ece4ff;
-  --floor-alt: #ddd1fa;
-  --wall-bg: #5d4c94;
+  --board-bg: color-mix(in srgb, #b18cff 12%, var(--kq-surface));
+  --floor: color-mix(in srgb, #b18cff 38%, var(--kq-surface-hi));
+  --floor-alt: color-mix(in srgb, #b18cff 30%, var(--kq-surface-hi));
+  --wall-bg: color-mix(in srgb, #b18cff 22%, var(--kq-surface-hi));
 }
 
 .board {

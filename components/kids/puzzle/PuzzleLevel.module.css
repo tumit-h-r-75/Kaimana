@@ -33,7 +33,7 @@
   padding: 10px 14px;
   border: 3px solid var(--kq-line);
   border-radius: 20px;
-  background: #fff;
+  background: var(--kq-surface);
 }
 
 .feedbackText {
@@ -53,21 +53,21 @@
 }
 
 .good {
-  border-color: #22c55e;
-  background: #eafbef;
+  border-color: var(--kq-accent);
+  background: color-mix(in srgb, var(--kq-accent) 12%, var(--kq-surface));
 }
 
 .bad {
-  border-color: #ff8a9b;
-  background: #fff1f3;
+  border-color: var(--kq-bad);
+  background: color-mix(in srgb, var(--kq-bad) 12%, var(--kq-surface));
 }
 
 .stepBadge {
   flex: none;
   padding: 3px 12px;
   border-radius: 999px;
-  background: #1b2240;
-  color: #fff;
+  background: var(--kq-line-strong);
+  color: var(--kq-surface);
   font: 600 15px/1.5 var(--kq-display);
 }
 
@@ -90,9 +90,9 @@
 .hintList li {
   position: relative;
   padding: 10px 14px 10px 44px;
-  border: 2px solid #f5d565;
+  border: 2px solid color-mix(in srgb, var(--kq-sun) 45%, var(--kq-line));
   border-radius: 16px;
-  background: #fffbe6;
+  background: color-mix(in srgb, var(--kq-sun) 12%, var(--kq-surface));
   font-weight: 700;
   counter-increment: hint;
 }

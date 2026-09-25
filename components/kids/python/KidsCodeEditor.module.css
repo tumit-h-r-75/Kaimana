@@ -9,14 +9,14 @@
   min-height: 240px;
   max-height: 560px;
   overflow: hidden;
-  border: 3px solid #1b2240;
+  border: 3px solid var(--kq-bg);
   border-radius: 18px;
-  background: #1b2240;
-  box-shadow: 0 6px 0 #0e1330;
+  background: var(--kq-bg);
+  box-shadow: 0 6px 0 rgb(0 0 0 / 0.5);
 }
 
 .editor:focus-within {
-  outline: 4px solid #1d4ed8;
+  outline: 4px solid var(--kq-accent);
   outline-offset: 3px;
 }
 
@@ -29,8 +29,8 @@
   min-width: 46px;
   padding: var(--code-pad-y) 10px var(--code-pad-y) 6px;
   overflow: hidden;
-  background: #141a33;
-  color: #8390bf;
+  background: var(--kq-surface);
+  color: var(--kq-ink-faint);
   font: var(--code-font) / var(--code-line) var(--kq-mono);
   text-align: right;
   user-select: none;
@@ -65,7 +65,7 @@
   width: max-content;
   min-width: 100%;
   padding: var(--code-pad-y) var(--code-pad-x);
-  color: #f1f4ff;
+  color: var(--kq-ink);
   font: var(--code-font) / var(--code-line) var(--kq-mono);
   tab-size: 4;
 }
@@ -115,7 +115,7 @@
 }
 
 .tok_plain {
-  color: #f1f4ff;
+  color: var(--kq-ink);
 }
 
 .tok_keyword {
@@ -136,7 +136,7 @@
 }
 
 .tok_comment {
-  color: #a3aed6;
+  color: var(--kq-ink-soft);
   font-style: italic;
 }
 
@@ -149,8 +149,8 @@
   padding: 12px 14px;
   overflow-x: auto;
   border-radius: 14px;
-  background: #1b2240;
-  color: #f1f4ff;
+  background: var(--kq-bg);
+  color: var(--kq-ink);
   font: 16px/1.6 var(--kq-mono);
 }
 
