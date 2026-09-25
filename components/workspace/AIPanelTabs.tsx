@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import VerdictPanel from "@/components/verdict/VerdictPanel";
+import AiLanguagePicker from "./AiLanguagePicker";
 import HintPanel from "@/components/hints/HintPanel";
 import ComplexityAuditorPanel from "@/components/complexity/ComplexityAuditorPanel";
 import RefactorPanel from "@/components/refactor/RefactorPanel";
@@ -60,7 +61,8 @@ export default function AIPanelTabs({
 
   return (
     <div className="ai-workspace-panel">
-      <div className="ai-tabs" role="tablist">
+      <div className="ai-tabs-row">
+        <div className="ai-tabs" role="tablist">
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -74,6 +76,11 @@ export default function AIPanelTabs({
             {tab.key === "results" && submission && <i className={`ai-tab-dot ${resultsDotClass}`} />}
           </button>
         ))}
+        </div>
+
+        <div className="ai-tabs-aside">
+          <AiLanguagePicker />
+        </div>
       </div>
 
       <div className="ai-tab-body">

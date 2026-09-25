@@ -1,0 +1,44 @@
+/* The AI panel's language control (AiLanguagePicker.tsx). */
+
+.picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  padding: 0 8px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-dim);
+  transition: border-color .15s, color .15s;
+}
+.picker:hover,
+.picker:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  color: var(--text);
+}
+.picker svg {
+  width: 15px;
+  height: 15px;
+}
+/* The native control: the OS picker on a phone, and keyboard behaviour for
+   free. */
+.picker select {
+  height: 30px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: 500 12.5px Inter, Arial, sans-serif;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  padding-right: 2px;
+}
+.picker select option {
+  background: var(--surface);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picker { transition: none; }
+}

@@ -21,7 +21,7 @@ export interface HintResult {
   penaltyPercent: number;
 }
 
-export const getHint = (payload: { problemId: string; level: number; code?: string }) =>
+export const getHint = (payload: { problemId: string; level: number; code?: string; language?: string }) =>
   apiRequest<HintResult>("/api/ai/hint", { method: "POST", body: payload });
 
 // Why a submission failed, in words, on your own code. Not a hint: it
@@ -35,8 +35,8 @@ export interface FailureExplanation {
 export const explainFailure = (submissionId: string, language?: string) =>
   apiRequest<FailureExplanation>("/api/ai/explain-failure", { method: "POST", body: { submissionId, language } });
 
-export const runComplexityAudit = (submissionId: string) =>
-  apiRequest<ComplexityReport>("/api/ai/audit", { method: "POST", body: { submissionId } });
+export const runComplexityAudit = (submissionId: string, language?: string) =>
+  apiRequest<ComplexityReport>("/api/ai/audit", { method: "POST", body: { submissionId, language } });
 
 // No rule-based Plan-B for refactor suggestions (see refactor.service.ts) —
 // when GEMINI_API_KEY isn't configured, or Gemini's response couldn't be
@@ -50,8 +50,8 @@ export interface RefactorResult {
   message?: string;
 }
 
-export const generateRefactorSuggestions = (submissionId: string) =>
-  apiRequest<RefactorResult>("/api/ai/refactor", { method: "POST", body: { submissionId } });
+export const generateRefactorSuggestions = (submissionId: string, language?: string) =>
+  apiRequest<RefactorResult>("/api/ai/refactor", { method: "POST", body: { submissionId, language } });
 
 export const verifyRefactorSuggestion = (submissionId: string, suggestionIndex: number) =>
   apiRequest<RefactorSuggestion>("/api/ai/refactor/verify", { method: "POST", body: { submissionId, suggestionIndex } });

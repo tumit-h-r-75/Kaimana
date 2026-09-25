@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { generateRefactorSuggestions, verifyRefactorSuggestion, type RefactorResult } from "@/lib/api/ai";
+import { useAiLanguage } from "@/hooks/useAiLanguage";
 import { ApiError } from "@/lib/api/client";
 import RefactorDiffEditor from "@/components/editor/RefactorDiffEditor";
 import type { Language, RefactorSuggestion } from "@/types/api";
@@ -29,6 +30,8 @@ export default function RefactorPanel({
   initialSuggestions?: RefactorSuggestion[];
   onApply?: (code: string) => void;
 }) {
+  // "language" here is the programming one; this is the reader's.
+  const { language: aiLanguage } = useAiLanguage();
   const [suggestions, setSuggestions] = useState<RefactorSuggestion[] | null>(initialSuggestions && initialSuggestions.length > 0 ? initialSuggestions : null);
   const [unavailableMessage, setUnavailableMessage] = useState<string | null>(null);
   const [hasRequested, setHasRequested] = useState(Boolean(initialSuggestions && initialSuggestions.length > 0));
@@ -43,7 +46,7 @@ export default function RefactorPanel({
     setIsLoading(true);
     setError(null);
     try {
-      const result: RefactorResult = await generateRefactorSuggestions(submissionId);
+      const result: RefactorResult = await generateRefactorSuggestions(submissionId, aiLanguage);
       setHasRequested(true);
       if (result.source === "unavailable") {
         setSuggestions([]);

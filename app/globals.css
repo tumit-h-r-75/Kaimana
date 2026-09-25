@@ -235,6 +235,9 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
    .verdict-panel/.hint-panel/.complexity-panel/.refactor-panel components,
    unchanged — this only supplies the switcher shell and the empty states
    shown before a tab has anything to show yet. */
+.ai-tabs-row{display:flex;align-items:center;gap:8px;padding-right:8px;border-bottom:1px solid var(--border);background:var(--surface-hi);flex:none}
+.ai-tabs-row .ai-tabs{border-bottom:0;flex:1;min-width:0}
+.ai-tabs-aside{flex:none}
 .ai-tabs{display:flex;gap:3px;padding:8px;border-bottom:1px solid var(--border);background:var(--surface-hi);overflow-x:auto;flex:none;scrollbar-width:none}
 /* The strip still scrolls on a narrow screen; it just doesn't show the
    operating system's bright scrollbar under the tabs. */
