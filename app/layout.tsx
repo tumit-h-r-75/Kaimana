@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/providers/AuthProvider";
+import { LanguageProvider } from "@/providers/LanguageProvider";
 import { DialogProvider } from "@/providers/DialogProvider";
 import { NotificationsProvider } from "@/providers/NotificationsProvider";
 import { ConsoleSignature } from "@/components/layout/ConsoleSignature";
@@ -64,11 +65,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
         </noscript>
         <ConsoleSignature />
-        <AuthProvider>
-          <DialogProvider>
-            <NotificationsProvider>{children}</NotificationsProvider>
-          </DialogProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <DialogProvider>
+              <NotificationsProvider>{children}</NotificationsProvider>
+            </DialogProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
