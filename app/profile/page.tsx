@@ -9,7 +9,7 @@ import { getMyRank } from "@/lib/api/leaderboard";
 import { getRecommendations, type Recommendations } from "@/lib/api/problems";
 import { getMyAnalytics, getMyAnalyticsHistory, type AnalyticsHistoryEntry, type AnalyticsResult } from "@/lib/api/analytics";
 import { PROPOSAL_COST_GEMS } from "@/lib/api/proposals";
-import { updateProfile, changePassword, updateEmailPreferences } from "@/lib/api/auth";
+import { updateProfile, changePassword, updateEmailPreferences, resendVerification } from "@/lib/api/auth";
 import { getErrorMessage } from "@/lib/api/client";
 import type { CurrentUser, MyRank } from "@/types/api";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -219,6 +219,7 @@ const TABS: { key: Tab; label: string; icon: typeof IconHome }[] = [
  * an account you cannot be told about is not safer, it is only quieter.
  */
 function EmailPreferencesPanel({ user }: { user: CurrentUser }) {
+  const [confirmState, setConfirmState] = useState<"idle" | "sending" | "sent" | "recent" | "failed">("idle");
   const [prefs, setPrefs] = useState({
     contestReminders: user.emailPrefs?.contestReminders !== false,
     weeklyDigest: user.emailPrefs?.weeklyDigest !== false,
@@ -248,11 +249,45 @@ function EmailPreferencesPanel({ user }: { user: CurrentUser }) {
     { key: "weeklyDigest", label: "Weekly summary", hint: "Mondays: what you solved, your streak, new problems and what is coming." },
   ];
 
+  const sendConfirmation = async () => {
+    setConfirmState("sending");
+    try {
+      const result = await resendVerification();
+      setConfirmState(result?.sent ? "sent" : result?.reason === "recent" ? "recent" : "failed");
+    } catch {
+      setConfirmState("failed");
+    }
+  };
+
   return (
     <article className={styles.panel}>
       <p className={styles.kicker}>
         <i aria-hidden="true" /> Email
       </p>
+
+      {/* Confirming is optional and nothing is gated on it, so it is stated
+          once, here, rather than followed around the site. */}
+      <div className={styles.prefRow}>
+        <div>
+          <b>{user.email}</b>
+          <span>
+            {user.emailVerifiedAt
+              ? "Confirmed — a password reset will reach you here."
+              : confirmState === "sent"
+                ? "Link sent. Check your inbox, and your spam folder."
+                : confirmState === "recent"
+                  ? "A link went out a moment ago — check your inbox and spam."
+                  : confirmState === "failed"
+                    ? "Could not send it just now. Try again in a minute."
+                    : "Not confirmed yet. Confirm it so a password reset can reach you."}
+          </span>
+        </div>
+        {!user.emailVerifiedAt && confirmState !== "sent" && confirmState !== "recent" && (
+          <button type="button" className="button-outline button-small" disabled={confirmState === "sending"} onClick={sendConfirmation}>
+            {confirmState === "sending" ? "Sending…" : "Send the link"}
+          </button>
+        )}
+      </div>
       {rows.map((row) => (
         <div key={row.key} className={styles.prefRow}>
           <div>
