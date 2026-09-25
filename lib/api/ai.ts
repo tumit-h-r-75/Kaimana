@@ -24,6 +24,17 @@ export interface HintResult {
 export const getHint = (payload: { problemId: string; level: number; code?: string }) =>
   apiRequest<HintResult>("/api/ai/hint", { method: "POST", body: payload });
 
+// Why a submission failed, in words, on your own code. Not a hint: it
+// describes what already happened rather than what to do next, which is why
+// it costs no score.
+export interface FailureExplanation {
+  explanation: string;
+  source: "ai" | "facts";
+}
+
+export const explainFailure = (submissionId: string, language?: string) =>
+  apiRequest<FailureExplanation>("/api/ai/explain-failure", { method: "POST", body: { submissionId, language } });
+
 export const runComplexityAudit = (submissionId: string) =>
   apiRequest<ComplexityReport>("/api/ai/audit", { method: "POST", body: { submissionId } });
 

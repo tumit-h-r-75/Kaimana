@@ -1,3 +1,4 @@
+import FailureExplainer from "./FailureExplainer";
 import type { RunCaseResult, RunOutcome } from "@/lib/api/submissions";
 import { diagnoseCase, type RunDiagnostic } from "@/lib/runDiagnostics";
 import type { Submission } from "@/types/api";
@@ -135,6 +136,8 @@ export default function VerdictPanel({ submission }: { submission: Submission })
           <pre>Got: {submission.failedTest.actualOutput}</pre>
         </div>
       )}
+
+      {submission.verdict !== "ACCEPTED" && submission.id && <FailureExplainer submissionId={submission.id} />}
     </div>
   );
 }
