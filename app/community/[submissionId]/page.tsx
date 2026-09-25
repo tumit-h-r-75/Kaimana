@@ -12,6 +12,7 @@ import {
 import type { CommunityComment, CommunitySubmissionDetail } from "@/lib/api/community";
 import { ApiError, getErrorMessage } from "@/lib/api/client";
 import { PageLoader, Loader } from "@/components/ui/Loader";
+import SolutionExplainer from "@/components/community/SolutionExplainer";
 import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -225,6 +226,8 @@ export default function CommunitySubmissionPage() {
             <h4>Code</h4>
             <pre>{submission.code}</pre>
           </div>
+
+          <SolutionExplainer submissionId={submission.id} />
 
           <CommentThread submissionId={submission.id} />
 
