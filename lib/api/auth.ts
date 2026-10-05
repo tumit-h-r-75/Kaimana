@@ -2,7 +2,7 @@ import { apiRequest } from "./client";
 import { setTokens } from "@/lib/auth-storage";
 import type { CurrentUser } from "@/types/api";
 
-export const getCurrentUser = () => apiRequest<CurrentUser>("/api/auth/me");
+export const getCurrentUser = (fresh = false) => apiRequest<CurrentUser>("/api/auth/me", { cache: !fresh });
 
 export const logout = () => apiRequest<null>("/api/auth/logout", { method: "POST" });
 

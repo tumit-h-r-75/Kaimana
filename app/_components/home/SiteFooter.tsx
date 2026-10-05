@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ReactNode } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { BrandLogo } from "@/components/layout/BrandLogo";

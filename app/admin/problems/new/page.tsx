@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addAdminTestCases, createAdminProblem } from "@/lib/api/admin";

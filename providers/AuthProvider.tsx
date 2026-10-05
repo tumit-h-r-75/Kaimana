@@ -1,7 +1,18 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { ApiError, AUTH_EXPIRED_EVENT, getErrorMessage } from "@/lib/api/client";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  ApiError,
+  AUTH_EXPIRED_EVENT,
+  getErrorMessage,
+} from "@/lib/api/client";
 import { getCurrentUser, logout as logoutRequest } from "@/lib/api/auth";
 import { clearTokens, getRefreshToken } from "@/lib/auth-storage";
 import type { CurrentUser } from "@/types/api";
@@ -29,23 +40,29 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 // transient reason (network error, 5xx), i.e. the session couldn't be
 // verified rather than being rejected.
 const isSignedOutError = (error: unknown) =>
-  error instanceof ApiError && (error.statusCode === 403 || (error.statusCode === 401 && !getRefreshToken()));
+  error instanceof ApiError &&
+  (error.statusCode === 403 ||
+    (error.statusCode === 401 && !getRefreshToken()));
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sessionError, setSessionError] = useState<string | null>(null);
+  const sessionRevision = useRef(0);
 
   const loadSession = useCallback(async (isInitialCheck: boolean) => {
+    const revision = ++sessionRevision.current;
     if (isInitialCheck) {
       setIsLoading(true);
       setSessionError(null);
     }
     try {
-      const currentUser = await getCurrentUser();
+      const currentUser = await getCurrentUser(!isInitialCheck);
+      if (revision !== sessionRevision.current) return;
       setUser(currentUser);
       setSessionError(null);
     } catch (error) {
+      if (revision !== sessionRevision.current) return;
       if (isSignedOutError(error)) {
         setUser(null);
         setSessionError(null);
@@ -57,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (isInitialCheck) setSessionError(getErrorMessage(error));
       }
     } finally {
-      if (isInitialCheck) setIsLoading(false);
+      if (revision === sessionRevision.current) setIsLoading(false);
     }
   }, []);
 
@@ -72,23 +89,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // and it has wiped the stored tokens — the session is over.
   useEffect(() => {
     const handleExpired = () => {
+      ++sessionRevision.current;
       setUser(null);
       setSessionError(null);
+      setIsLoading(false);
     };
     window.addEventListener(AUTH_EXPIRED_EVENT, handleExpired);
     return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleExpired);
   }, []);
 
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (
+        event.key === null ||
+        event.key === "kaimana.accessToken" ||
+        event.key === "kaimana.refreshToken"
+      ) {
+        setUser(null);
+        void loadSession(true);
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [loadSession]);
+
   const logout = useCallback(async () => {
+    ++sessionRevision.current;
     try {
       await logoutRequest();
     } finally {
+      ++sessionRevision.current;
       clearTokens();
       setUser(null);
+      setSessionError(null);
+      setIsLoading(false);
     }
   }, []);
 
-  return <AuthContext.Provider value={{ user, isLoading, sessionError, refresh, retry, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{ user, isLoading, sessionError, refresh, retry, logout }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

@@ -7,7 +7,7 @@
 // token is never displayed or stored; it goes from the URL straight back to
 // the API.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { BrandLogo } from "@/components/layout/BrandLogo";

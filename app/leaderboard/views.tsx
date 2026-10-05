@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { CurrentUser, LeaderboardEntry, MyRank } from "@/types/api";
 import { CountUp } from "@/components/ui/CountUp";
 import styles from "./leaderboard.module.css";

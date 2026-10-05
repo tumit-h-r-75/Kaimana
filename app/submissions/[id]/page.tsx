@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getSubmissionById } from "@/lib/api/submissions";

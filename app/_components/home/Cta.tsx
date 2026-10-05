@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useAuth } from "@/providers/AuthProvider";
 import { useReveal } from "@/hooks/useReveal";
 import styles from "./cta.module.css";

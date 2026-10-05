@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { getRecommendations, type Recommendations, type Suggestion } from "@/lib/api/problems";
 import { useAuth } from "@/providers/AuthProvider";
 import styles from "./NextUpCard.module.css";

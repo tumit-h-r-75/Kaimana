@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/providers/AuthProvider";
@@ -8,7 +8,7 @@ import { BrandLogo } from "@/components/layout/BrandLogo";
 import { AccountMenu } from "./AccountMenu";
 import { NotificationBell } from "./NotificationBell";
 import { IconGem } from "./icons";
-import { CommandPalette } from "@/components/search/CommandPalette";
+import { SearchTrigger } from "@/components/search/SearchTrigger";
 import styles from "./siteHeader.module.css";
 
 const Arrow = () => <span aria-hidden="true">→</span>;
@@ -126,7 +126,7 @@ export function SiteHeader() {
         </nav>
 
         <div className={styles.actions}>
-          <CommandPalette />
+          <SearchTrigger />
           {signedIn && user ? (
             <>
               {typeof user.gems === "number" && (

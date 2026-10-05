@@ -7,6 +7,9 @@ import { Arena } from "./_components/home/Arena";
 import { Facets } from "./_components/home/Facets";
 import { Faq } from "./_components/home/Faq";
 import { Cta } from "./_components/home/Cta";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 /**
  * The homepage, in seven sections.

@@ -8,13 +8,30 @@
 //
 // Keyframes live in globals.css beside the rest of the shared chrome.
 
-import type { CSSProperties } from "react";
+"use client";
+
+import { useEffect, useState, type CSSProperties } from "react";
+
+function useDelayedIndicator() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setVisible(true), 300);
+    return () => window.clearTimeout(timer);
+  }, []);
+  return visible;
+}
 
 type LoaderSize = "sm" | "md" | "lg";
 
 const DIAMETER: Record<LoaderSize, number> = { sm: 18, md: 28, lg: 52 };
 
-export function Spinner({ size = "md", className = "" }: { size?: LoaderSize; className?: string }) {
+export function Spinner({
+  size = "md",
+  className = "",
+}: {
+  size?: LoaderSize;
+  className?: string;
+}) {
   const d = DIAMETER[size];
   return (
     <span
@@ -23,29 +40,63 @@ export function Spinner({ size = "md", className = "" }: { size?: LoaderSize; cl
       role="status"
       aria-label="Loading"
     >
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg
+        viewBox="0 0 48 48"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
         {/* The outline stays drawn the whole time. Tracing it with a dash
             instead left only a fragment visible at any moment, which read
             as a stray triangle rather than the mark. */}
-        <path className="kai-spinner-edge" d="M14 8H34L45 18 24 43 3 18Z" strokeWidth="2.5" />
+        <path
+          className="kai-spinner-edge"
+          d="M14 8H34L45 18 24 43 3 18Z"
+          strokeWidth="2.5"
+        />
         {/* A brighter segment travelling that same outline supplies the
             motion without ever hiding the shape. */}
-        <path className="kai-spinner-trace" d="M14 8H34L45 18 24 43 3 18Z" strokeWidth="2.5" />
+        <path
+          className="kai-spinner-trace"
+          d="M14 8H34L45 18 24 43 3 18Z"
+          strokeWidth="2.5"
+        />
         {/* The girdle, the table and the pavilion cuts, lighting in sequence. */}
         <path className="kai-spinner-cut" d="M3 18H45" strokeWidth="2" />
-        <path className="kai-spinner-cut kai-spinner-cut-b" d="M14 8 24 18 34 8" strokeWidth="2" />
-        <path className="kai-spinner-cut kai-spinner-cut-c" d="M15 18 24 43 33 18" strokeWidth="2" />
+        <path
+          className="kai-spinner-cut kai-spinner-cut-b"
+          d="M14 8 24 18 34 8"
+          strokeWidth="2"
+        />
+        <path
+          className="kai-spinner-cut kai-spinner-cut-c"
+          d="M15 18 24 43 33 18"
+          strokeWidth="2"
+        />
       </svg>
     </span>
   );
 }
 
 /** Inline loader: a spinner plus a text label, for use inside cards/lists. */
-export function Loader({ label = "Loading…", size = "md" }: { label?: string; size?: LoaderSize }) {
+export function Loader({
+  label = "Loading…",
+  size = "md",
+}: {
+  label?: string;
+  size?: LoaderSize;
+}) {
+  const visible = useDelayedIndicator();
   return (
     <div className="kai-loader" role="status" aria-live="polite">
-      <Spinner size={size} />
-      <span>{label}</span>
+      {visible && (
+        <>
+          <Spinner size={size} />
+          <span>{label}</span>
+        </>
+      )}
     </div>
   );
 }
@@ -58,16 +109,59 @@ export function Loader({ label = "Loading…", size = "md" }: { label?: string; 
  * instead of riding up behind a half-page spinner.
  */
 export function PageLoader({ label = "Loading…" }: { label?: string }) {
+  const visible = useDelayedIndicator();
   return (
     <main className="kai-page-loader" role="status" aria-live="polite">
-      <Spinner size="lg" />
-      <p>{label}</p>
-      <span className="kai-page-loader-track" aria-hidden="true"><i /></span>
+      {visible && (
+        <>
+          <Spinner size="lg" />
+          <p>{label}</p>
+          <span className="kai-page-loader-track" aria-hidden="true">
+            <i />
+          </span>
+        </>
+      )}
+    </main>
+  );
+}
+
+/** Session checks reserve the page shape without replaying the brand loader. */
+export function PageSkeleton() {
+  const visible = useDelayedIndicator();
+  return (
+    <main
+      className="kai-page-skeleton section-shell"
+      aria-busy="true"
+      aria-label="Preparing page"
+    >
+      {visible && (
+        <>
+          <Skeleton style={{ width: "38%", height: 38 }} />
+          <Skeleton style={{ width: "64%", height: 16 }} />
+          <div className="kai-page-skeleton-grid">
+            {[0, 1, 2].map((id) => (
+              <Skeleton key={id} style={{ height: 180 }} />
+            ))}
+          </div>
+        </>
+      )}
     </main>
   );
 }
 
 /** Rectangular skeleton block for content placeholders (cards, rows, text lines). */
-export function Skeleton({ className = "", style }: { className?: string; style?: CSSProperties }) {
-  return <div className={`kai-skeleton ${className}`.trim()} style={style} aria-hidden="true" />;
+export function Skeleton({
+  className = "",
+  style,
+}: {
+  className?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <div
+      className={`kai-skeleton ${className}`.trim()}
+      style={style}
+      aria-hidden="true"
+    />
+  );
 }

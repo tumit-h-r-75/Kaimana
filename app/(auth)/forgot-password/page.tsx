@@ -8,7 +8,7 @@
 // a stranger "no account with that email" would make this page a tool for
 // finding out who is registered.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useState } from "react";
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import { requestPasswordReset } from "@/lib/api/auth";

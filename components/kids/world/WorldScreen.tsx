@@ -8,7 +8,7 @@
 // actually teaches. It has one now: the levels with their stars, what the
 // world is for, and what is still worth going back for.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useMemo } from "react";
 import { WORLDS, levelHref } from "@/lib/kids/curriculum";
 import { isWorldComplete, isWorldUnlocked, levelStatus, worldStars } from "@/lib/kids/progress";

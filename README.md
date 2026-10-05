@@ -48,6 +48,7 @@ npm run dev                  # http://localhost:3000
 | `npm run build` | Production build (also type-checks and lints) |
 | `npm start` | Serve the production build |
 | `npm run lint` | ESLint |
+| `npm test` | Cache, concurrent-request, token-refresh and account-isolation regression tests |
 | `npm run format` / `format:check` | Prettier |
 
 ## Environment variables
@@ -60,11 +61,18 @@ Set these in `.env.local` locally and in the Vercel project settings for deploym
 | `NEXT_PUBLIC_API_URL` | **Leave empty.** An empty value makes the client call the same-origin `/api/*` proxy, which keeps the auth cookie first-party. |
 | `NEXT_PUBLIC_APP_URL` | The site's own URL, for metadata and Open Graph links. |
 | `NEXT_PUBLIC_SOCKET_URL` | Socket.IO endpoint. Unused on Vercel, where the API is serverless. |
+| `NEXT_PUBLIC_ENABLE_REALTIME` | Set `true` only with a persistent Socket.IO backend. Defaults off; visible leaderboard pages refresh every minute and live contest scoreboards use their existing poll. |
 | `NEXT_PUBLIC_FEATURE_VISUALIZER` | `true` to show the execution visualizer. |
 
 > A blank variable counts as unset. `BACKEND_ORIGIN=` falls back to the production API instead of proxying to nowhere.
 
 ## How it fits together
+
+The public problem catalogue is server-rendered, 20 problems per page, and its anonymous fetch is revalidated every 60 seconds. Only the homepage and catalogue are listed in the sitemap; private workspaces stay behind authentication.
+
+Browser GET requests share a bounded, in-memory cache across route changes: 60 seconds normally, 5 minutes for topics, and shorter lifetimes for sessions, notifications and scoreboards. Cache entries are separated by the active session and cleared on token changes, logout and writes. Failed responses are not cached. Cancelling one component's read does not cancel another component's shared request. An explicit refresh can use `cache: false`.
+
+Links download their destination when opened. Search and coaching tabs download their code on first use; visited tabs retain their state. Loading indicators wait 300 ms before appearing, so cached or fast responses do not flash a spinner. Session gates use neutral page placeholders.
 
 ```
 browser ──► kaimana.vercel.app ──/api/*──► kaimana-back.vercel.app ──► MongoDB

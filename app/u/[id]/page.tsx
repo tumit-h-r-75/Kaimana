@@ -7,7 +7,7 @@
 // it in, what they work on, and their last few solutions — all of it already
 // public, finally in one place.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/app/_components/home/SiteHeader";

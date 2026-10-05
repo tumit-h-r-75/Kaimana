@@ -8,7 +8,7 @@
 // with a message that says what to do next, because the only way to know it
 // is spent is to ask the server.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { BrandLogo } from "@/components/layout/BrandLogo";

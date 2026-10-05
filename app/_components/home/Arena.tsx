@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useReveal } from "@/hooks/useReveal";
 import { IconCheck } from "./icons";
 import styles from "./arena.module.css";
