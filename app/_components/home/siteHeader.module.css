@@ -508,6 +508,8 @@
 
 @media (max-width: 400px) {
   .guest { display: none; }
+  .bar :global(.brand) { font-size: 20px; gap: 6px; }
+  .bar :global(.brand-mark) { width: 28px; height: 28px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

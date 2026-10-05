@@ -13,17 +13,18 @@
    accepted submission is the brand moment, so it gets the brand colour.
    Components reference these names, never the raw values. */
 :root {
-  --bg: #0b1215;
-  --surface: #111c20;
-  --surface-hi: #1a282e;
-  --border: #293a41;
-  --text: #eef5f4;
+  color-scheme: dark;
+  --bg: #0a0b0d;
+  --surface: #121417;
+  --surface-hi: #1a1d22;
+  --border: #242830;
+  --text: #e8eaed;
   /* #8B929D read at 5:1 on the raised surfaces; this is 6.3:1 or better
      on every surface, which is what small secondary text needs. */
-  --text-dim: #a2b3ba;
-  --accent: #83e6ce;
-  --accent-dim: #367f70;
-  --success: #83e6ce;
+  --text-dim: #9aa1ac;
+  --accent: #8edcc5;
+  --accent-dim: #1e6b58;
+  --success: #8edcc5;
   --error: #FF5C7A;
   --warn: #FFB84D;
 

@@ -11,9 +11,7 @@
   padding: 68px 56px;
   border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
   border-radius: 20px;
-  background:
-    radial-gradient(120% 140% at 88% 8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 62%),
-    var(--surface);
+  background: var(--surface);
 }
 
 /* The brand diamond, blown up and pushed to the edge. Decoration, so it
@@ -41,7 +39,9 @@
 .kicker {
   margin: 0 0 16px;
   color: var(--accent);
-  font: 600 11.5px "JetBrains Mono", monospace;
+  font:
+    600 11.5px "JetBrains Mono",
+    monospace;
   letter-spacing: 1.8px;
   text-transform: uppercase;
 }
@@ -49,13 +49,19 @@
 .inner h2 {
   margin: 0;
   color: var(--text);
-  font: 700 clamp(29px, 3.7vw, 46px) / 1.08 "JetBrains Mono", monospace;
+  font:
+    600 clamp(29px, 3.7vw, 46px) / 1.08 Inter,
+    sans-serif;
   letter-spacing: -2.4px;
 }
 
 .accent {
   display: inline-block;
-  background: linear-gradient(96deg, var(--accent), color-mix(in srgb, var(--accent) 66%, var(--text)));
+  background: linear-gradient(
+    96deg,
+    var(--accent),
+    color-mix(in srgb, var(--accent) 66%, var(--text))
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -78,16 +84,27 @@
 .fine {
   margin: 22px 0 0;
   color: var(--text-dim);
-  font: 11px "JetBrains Mono", monospace;
+  font:
+    11px "JetBrains Mono",
+    monospace;
   letter-spacing: 0.4px;
 }
 
 @media (max-width: 860px) {
-  .panel { padding: 52px 30px; }
-  .mark { right: -90px; opacity: 0.09; }
+  .panel {
+    padding: 52px 30px;
+  }
+  .mark {
+    right: -90px;
+    opacity: 0.09;
+  }
 }
 
 @media (max-width: 620px) {
-  .section { padding-block: 64px 76px; }
-  .panel { padding: 40px 22px; }
+  .section {
+    padding-block: 64px 76px;
+  }
+  .panel {
+    padding: 40px 22px;
+  }
 }
