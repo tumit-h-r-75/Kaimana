@@ -1,37 +1,25 @@
-/* Code Quest's shared look: tokens, buttons, cards, speech bubbles, stars and
-   world colours.
- *
- * This used to be a separate light world — sky gradient, drifting clouds,
- * thick black outlines — sitting between Kaimana's own dark header and
- * footer, and it read as a different website bolted on. It is now built from
- * the site's own tokens.
- *
- * What carries the playfulness instead of the sky: the five world colours,
- * now tuned to glow on black rather than print on white; a rounded display
- * face; targets and type a size up from the main site, because the hands
- * using this are smaller; the mascot; and motion that only ever plays once.
- */
+/* Shared lesson controls use the main neutral dark palette. */
 
 .shell {
   /* The site's palette, under the names the kids components already use. */
-  --kq-bg: #0a0b0d;
-  --kq-surface: #121417;
-  --kq-surface-hi: #1a1d22;
-  --kq-line: #242830;
+  --kq-bg: var(--bg);
+  --kq-surface: var(--surface);
+  --kq-surface-hi: var(--surface-hi);
+  --kq-line: var(--border);
   --kq-line-strong: #2f343e;
-  --kq-ink: #e8eaed;
-  --kq-ink-soft: #9aa1ac;
+  --kq-ink: var(--text);
+  --kq-ink-soft: var(--text-dim);
   --kq-ink-faint: #6b727e;
-  --kq-accent: #4ff0c5;
-  --kq-accent-deep: #1e6b58;
+  --kq-accent: var(--accent);
+  --kq-accent-deep: var(--accent-dim);
   --kq-sun: #ffb84d;
   --kq-sun-hover: #ffc873;
-  --kq-go: #4ff0c5;
+  --kq-go: var(--accent);
   --kq-go-hover: #7ff6d8;
-  --kq-good: #4ff0c5;
+  --kq-good: var(--success);
   --kq-bad: #ff5c7a;
   --kq-warn: #ffb84d;
-  --kq-radius: 20px;
+  --kq-radius: 12px;
   /* Soft and layered, never a hard offset line. */
   --kq-shadow: 0 18px 32px -24px rgb(0 0 0 / 0.9), 0 2px 6px -3px rgb(0 0 0 / 0.6);
   /* The site's own faces, one size up: a child's screen, not a child's font. */
@@ -50,20 +38,6 @@
   font-size: 17px;
   line-height: 1.55;
   background: var(--kq-bg);
-}
-
-/* One quiet wash of colour behind the whole section — the night sky over the
-   worlds, in place of the daylight one. It does not move. */
-.shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(900px 420px at 82% -8%, rgb(79 240 197 / 0.09), transparent 70%),
-    radial-gradient(700px 380px at 6% 12%, rgb(169 139 255 / 0.08), transparent 72%),
-    radial-gradient(800px 500px at 50% 108%, rgb(73 200 255 / 0.06), transparent 70%);
 }
 
 .shell h1,
@@ -86,51 +60,6 @@
   color: var(--kq-ink);
 }
 
-/* Stars in the background, for the space the clouds used to take. They fade
-   in once and then hold still. */
-.clouds {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-.clouds span {
-  position: absolute;
-  border-radius: 50%;
-  background: #fff;
-  opacity: 0;
-  animation: sparkIn 1.4s ease forwards;
-}
-.clouds span:nth-child(1) {
-  top: 12%;
-  left: 16%;
-  width: 3px;
-  height: 3px;
-  box-shadow: 120px 60px 0 -0.5px #fff, 320px -20px 0 -1px #fff, 520px 140px 0 -0.5px #fff, 760px 40px 0 -1px #fff;
-  animation-delay: 0.1s;
-}
-.clouds span:nth-child(2) {
-  top: 36%;
-  left: 62%;
-  width: 2px;
-  height: 2px;
-  box-shadow: -180px 80px 0 0 #fff, 90px 180px 0 -0.5px #fff, 240px -40px 0 0 #fff;
-  animation-delay: 0.35s;
-}
-.clouds span:nth-child(3) {
-  top: 68%;
-  left: 24%;
-  width: 2px;
-  height: 2px;
-  box-shadow: 420px 60px 0 -0.5px #fff, 700px -80px 0 0 #fff;
-  animation-delay: 0.6s;
-}
-@keyframes sparkIn {
-  to {
-    opacity: 0.45;
-  }
-}
-
 .container {
   position: relative;
   width: min(1180px, 100%);
@@ -151,7 +80,7 @@
   min-height: 52px;
   padding: 10px 24px;
   border: 1px solid var(--kq-line-strong);
-  border-radius: 999px;
+  border-radius: 9px;
   background: var(--kq-surface-hi);
   color: var(--kq-ink);
   font: 600 18px/1.1 var(--kq-display);

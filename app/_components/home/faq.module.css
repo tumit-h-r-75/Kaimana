@@ -14,7 +14,9 @@
 .kicker {
   margin: 0 0 16px;
   color: var(--accent);
-  font: 600 11.5px "JetBrains Mono", monospace;
+  font:
+    600 11.5px "JetBrains Mono",
+    monospace;
   letter-spacing: 1.6px;
   text-transform: uppercase;
 }
@@ -22,7 +24,9 @@
 .head h2 {
   margin: 0;
   color: var(--text);
-  font: 700 clamp(29px, 3.6vw, 44px) / 1.1 "JetBrains Mono", monospace;
+  font:
+    600 clamp(29px, 3.6vw, 44px) / 1.1 Inter,
+    sans-serif;
   letter-spacing: -2px;
 }
 
@@ -39,7 +43,7 @@
   transition: border-color 0.16s;
 }
 
-.isOpen {
+.item[data-state="open"] {
   border-color: color-mix(in srgb, var(--accent) 34%, transparent);
 }
 
@@ -54,7 +58,9 @@
   border: 0;
   background: transparent;
   color: var(--text);
-  font: 600 14.5px/1.45 "JetBrains Mono", monospace;
+  font:
+    500 14.5px/1.45 Inter,
+    sans-serif;
   letter-spacing: -0.3px;
   text-align: left;
   cursor: pointer;
@@ -69,33 +75,76 @@
   border: 1px solid var(--border);
   border-radius: 7px;
   color: var(--text-dim);
-  transition: transform 0.18s, color 0.18s, border-color 0.18s;
+  transition:
+    transform 0.18s,
+    color 0.18s,
+    border-color 0.18s;
 }
 
-.isOpen .mark {
+.q[data-state="open"] .mark {
   transform: rotate(45deg);
   color: var(--accent);
   border-color: color-mix(in srgb, var(--accent) 42%, transparent);
 }
 
+.questionHeading {
+  margin: 0;
+}
+
 .aWrap {
-  padding: 0 20px 18px;
+  overflow: hidden;
+}
+.aWrap[data-state="open"] {
+  animation: accordionOpen 0.2s ease-out;
+}
+.aWrap[data-state="closed"] {
+  animation: accordionClose 0.2s ease-out;
+}
+@keyframes accordionOpen {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordionClose {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
 
 .a {
   margin: 0;
   max-width: 68ch;
+  padding: 0 20px 18px;
   color: var(--text-dim);
   font-size: 13.5px;
   line-height: 1.8;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .item, .mark { transition: none; }
+  .item,
+  .mark {
+    transition: none;
+  }
+  .aWrap[data-state] {
+    animation: none;
+  }
 }
 
 @media (max-width: 620px) {
-  .section { padding-block: 64px; }
-  .q { font-size: 13.5px; padding: 16px 16px; }
-  .aWrap { padding: 0 16px 16px; }
+  .section {
+    padding-block: 64px;
+  }
+  .q {
+    font-size: 13.5px;
+    padding: 16px 16px;
+  }
+  .a {
+    padding: 0 16px 16px;
+  }
 }

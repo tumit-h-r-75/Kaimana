@@ -7,63 +7,39 @@ import { useAuth } from "@/providers/AuthProvider";
 import { BrandLogo } from "@/components/layout/BrandLogo";
 import { AccountMenu } from "./AccountMenu";
 import { NotificationBell } from "./NotificationBell";
-import { IconGem } from "./icons";
+import {
+  Gem,
+  Code2,
+  Trophy,
+  ChartNoAxesColumnIncreasing,
+  Users,
+  Mic,
+  GraduationCap,
+  Menu,
+  X,
+  ArrowRight,
+} from "lucide-react";
 import { SearchTrigger } from "@/components/search/SearchTrigger";
 import styles from "./siteHeader.module.css";
 
-const Arrow = () => <span aria-hidden="true">→</span>;
-
-const icon = (children: ReactNode) => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    {children}
-  </svg>
-);
-
+const Arrow = () => <ArrowRight size={14} aria-hidden="true" />;
+const iconProps = { size: 17, strokeWidth: 1.75, "aria-hidden": true } as const;
 interface NavLink {
   href: string;
   label: string;
   icon: ReactNode;
 }
-
-/**
- * The same six links for everyone; account-scoped pages (Analytics,
- * Submissions, Admin) live in AccountMenu. Each has an icon for the subject
- * rather than a decoration: code for problems, a trophy for contests.
- */
 const PRIMARY_LINKS: NavLink[] = [
-  { href: "/problems", label: "Problems", icon: icon(<path d="m8 7-5 5 5 5M16 7l5 5-5 5" />) },
+  { href: "/problems", label: "Problems", icon: <Code2 {...iconProps} /> },
+  { href: "/contest", label: "Contests", icon: <Trophy {...iconProps} /> },
   {
-    href: "/contest",
-    label: "Contests",
-    icon: icon(
-      <>
-        <path d="M7 4h10v5a5 5 0 0 1-10 0z" />
-        <path d="M7 5H4a3 3 0 0 0 3 5.5M17 5h3a3 3 0 0 1-3 5.5M12 14v3M8.5 21h7M9.5 17.5h5l.7 3.5H8.8z" />
-      </>,
-    ),
+    href: "/leaderboard",
+    label: "Leaderboard",
+    icon: <ChartNoAxesColumnIncreasing {...iconProps} />,
   },
-  { href: "/leaderboard", label: "Leaderboard", icon: icon(<path d="M4 20h16M7 20v-7M12 20V5M17 20v-10" />) },
-  {
-    href: "/community",
-    label: "Community",
-    icon: icon(
-      <>
-        <circle cx="9" cy="8" r="3.4" />
-        <path d="M2.5 20c0-4 3-6.4 6.5-6.4s6.5 2.4 6.5 6.4M16.2 4.3c1.7.5 3 2.1 3 4s-1.3 3.5-3 4M20.5 20c0-3-1.6-5.1-4-6" />
-      </>,
-    ),
-  },
-  {
-    href: "/interview",
-    label: "Interview",
-    icon: icon(
-      <>
-        <rect x="9" y="3" width="6" height="11" rx="3" />
-        <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" />
-      </>,
-    ),
-  },
-  { href: "/kids", label: "Kids", icon: icon(<path d="M2 9.5 12 5l10 4.5-10 4.5zM6 11.3V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.7M22 9.5V15" />) },
+  { href: "/community", label: "Community", icon: <Users {...iconProps} /> },
+  { href: "/interview", label: "Interview", icon: <Mic {...iconProps} /> },
+  { href: "/kids", label: "Kids", icon: <GraduationCap {...iconProps} /> },
 ];
 
 export function SiteHeader() {
@@ -80,9 +56,11 @@ export function SiteHeader() {
       : user?.role === "guest"
         ? { href: "/admin/contests", label: "Host panel" }
         : null;
-  const roleBadge = user?.role === "admin" ? "Admin" : user?.role === "guest" ? "Host" : null;
+  const roleBadge =
+    user?.role === "admin" ? "Admin" : user?.role === "guest" ? "Host" : null;
 
-  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
+  const isActive = (href: string) =>
+    pathname === href || pathname?.startsWith(`${href}/`);
 
   // Close the drawer on navigation; firm up the bar once the page scrolls.
   useEffect(() => {
@@ -107,7 +85,9 @@ export function SiteHeader() {
   };
 
   return (
-    <header className={`${styles.header}${isScrolled ? ` ${styles.scrolled}` : ""}`}>
+    <header
+      className={`${styles.header}${isScrolled ? ` ${styles.scrolled}` : ""}`}
+    >
       <div className={styles.bar}>
         <BrandLogo />
 
@@ -130,8 +110,12 @@ export function SiteHeader() {
           {signedIn && user ? (
             <>
               {typeof user.gems === "number" && (
-                <Link href="/profile" className={styles.gems} title="Gems — earned by solving, spent on hints">
-                  <IconGem size={16} /> {user.gems}
+                <Link
+                  href="/profile"
+                  className={styles.gems}
+                  title="Gems — earned by solving, spent on hints"
+                >
+                  <Gem size={16} aria-hidden="true" /> {user.gems}
                 </Link>
               )}
               <NotificationBell user={user} />
@@ -148,11 +132,16 @@ export function SiteHeader() {
           ) : (
             // Kept in the layout, invisibly, while the session check runs, so
             // Sign in never flashes up for a visitor who is signed in.
-            <div className={`${styles.guest}${isLoading ? ` ${styles.pending}` : ""}`}>
+            <div
+              className={`${styles.guest}${isLoading ? ` ${styles.pending}` : ""}`}
+            >
               <Link className={styles.signIn} href="/signin">
                 Sign in
               </Link>
-              <Link className="button button-small" href="/signin?mode=register">
+              <Link
+                className="button button-small"
+                href="/signin?mode=register"
+              >
                 Start free <Arrow />
               </Link>
             </div>
@@ -165,9 +154,7 @@ export function SiteHeader() {
             aria-controls="mobile-nav"
             onClick={() => setIsMenuOpen((open) => !open)}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              {isMenuOpen ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-            </svg>
+            {isMenuOpen ? <X {...iconProps} /> : <Menu {...iconProps} />}
           </button>
         </div>
       </div>

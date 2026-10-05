@@ -84,7 +84,7 @@
 }
 /* The labels say which number is which and must not be cut to do it, so
    they wrap rather than ellipsing. */
-.heroStat span {
+.heroStat > div > span {
   display: block;
   margin-top: 3px;
   color: var(--text-dim);
@@ -97,12 +97,12 @@
   place-items: center;
   width: 34px;
   height: 34px;
-  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--accent) 9%, var(--surface-hi));
-  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-hi);
+  color: var(--text-dim);
 }
-.statIcon svg { width: 19px; height: 19px; }
+.statIcon svg { display: block; width: 18px; height: 18px; }
 
 /* ---------------------------------------------------------------- toolbar */
 
@@ -626,8 +626,11 @@
 }
 
 @media (max-width: 380px) {
-  .heroStat { padding: 12px 13px; }
-  .statIcon { display: none; }
+  .heroStat { padding: 12px 10px; gap: 8px; }
+  .heroStat b { font-size: 18px; }
+  .heroStat > div > span { font-size: 11px; }
+  .statIcon { width: 26px; height: 26px; }
+  .statIcon svg { width: 15px; height: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

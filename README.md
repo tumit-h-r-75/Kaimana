@@ -98,6 +98,10 @@ public/         Static assets
 
 ## Accessibility and responsiveness
 
+The homepage and Kids catalogue use local, licensed photography with responsive Next Image sizing, reserved image dimensions and lazy loading below the fold. Photo credits and source links are in [public/images/CREDITS.md](public/images/CREDITS.md).
+
+Lucide provides the navigation and catalogue icons. Radix handles Kids course tabs and the FAQ accordion, including keyboard navigation and panel relationships. Motion animations load their feature bundle separately, keep server-rendered content visible and respect reduced motion. These libraries are scoped to the components that use them; the editor and other routes remain lazy loaded.
+
 - Layouts collapse to a single column on phones, and grid tracks use `minmax(0, 1fr)` so a long line of code can't widen the page. Admin tables become labelled cards under 700 px.
 - Keyboard support throughout: tabs move with the arrow keys, menus close on Escape and give focus back, and dialogs trap focus.
 - All motion stops under `prefers-reduced-motion`.

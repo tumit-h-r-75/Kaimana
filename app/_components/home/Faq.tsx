@@ -1,18 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import * as Accordion from "@radix-ui/react-accordion";
 import { useReveal } from "@/hooks/useReveal";
-import { IconPlus } from "./icons";
+import { Plus } from "lucide-react";
 import styles from "./faq.module.css";
-
-/**
- * Section 6. The questions people actually ask before signing up.
- *
- * Native <details> would be fewer lines, but its open state cannot be
- * animated and the marker is inconsistent across browsers. Controlled
- * state keeps one panel open at a time, which is what makes a list this
- * length readable.
- */
 
 const QA = [
   {
@@ -43,8 +34,6 @@ const QA = [
 
 export function Faq() {
   const head = useReveal<HTMLDivElement>();
-  const [open, setOpen] = useState<number | null>(0);
-
   return (
     <section className={styles.section}>
       <div className="section-shell">
@@ -52,30 +41,32 @@ export function Faq() {
           <p className={styles.kicker}>Before you start</p>
           <h2>Questions people ask.</h2>
         </div>
-
-        <div className={styles.list}>
-          {QA.map((item, i) => {
-            const isOpen = open === i;
-            return (
-              <div key={item.q} className={`${styles.item} ${isOpen ? styles.isOpen : ""}`}>
-                <button
-                  type="button"
-                  className={styles.q}
-                  aria-expanded={isOpen}
-                  onClick={() => setOpen(isOpen ? null : i)}
-                >
+        <Accordion.Root
+          className={styles.list}
+          type="single"
+          collapsible
+          defaultValue="question-0"
+        >
+          {QA.map((item, index) => (
+            <Accordion.Item
+              key={item.q}
+              value={`question-${index}`}
+              className={styles.item}
+            >
+              <Accordion.Header className={styles.questionHeading}>
+                <Accordion.Trigger className={styles.q}>
                   <span>{item.q}</span>
-                  <i className={styles.mark} aria-hidden="true"><IconPlus size={14} /></i>
-                </button>
-                {/* Kept mounted and collapsed by grid rows so the height can
-                    animate; display:none cannot be transitioned. */}
-                <div className={styles.aWrap} hidden={!isOpen}>
-                  <p className={styles.a}>{item.a}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                  <span className={styles.mark}>
+                    <Plus size={15} aria-hidden="true" />
+                  </span>
+                </Accordion.Trigger>
+              </Accordion.Header>
+              <Accordion.Content className={styles.aWrap}>
+                <p className={styles.a}>{item.a}</p>
+              </Accordion.Content>
+            </Accordion.Item>
+          ))}
+        </Accordion.Root>
       </div>
     </section>
   );
