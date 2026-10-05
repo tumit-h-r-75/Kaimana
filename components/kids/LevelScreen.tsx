@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useState } from "react";
 import { findLevel, levelHref, nextLevel, previousLevel } from "@/lib/kids/curriculum";
 import { isWorldComplete, levelStatus, nextLevelToPlay } from "@/lib/kids/progress";

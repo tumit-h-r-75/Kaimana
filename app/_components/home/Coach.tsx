@@ -20,7 +20,7 @@ export function Coach() {
   const c = useReveal<HTMLDivElement>(3);
 
   return (
-    <section className={styles.section}>
+    <section id="coach" className={styles.section}>
       <div className="section-shell">
         <div ref={head.ref} className={`${styles.head} ${head.className}`}>
           <p className={styles.kicker}>Inside every problem</p>

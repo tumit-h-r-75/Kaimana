@@ -13,17 +13,17 @@
    accepted submission is the brand moment, so it gets the brand colour.
    Components reference these names, never the raw values. */
 :root {
-  --bg: #0A0B0D;
-  --surface: #121417;
-  --surface-hi: #1A1D22;
-  --border: #242830;
-  --text: #E8EAED;
+  --bg: #0b1215;
+  --surface: #111c20;
+  --surface-hi: #1a282e;
+  --border: #293a41;
+  --text: #eef5f4;
   /* #8B929D read at 5:1 on the raised surfaces; this is 6.3:1 or better
      on every surface, which is what small secondary text needs. */
-  --text-dim: #9AA1AC;
-  --accent: #4FF0C5;
-  --accent-dim: #1E6B58;
-  --success: #4FF0C5;
+  --text-dim: #a2b3ba;
+  --accent: #83e6ce;
+  --accent-dim: #367f70;
+  --success: #83e6ce;
   --error: #FF5C7A;
   --warn: #FFB84D;
 
@@ -408,6 +408,9 @@ body > footer { margin-top: auto; } a { color:inherit; text-decoration:none; } a
 
 /* Fills whatever height body > main hands it — see the shell rule above. */
 .kai-page-loader { min-height:58vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; color:var(--text-dim); }
+.kai-page-skeleton { min-height:58vh; padding-block:64px; display:flex; flex-direction:column; gap:20px; }
+.kai-page-skeleton-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:16px; }
+@media (max-width:640px) { .kai-page-skeleton-grid { grid-template-columns:minmax(0,1fr); } }
 .kai-page-loader p { margin:0; font:12px 'JetBrains Mono',monospace; letter-spacing:1px; text-transform:uppercase; }
 /* A determinate-looking bar under the mark. It is honest about being
    indeterminate — it sweeps rather than filling to a percentage. */

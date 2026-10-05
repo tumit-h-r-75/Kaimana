@@ -6,6 +6,6 @@ const compat = new FlatCompat({
 });
 
 export default [
-  globalIgnores([".next/**", "out/**", "dist/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([".next/**", ".verification/**", "out/**", "dist/**", "build/**", "next-env.d.ts"]),
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];

@@ -3,7 +3,7 @@
 // Profile section for problem proposals: what sending one costs, the learner's
 // gem balance, the way in to propose a problem, and the proposals they've sent.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { ApiError, getErrorMessage } from "@/lib/api/client";

@@ -7,8 +7,15 @@
 // same-origin proxy in next.config.ts) — see lib/auth-storage.ts for why.
 
 import { appConfig } from "@/lib/config";
-import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "@/lib/auth-storage";
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+} from "@/lib/auth-storage";
 import type { ApiResponse } from "@/types/api";
+import { RequestCache, withAbortSignal } from "./request-cache";
+import { TOKENS_CHANGED_EVENT } from "@/lib/auth-storage";
 
 export class ApiError extends Error {
   statusCode: number;
@@ -26,9 +33,14 @@ export class ApiError extends Error {
  * someone tell a stale-session 401 apart from a server-side 500 without
  * opening devtools.
  */
-export function getErrorMessage(error: unknown, fallback = "Something went wrong."): string {
+export function getErrorMessage(
+  error: unknown,
+  fallback = "Something went wrong.",
+): string {
   if (error instanceof ApiError) {
-    return error.statusCode ? `${error.message} (HTTP ${error.statusCode})` : error.message;
+    return error.statusCode
+      ? `${error.message} (HTTP ${error.statusCode})`
+      : error.message;
   }
   if (error instanceof Error && error.message) return error.message;
   return fallback;
@@ -41,6 +53,8 @@ interface RequestOptions {
    *  other value is JSON-stringified as before. */
   body?: unknown;
   signal?: AbortSignal;
+  /** Bypass stored data for an explicit refresh. Mutations are never cached. */
+  cache?: boolean;
   /** Internal: marks a request as already-retried, to avoid a refresh loop. */
   _isRetry?: boolean;
 }
@@ -65,7 +79,8 @@ export const AUTH_EXPIRED_EVENT = "auth:expired";
 
 const expireSession = () => {
   clearTokens();
-  if (typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_EXPIRED_EVENT));
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new Event(AUTH_EXPIRED_EVENT));
 };
 
 // Concurrent 401s share one in-flight refresh instead of each firing their
@@ -110,9 +125,74 @@ const tryRefresh = async (): Promise<boolean> => {
   return refreshInFlight;
 };
 
-export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
+const reads = new RequestCache();
+let cacheSession: string | null | undefined;
+
+export function clearApiCache() {
+  reads.clear();
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener(TOKENS_CHANGED_EVENT, clearApiCache);
+  window.addEventListener("storage", (event) => {
+    if (
+      event.key === null ||
+      event.key === "kaimana.accessToken" ||
+      event.key === "kaimana.refreshToken"
+    )
+      clearApiCache();
+  });
+}
+
+function readLifetime(path: string): number {
+  if (path.startsWith("/api/auth/"))
+    return path === "/api/auth/me" ? 15_000 : 0;
+  if (path.startsWith("/api/notifications")) return 15_000;
+  if (path.includes("/scoreboard")) return 5_000;
+  if (path.startsWith("/api/leaderboard")) return 20_000;
+  if (path === "/api/problems/topics") return 300_000;
+  return 60_000;
+}
+
+export async function apiRequest<T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
+  if (options.signal?.aborted)
+    throw options.signal.reason ?? new DOMException("Aborted", "AbortError");
+  // Never share a server-side cache for authenticated data. The public server
+  // catalogue uses Next's separate, anonymous fetch cache.
+  if (typeof window === "undefined") return request<T>(path, options);
+  const session = getAccessToken();
+  if (cacheSession !== session) {
+    clearApiCache();
+    cacheSession = session;
+  }
+  if ((options.method ?? "GET") !== "GET") {
+    clearApiCache();
+    try {
+      return await request<T>(path, options);
+    } finally {
+      // Reads started while a write was pending cannot repopulate old data.
+      clearApiCache();
+    }
+  }
+  if (options.cache === false) return request<T>(path, options);
+  const url = new URL(path, "https://kaimana.invalid");
+  url.searchParams.sort();
+  const key = `${url.pathname}${url.search}`;
+  return withAbortSignal(
+    reads.read(key, readLifetime(url.pathname), () =>
+      request<T>(path, { ...options, signal: undefined }),
+    ),
+    options.signal,
+  );
+}
+
+async function request<T>(path: string, options: RequestOptions): Promise<T> {
   const accessToken = getAccessToken();
-  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+  const isFormData =
+    typeof FormData !== "undefined" && options.body instanceof FormData;
   const headers: Record<string, string> = {};
   // A multipart FormData body must NOT get a manual Content-Type — the
   // browser needs to set it itself (it embeds a boundary string the server
@@ -127,7 +207,11 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     method: options.method ?? "GET",
     credentials: "include",
     headers: Object.keys(headers).length ? headers : undefined,
-    body: isFormData ? (options.body as FormData) : options.body ? JSON.stringify(options.body) : undefined,
+    body: isFormData
+      ? (options.body as FormData)
+      : options.body
+        ? JSON.stringify(options.body)
+        : undefined,
     signal: options.signal,
   });
 
@@ -140,13 +224,16 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   if (response.status === 401 && !options._isRetry && path !== REFRESH_PATH) {
     const refreshed = await tryRefresh();
-    if (refreshed) return apiRequest<T>(path, { ...options, _isRetry: true });
+    if (refreshed) return request<T>(path, { ...options, _isRetry: true });
     // Not refreshed: tryRefresh() already cleared the tokens if the server
     // rejected them; otherwise they're kept and the original error surfaces.
   }
 
   if (!response.ok || !payload?.success) {
-    throw new ApiError(payload?.message ?? `Request failed (${response.status}).`, response.status);
+    throw new ApiError(
+      payload?.message ?? `Request failed (${response.status}).`,
+      response.status,
+    );
   }
 
   return payload.data;

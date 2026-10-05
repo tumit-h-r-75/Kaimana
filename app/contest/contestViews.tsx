@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ContestSummary } from "@/types/api";
 import styles from "./contest.module.css";
 

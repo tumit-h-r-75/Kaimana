@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import { PageLoader } from "@/components/ui/Loader";
+import { PageSkeleton } from "@/components/ui/Loader";
 
 /**
  * Shown by the auth gates when the initial session check failed for a
@@ -44,7 +44,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (isLoading || !user) {
-    return <PageLoader label="Checking your session…" />;
+    return <PageSkeleton />;
   }
 
   return <>{children}</>;

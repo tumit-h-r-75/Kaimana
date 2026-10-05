@@ -1,11 +1,10 @@
 import type { MetadataRoute } from "next";
 import { appConfig } from "@/lib/config";
 
-/** Only the two routes a signed-out crawler can actually render. */
+/** Public pages with content a signed-out crawler can render. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
   return [
-    { url: `${appConfig.appUrl}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${appConfig.appUrl}/signin`, lastModified: now, changeFrequency: "yearly", priority: 0.5 },
+    { url: `${appConfig.appUrl}/`, changeFrequency: "weekly", priority: 1 },
+    { url: `${appConfig.appUrl}/problems`, changeFrequency: "daily", priority: 0.9 },
   ];
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { createContest, deleteManagedContest, deriveContestStatus, listManagedContests, type CreateContestPayload } from "@/lib/api/contests";

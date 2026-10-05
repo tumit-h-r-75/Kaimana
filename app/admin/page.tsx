@@ -8,7 +8,7 @@
 // the three questions a running site actually raises: what needs me, how is
 // it going, and where is it stuck.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { getAdminPulse, getAdminStats, listAdminProblems, listAdminUsers, type AdminPulse } from "@/lib/api/admin";
 import { listHostRequests } from "@/lib/api/hosts";

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { MAX_STARS, TOTAL_LEVELS, WORLDS, levelHref } from "@/lib/kids/curriculum";
 import {

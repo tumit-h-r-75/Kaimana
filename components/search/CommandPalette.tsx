@@ -8,7 +8,7 @@
 // places people go most and the last few things they looked for, so an empty
 // palette is still useful.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -38,7 +38,7 @@ const ICON = {
 
 const QUICK: Row[] = [
   { key: "q-problems", href: "/problems", label: "Problems", hint: "The whole library", group: "Go to" },
-  { key: "q-contests", href: "/contests", label: "Contests", hint: "Live and upcoming", group: "Go to" },
+  { key: "q-contests", href: "/contest", label: "Contests", hint: "Live and upcoming", group: "Go to" },
   { key: "q-community", href: "/community", label: "Community", hint: "Accepted solutions", group: "Go to" },
   { key: "q-leaderboard", href: "/leaderboard", label: "Leaderboard", hint: "Where you stand", group: "Go to" },
   { key: "q-interview", href: "/interview", label: "Mock interview", hint: "Timed, with feedback", group: "Go to" },
@@ -75,9 +75,9 @@ const startsSoon = (contest: { startTime: string; endTime: string }) => {
   return "finished";
 };
 
-export function CommandPalette() {
+export function CommandPalette({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initiallyOpen);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(false);

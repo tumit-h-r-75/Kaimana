@@ -12,6 +12,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { LeaderboardBoard, PodiumCard, YourRankCard } from "./views";
 import styles from "./leaderboard.module.css";
 import { getSocket } from "@/lib/socket";
+import { appConfig } from "@/lib/config";
 
 const PAGE_SIZE = 25;
 
@@ -80,6 +81,7 @@ export default function LeaderboardPage() {
 
   // Connect to Socket.IO and listen for real-time leaderboard updates
   useEffect(() => {
+    if (!appConfig.realtime) return;
     const socket = getSocket();
 
     socket.emit("join:leaderboard");
@@ -100,6 +102,24 @@ export default function LeaderboardPage() {
       socket.off("leaderboard:update");
     };
   }, [page, user]);
+
+  // Serverless fallback: update in the background while this page is visible.
+  useEffect(() => {
+    if (appConfig.realtime) return;
+    let cancelled = false;
+    let lastPoll = Date.now();
+    const update = () => {
+      if (document.visibilityState !== "visible" || Date.now() - lastPoll < 30_000) return;
+      lastPoll = Date.now();
+      void getGlobalLeaderboard({ page, limit: PAGE_SIZE }).then((result) => {
+        if (!cancelled) { setEntries(result.entries); setTotal(result.total); }
+      }).catch(() => undefined);
+      if (myId) void getMyRank().then((rank) => { if (!cancelled) setMyRank(rank); }).catch(() => undefined);
+    };
+    const timer = window.setInterval(update, 60_000);
+    document.addEventListener("visibilitychange", update);
+    return () => { cancelled = true; window.clearInterval(timer); document.removeEventListener("visibilitychange", update); };
+  }, [page, myId]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const myPage = myRank?.rank ? Math.ceil(myRank.rank / PAGE_SIZE) : null;

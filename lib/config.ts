@@ -22,6 +22,9 @@ export const appConfig = {
   // ever fail, on someone else's machine.
   // apiUrl above is the exception: empty is its correct value.
   socketUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_SOCKET_URL?.trim() || "https://kaimana-back.vercel.app"),
+  // Vercel functions cannot host persistent Socket.IO connections. Opt in
+  // only when deploying a separate backend that supports them.
+  realtime: process.env.NEXT_PUBLIC_ENABLE_REALTIME === "true",
   appUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL?.trim() || "https://kaimana.vercel.app"),
   // Execution Visualizer. Must match FEATURE_EXECUTION_VISUALIZER on the API:
   // this only decides whether the button is offered, and the server refuses

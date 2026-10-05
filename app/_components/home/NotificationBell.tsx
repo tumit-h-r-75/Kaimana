@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useCallback, useRef, useState } from "react";
 import { usePendingReviews } from "@/components/admin/usePendingReviews";
 import { useDismiss } from "@/hooks/useDismiss";

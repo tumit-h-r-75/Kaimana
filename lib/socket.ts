@@ -12,7 +12,7 @@ export const getSocket = (): Socket => {
 
     socket = io(targetUrl, {
       auth: { token },
-      autoConnect: true,
+      autoConnect: appConfig.realtime,
       withCredentials: true,
       transports: ["websocket", "polling"],
     });
@@ -30,7 +30,7 @@ export const getSocket = (): Socket => {
     });
   }
 
-  if (!socket.connected && socket.disconnected) {
+  if (appConfig.realtime && !socket.connected && socket.disconnected) {
     const token = getAccessToken();
     if (token) {
       socket.auth = { token };

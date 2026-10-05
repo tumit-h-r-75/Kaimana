@@ -17,6 +17,7 @@
 
 const ACCESS_TOKEN_KEY = "kaimana.accessToken";
 const REFRESH_TOKEN_KEY = "kaimana.refreshToken";
+export const TOKENS_CHANGED_EVENT = "auth:tokens-changed";
 
 export const getAccessToken = (): string | null => {
   if (typeof window === "undefined") return null;
@@ -45,6 +46,7 @@ export const setTokens = (accessToken: string, refreshToken: string): void => {
     // Storage unavailable — the session will still work via cookies if the
     // browser allows them.
   }
+  window.dispatchEvent(new Event(TOKENS_CHANGED_EVENT));
 };
 
 export const clearTokens = (): void => {
@@ -55,4 +57,5 @@ export const clearTokens = (): void => {
   } catch {
     // Nothing to do — already inaccessible.
   }
+  window.dispatchEvent(new Event(TOKENS_CHANGED_EVENT));
 };

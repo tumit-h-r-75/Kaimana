@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import { PageLoader } from "@/components/ui/Loader";
+import { PageSkeleton } from "@/components/ui/Loader";
 import { SessionErrorState } from "@/components/auth/ProtectedRoute";
 import type { UserRole } from "@/types/api";
 
@@ -43,7 +43,7 @@ export function AdminRoute({ children, allowRoles = ADMIN_ONLY }: { children: Re
   }
 
   if (isLoading || !user || !hasAccess) {
-    return <PageLoader label="Checking access…" />;
+    return <PageSkeleton />;
   }
 
   return <>{children}</>;

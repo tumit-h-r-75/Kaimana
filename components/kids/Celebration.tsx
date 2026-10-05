@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useEffect, useRef, type CSSProperties } from "react";
 import { Mascot } from "./Mascot";
 import { StarIcon } from "./StarRow";

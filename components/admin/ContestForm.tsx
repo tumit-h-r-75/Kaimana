@@ -5,7 +5,7 @@
 // Mirrors the backend's contest validation client-side so most mistakes are
 // caught before a round trip; the server stays the source of truth.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { listAdminProblems } from "@/lib/api/admin";
 import { listProblems } from "@/lib/api/problems";

@@ -4,7 +4,7 @@
 // proposal". The fields mirror the admin "Create problem" form except the
 // slug, points and visibility, which the reviewing admin decides.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useId, useRef, useState } from "react";
 import type { Difficulty, Language } from "@/types/api";
 import { PROPOSAL_LIMITS as LIMITS, type ProposalDetail, type ProposalInput } from "@/lib/api/proposals";

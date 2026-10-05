@@ -1,12 +1,14 @@
 /* Site header (SiteHeader.tsx, AccountMenu.tsx, NotificationBell.tsx).
-   A floating bar: a rounded panel held a little off the top and sides of the
-   window, with the page scrolling underneath it. */
+   Quiet, full-width navigation with clear active-page markers. */
 
 .header {
   position: sticky;
   top: 0;
   z-index: 30;
-  padding: 12px 24px 0;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(12px);
   /* The gutters round the bar are see-through; clicks in them reach the
      page underneath. The bar and the drawer take them back. */
   pointer-events: none;
@@ -18,24 +20,20 @@
   align-items: center;
   gap: 26px;
   width: min(1320px, 100%);
-  height: 64px;
+  height: 72px;
   margin: 0 auto;
-  padding: 0 12px 0 18px;
-  border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border));
-  border-radius: 22px;
-  background: color-mix(in srgb, var(--surface) 80%, transparent);
-  box-shadow: 0 16px 40px -26px rgba(0, 0, 0, .85);
-  backdrop-filter: blur(16px);
+  padding: 0;
+  border: 0;
+  background: transparent;
   pointer-events: auto;
   transition: background-color .2s, box-shadow .2s;
 }
 .scrolled .bar {
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  box-shadow: 0 18px 44px -24px rgba(0, 0, 0, .9);
+  background: transparent;
 }
 /* A thin line of light along the bottom edge, strongest in the middle. */
 .bar::after {
-  content: "";
+  content: none;
   position: absolute;
   right: 18%;
   bottom: -1px;
@@ -49,7 +47,7 @@
 
 .nav {
   display: flex;
-  align-self: stretch;
+  align-self: center;
   gap: 2px;
 }
 .nav a {
@@ -57,9 +55,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 12px;
+  padding: 10px 11px;
+  border-radius: 8px;
   color: var(--text-dim);
-  font: 500 14px Inter, Arial, sans-serif;
+  font: 500 12px Inter, Arial, sans-serif;
   white-space: nowrap;
   transition: color .15s;
 }
@@ -82,12 +81,13 @@
 }
 .nav .active {
   color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   font-weight: 600;
 }
 /* The current page's marker sits on the bar's bottom edge and grows from
    the centre when you arrive. */
 .nav a::after {
-  content: "";
+  content: none;
   position: absolute;
   right: 12px;
   bottom: -1px;
@@ -479,12 +479,11 @@
 }
 
 @media (max-width: 760px) {
-  .header { padding: 10px 12px 0; }
+  .header { padding: 0 14px; }
   .bar {
     gap: 10px;
-    height: 58px;
-    padding: 0 8px 0 12px;
-    border-radius: 18px;
+    height: 64px;
+    padding: 0;
   }
   .actions { gap: 6px; }
   /* The account panel carries the balance. */

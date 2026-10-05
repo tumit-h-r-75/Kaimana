@@ -8,9 +8,10 @@
 // ties it to the streak they are already keeping, because a streak is the
 // one reason people come back on a day they had not planned to.
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useEffect, useState } from "react";
 import { getDailyProblem, type DailyProblem } from "@/lib/api/problems";
+import { useAuth } from "@/providers/AuthProvider";
 import styles from "./DailyProblemCard.module.css";
 
 const icon = (children: React.ReactNode) => (
@@ -26,9 +27,12 @@ const ICON = {
 };
 
 export function DailyProblemCard() {
+  const { user, isLoading } = useAuth();
+  const userId = user?.id ?? user?._id;
   const [daily, setDaily] = useState<DailyProblem | null>(null);
 
   useEffect(() => {
+    if (isLoading) return;
     let cancelled = false;
     getDailyProblem()
       .then((next) => !cancelled && setDaily(next))
@@ -38,7 +42,7 @@ export function DailyProblemCard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isLoading, userId]);
 
   if (!daily?.problem) return null;
   const { problem } = daily;

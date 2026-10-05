@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/providers/AuthProvider";
@@ -12,6 +12,7 @@ import { SiteHeader } from "@/app/_components/home/SiteHeader";
 import { SiteFooter } from "@/app/_components/home/SiteFooter";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { getSocket } from "@/lib/socket";
+import { appConfig } from "@/lib/config";
 import styles from "../contest.module.css";
 import layout from "./contestDetail.module.css";
 
@@ -108,6 +109,7 @@ export default function ContestDetailPage() {
     if (!contestStatus) return;
     let cancelled = false;
     const fetchScoreboard = () => {
+      if (document.visibilityState !== "visible") return;
       getContestScoreboard(params.id)
         .then((result) => {
           if (!cancelled) setScoreboard(result.entries);
@@ -126,7 +128,7 @@ export default function ContestDetailPage() {
 
   // Connect to Socket.IO and listen for real-time contest scoreboard broadcasts
   useEffect(() => {
-    if (!contest?.id) return;
+    if (!contest?.id || !appConfig.realtime) return;
 
     const socket = getSocket();
     const contestId = contest.id;

@@ -80,7 +80,8 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   // most once however many polls return it. Empty until the first load,
   // which fills it silently — nothing already waiting pops up as "new".
   const knownIds = useRef<Set<string> | null>(null);
-  const inFlight = useRef(false);
+  const inFlight = useRef<string | null>(null);
+  const activeAccount = useRef(userId);
 
   useEffect(() => {
     if (desktopSupported()) setDesktop(Notification.permission);
@@ -109,10 +110,11 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   );
 
   const poll = useCallback(async () => {
-    if (!userId || inFlight.current) return;
-    inFlight.current = true;
+    if (!userId || inFlight.current === userId) return;
+    inFlight.current = userId;
     try {
       const result = await getNotifications(20);
+      if (activeAccount.current !== userId) return;
       setItems(result.items);
       setUnreadCount(result.unreadCount);
       setSeenAt(result.seenAt);
@@ -129,12 +131,13 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     } catch {
       // A missed poll is retried on the next tick; nothing to show for it.
     } finally {
-      inFlight.current = false;
+      if (inFlight.current === userId) inFlight.current = null;
     }
   }, [userId, announce]);
 
   // A different account, or none: start over.
   useEffect(() => {
+    activeAccount.current = userId;
     knownIds.current = null;
     setItems([]);
     setUnreadCount(0);
@@ -145,7 +148,9 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoading || !userId) return;
     let timer: number | undefined;
+    let cancelled = false;
     const schedule = () => {
+      if (cancelled) return;
       window.clearTimeout(timer);
       timer = window.setTimeout(
         () => void poll().finally(schedule),
@@ -159,6 +164,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("focus", now);
     return () => {
+      cancelled = true;
       window.clearTimeout(timer);
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("focus", now);
